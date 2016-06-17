@@ -1,0 +1,3 @@
+[submodule "dep/jcommander"]
+	path = dep/jcommander
+	url = https://github.com/cbeust/jcommander.git
