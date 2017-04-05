@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="javacard-tools">
+
+    <taskdef resource="proguard/ant/task.properties"
+             classpath="/opt/proguard/lib/proguard.jar"/>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+
+        <mkdir dir="build/classes/slf4j-api"/>
+        <mkdir dir="build/classes/slf4j-simple"/>
+        <mkdir dir="build/classes/jcommander"/>
+        <mkdir dir="build/classes/javacard-tools"/>
+
+        <!-- Compile dependencies -->
+        <javac
+                debug="on"
+                includeantruntime="true"
+                destdir="build/classes/slf4j-api"
+                srcdir="dep/slf4j/slf4j-api/src/main/java"/>
+        <javac
+                debug="on"
+                includeantruntime="true"
+                classpath="build/classes/slf4j-api"
+                destdir="build/classes/slf4j-simple"
+                srcdir="dep/slf4j/slf4j-simple/src/main/java"/>
+        <javac
+                debug="on"
+                includeantruntime="true"
+                destdir="build/classes/jcommander"
+                srcdir="dep/jcommander/src/main/java"/>
+
+        <!-- Compile our own code -->
+        <javac
+                debug="on"
+                includeantruntime="true"
+                destdir="build/classes/javacard-tools"
+                srcdir="src">
+            <classpath>
+                <pathelement path="build/classes/slf4j-api"/>
+                <pathelement path="build/classes/slf4j-simple"/>
+                <pathelement path="build/classes/jcommander"/>
+                <pathelement path="lib/commons-codec-1.10.jar"/>
+                <pathelement path="../../javacard/javacard-debug/build/client/classes"/>
+            </classpath>
+        </javac>
+
+    </target>
+
+    <target name="jar">
+        <mkdir dir="build/jar"/>
+
+        <jar
+                destfile="build/jar/javacard-tools-plain.jar">
+            <zipgroupfileset dir="lib" includes="commons-codec-1.10.jar"/>
+            <fileset dir="build/classes/slf4j-api"
+                     excludes="org/slf4j/impl/Static*.class"/>
+            <fileset dir="build/classes/slf4j-simple"/>
+            <fileset dir="build/classes/jcommander"/>
+            <fileset dir="build/classes/javacard-tools"/>
+            <fileset dir="../../javacard/javacard-debug/build/client/classes"/>
+            <manifest>
+                <attribute name="Main-Class" value="better.smartcard.tool.Main"/>
+            </manifest>
+        </jar>
+
+        <!--
+        <proguard>
+            -verbose
+            -injars build/jar/javacard-tools-plain.jar
+            -outjars build/jar/javacard-tools-obfuscated.jar
+            -printmapping build/jar/javacard-tools-mapping.txt
+            -libraryjars ${java.home}/lib/rt.jar
+            -libraryjars ${java.home}/lib/jce.jar
+            -keepattributes *Annotation*
+            -keep public class better.smartcard.tool.Main {
+                public static void main(java.lang.String[]);
+            }
+        </proguard>
+        -->
+    </target>
+
+</project>
