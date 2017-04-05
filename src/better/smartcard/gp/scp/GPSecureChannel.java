@@ -268,16 +268,18 @@ public class GPSecureChannel extends CardChannel {
         LOG.debug("authentication succeeded");
         mIsAuthenticated = true;
 
-        // SCP01/SCP02 can now start ENC and RMAC
-        if (mSCP.scpProtocol == 1 || mSCP.scpProtocol == 2) {
-            if (mUseENC) {
-                LOG.debug("enabling command encryption");
-                mWrapper.startENC();
-            }
-            if (mUseRMAC) {
-                LOG.debug("enabling response authentication");
-                mWrapper.startRMAC();
-            }
+        // can now start ENC, RMAC and RENC - if applicable
+        if (mUseENC) {
+            LOG.debug("enabling command encryption");
+            mWrapper.startENC();
+        }
+        if (mUseRMAC) {
+            LOG.debug("enabling response authentication");
+            mWrapper.startRMAC();
+        }
+        if(mUseRENC) {
+            LOG.debug("enabling response encryption");
+            mWrapper.startRENC();
         }
     }
 
