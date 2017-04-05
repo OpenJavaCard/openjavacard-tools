@@ -286,6 +286,13 @@ public class GPSecureChannel extends CardChannel {
         mIsAuthenticated = false;
     }
 
+    /**
+     * Generate a challenge for use in authentication.
+     *
+     * In this version the challenge always is 8 bytes long.
+     *
+     * @return an 8-byte random challenge
+     */
     private byte[] generateChallenge() {
         byte[] result = new byte[8];
         mRandom.nextBytes(result);
