@@ -39,7 +39,7 @@ public class SCP03Wrapper extends SCPWrapper {
     }
 
     @Override
-    protected CommandAPDU wrap(CommandAPDU command) throws CardException {
+    public CommandAPDU wrap(CommandAPDU command) throws CardException {
         // fields from the original command
         int cla = command.getCLA();
         int ins = command.getINS();
@@ -125,7 +125,7 @@ public class SCP03Wrapper extends SCPWrapper {
     }
 
     @Override
-    protected ResponseAPDU unwrap(ResponseAPDU response) throws CardException {
+    public ResponseAPDU unwrap(ResponseAPDU response) throws CardException {
         ResponseAPDU unwrapped = response;
 
         if (mRMAC) {

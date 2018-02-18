@@ -82,7 +82,7 @@ public abstract class SCPWrapper {
      * @return the wrapped command
      * @throws CardException
      */
-    protected abstract CommandAPDU wrap(CommandAPDU command) throws CardException;
+    public abstract CommandAPDU wrap(CommandAPDU command) throws CardException;
 
     /**
      * Unwrap a response APDU using the current mode
@@ -90,6 +90,6 @@ public abstract class SCPWrapper {
      * @return the unwrapped response
      * @throws CardException
      */
-    protected abstract ResponseAPDU unwrap(ResponseAPDU response) throws CardException;
+    public abstract ResponseAPDU unwrap(ResponseAPDU response) throws CardException;
 
 }
