@@ -39,6 +39,11 @@ public class SCP03Wrapper extends SCPWrapper {
     }
 
     @Override
+    public byte[] encryptSensitiveData(byte[] data) throws CardException {
+        throw new Error("Not implemented");
+    }
+
+    @Override
     public CommandAPDU wrap(CommandAPDU command) throws CardException {
         // fields from the original command
         int cla = command.getCLA();

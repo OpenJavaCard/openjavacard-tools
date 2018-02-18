@@ -76,6 +76,20 @@ public abstract class SCPWrapper {
     protected abstract int getMaxSize();
 
     /**
+     * Encrypt sensitive data
+     *
+     * This is used to encrypt secret keys, protecting them
+     * with an additional layer of encryption for added security.
+     *
+     * There are protocol-specific restrictions on the data.
+     *
+     * @param data to be encrypted
+     * @return encrypted data
+     * @throws CardException
+     */
+    public abstract byte[] encryptSensitiveData(byte[] data) throws CardException;
+
+    /**
      * Wrap a command APDU using the current mode
      *
      * @param command to wrap
