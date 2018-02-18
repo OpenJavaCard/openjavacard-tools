@@ -70,6 +70,28 @@ public class SCP0102Wrapper extends SCPWrapper {
     }
 
     @Override
+    public byte[] encryptSensitiveData(byte[] data) throws CardException {
+        byte[] result;
+        GPKey sessionKEK = mKeys.getKeyByType(GPKeyType.KEK);
+
+        if((data.length % 8) != 0) {
+            throw new CardException("SCP01/02 does not allow sensitive data that needs padding");
+        }
+
+        if(mSCP.scpProtocol == 1) {
+            result = GPCrypto.enc_des_ecb(sessionKEK, data);
+        } else {
+            if(mSCP.initExplicit) {
+                result = GPCrypto.enc_3des_ecb(sessionKEK, data);
+            } else {
+                result = GPCrypto.enc_3des_cbc_nulliv(sessionKEK, data);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
     protected void startRMAC() {
         if (!mSCP.rmacSupport) {
             throw new UnsupportedOperationException(mSCP + " does not support RMAC");
