@@ -131,6 +131,21 @@ public class GPSecureChannel extends CardChannel {
     }
 
     /**
+     * Encrypt sensitive data for transmission
+     *
+     * This is used to encrypt keys with an additional layer of encryption.
+     *
+     * The keys for this are session-specific, so the channel handles this.
+     *
+     * @param data to be encrypted
+     * @return encrypted data
+     * @throws CardException on card-related errors
+     */
+    public byte[] encryptSensitiveData(byte[] data) throws CardException {
+        return mWrapper.encryptSensitiveData(data);
+    }
+
+    /**
      * Transmit an APDU through the secure channel
      *
      * @param command to be sent
