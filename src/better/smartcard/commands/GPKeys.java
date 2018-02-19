@@ -37,7 +37,7 @@ public class GPKeys extends GPCommand {
     @Parameter(
             names = "--new-types"
     )
-    String newKeyTypes = "MASTER";
+    String newKeyTypes = "MAC:ENC:KEK";
 
     @Parameter(
             names = "--new-secrets",
@@ -58,7 +58,7 @@ public class GPKeys extends GPCommand {
     }
 
     private GPKeySet createNewKeys() {
-        GPKeySet keys = new GPKeySet("command", newKeyVersion);
+        GPKeySet keys = new GPKeySet("commandline", newKeyVersion);
         String[] keyTypes = newKeyTypes.split(":");
         String[] keySecrets = newKeySecrets.split(":");
         if(keyTypes.length != keySecrets.length) {
