@@ -33,19 +33,14 @@ public class GPSecureChannel extends CardChannel {
     private SecureRandom mRandom;
 
     /**
-     * Reference to the card for CardAPDU transactions
+     * Reference to the card for communication
      */
     private GPCard mCard;
 
     /**
-     * Underlying card channel
+     * Underlying card channel for communication
      */
     private CardChannel mChannel;
-
-    /**
-     * Protocol policy in effect
-     */
-    private SCPPolicy mPolicy;
 
     /**
      * Initial static keys
@@ -53,71 +48,70 @@ public class GPSecureChannel extends CardChannel {
     private GPKeySet mStaticKeys;
 
     /**
-     * Derived session keys
+     * Protocol policy in effect
      */
-    private GPKeySet mSessionKeys;
+    private SCPProtocolPolicy mProtocolPolicy;
 
     /**
-     * True when authentication has succeeded and not been broken
+     * Security policy in effect
      */
-    private boolean mIsAuthenticated;
+    private SCPSecurityPolicy mSecurityPolicy;
+
+    /**
+     * Expected SCP protocol - 0 means ANY
+     */
+    private int mExpectedProtocol = 0;
+
+    /**
+     * Expected SCP parameters - 0 means ANY
+     */
+    private int mExpectedParameters = 0;
 
     /**
      * SCP protocol and parameters in use
      */
-    private SCPParameters mSCP;
+    private SCPProtocol mActiveProtocol;
 
     /**
-     * Configured SCP protocol
+     * Derived session keys
      */
-    private int mUseProtocol = 0;
-    /**
-     * Configured SCP parameters
-     */
-    private int mUseParameters = 0;
-
-    /**
-     * Configured request for ENC
-     */
-    private boolean mUseENC = false;
-    /**
-     * Configured request for RMAC
-     */
-    private boolean mUseRMAC = false;
-    /**
-     * Configured request for RENC
-     */
-    private boolean mUseRENC = false;
+    private GPKeySet mSessionKeys;
 
     /**
      * Helper performing wrapping/unwrapping of APDUs
      */
     private SCPWrapper mWrapper;
 
-    public GPSecureChannel(GPCard card, CardChannel channel, SCPPolicy policy, GPKeySet keys) {
+    /**
+     * True when authentication has succeeded and not been broken
+     */
+    private boolean mIsEstablished;
+
+    public GPSecureChannel(GPCard card, CardChannel channel,
+                           GPKeySet keys,
+                           SCPProtocolPolicy protocolPolicy,
+                           SCPSecurityPolicy securityPolicy) {
         mRandom = new SecureRandom();
         mCard = card;
         mChannel = channel;
-        mPolicy = policy;
         mStaticKeys = keys;
-        mUseENC = false;
-        mUseRMAC = false;
-        mUseRENC = false;
+        mProtocolPolicy = protocolPolicy;
+        mSecurityPolicy = securityPolicy;
         reset();
     }
 
-    public SCPParameters getProtocol() {
-        return mSCP;
+    public SCPProtocol getActiveProtocol() {
+        return mActiveProtocol;
     }
 
-    public boolean isAuthenticated() {
-        return mIsAuthenticated;
+    public boolean isEstablished() {
+        return mIsEstablished;
     }
 
     public void expectProtocol(int protocol, int parameters) throws CardException {
-        mPolicy.checkProtocol(protocol, parameters);
-        mUseProtocol = protocol;
-        mUseParameters = parameters;
+        mProtocolPolicy.checkProtocol(protocol, parameters);
+        mExpectedProtocol = protocol;
+        mExpectedParameters = parameters;
     }
 
     @Override
@@ -148,8 +142,11 @@ public class GPSecureChannel extends CardChannel {
     /**
      * Transmit an APDU through the secure channel
      *
-     * @param command to be sent
-     * @return the response
+     * This will wrap the command, send it to the card,
+     * wait for a response, unwrap the response and return it.
+     *
+     * @param command to be wrapped and sent
+     * @return the unwrapped response
      * @throws CardException on card-related errors
      */
     @Override
@@ -209,12 +206,36 @@ public class GPSecureChannel extends CardChannel {
         return rapduBytes.length;
     }
 
+    /**
+     * Close the secure channel
+     *
+     * @throws CardException
+     */
     @Override
     public void close() throws CardException {
         LOG.debug("closing channel");
         reset();
     }
 
+    /**
+     * Reset the secure channel
+     *
+     * Clears all state relevant to an established connection.
+     */
+    private void reset() {
+        mIsEstablished = false;
+        mWrapper = null;
+        mSessionKeys = null;
+        mActiveProtocol = null;
+    }
+
+    /**
+     * Open the secure channel
+     *
+     * This will exchange challenges with the card.
+     *
+     * @throws CardException
+     */
     public void open() throws CardException {
         LOG.debug("opening secure channel");
 
@@ -224,7 +245,7 @@ public class GPSecureChannel extends CardChannel {
         // determine key parameters
         byte keyVersion = (byte) mStaticKeys.getKeyVersion();
         byte keyId = 0;
-        if (mUseProtocol == 1) {
+        if (mExpectedProtocol == 1) {
             throw new UnsupportedOperationException("SCP01 requires key id in INITIALIZE UPDATE -- which key?");
         }
         LOG.debug("key id " + keyId + " version " + keyVersion);
@@ -234,7 +255,7 @@ public class GPSecureChannel extends CardChannel {
 
         // check and select the protocol to be used
         checkAndSelectProtocol(init);
-        LOG.debug("using " + mSCP);
+        LOG.debug("using " + mActiveProtocol);
 
         // check key version
         int selectedKeyVersion = mStaticKeys.getKeyVersion();
@@ -243,14 +264,14 @@ public class GPSecureChannel extends CardChannel {
         }
 
         // derive session keys
-        switch (mSCP.scpProtocol) {
+        switch (mActiveProtocol.scpVersion) {
             case 2:
                 byte[] seq = Arrays.copyOfRange(init.cardChallenge, 0, 2);
                 LOG.debug("card sequence " + HexUtil.bytesToHex(seq));
                 mSessionKeys = mStaticKeys.deriveSCP02(seq);
                 break;
             default:
-                throw new CardException("Unsupported SCP version " + mSCP);
+                throw new CardException("Unsupported SCP version " + mActiveProtocol);
         }
 
         // XXX
@@ -267,42 +288,37 @@ public class GPSecureChannel extends CardChannel {
         byte[] hostCryptogram = computeHostCryptogram(hostChallenge, init.cardChallenge);
 
         // create CardAPDU wrapper
-        switch (mSCP.scpProtocol) {
+        switch (mActiveProtocol.scpVersion) {
             case 2:
-                mWrapper = new SCP0102Wrapper(mSessionKeys, ((SCP0102Parameters) mSCP));
+                mWrapper = new SCP0102Wrapper(mSessionKeys, ((SCP0102Protocol) mActiveProtocol));
                 break;
             case 3:
-                mWrapper = new SCP03Wrapper(mSessionKeys, ((SCP03Parameters) mSCP));
+                mWrapper = new SCP03Wrapper(mSessionKeys, ((SCP03Protocol) mActiveProtocol));
             default:
-                throw new CardException("Unsupported SCP version " + mSCP);
+                throw new CardException("Unsupported SCP version " + mActiveProtocol);
         }
 
         // perform EXTERNAL AUTHENTICATE to authenticate to card
         LOG.debug("performing authentication");
         performExternalAuthenticate(hostCryptogram);
         LOG.debug("authentication succeeded");
-        mIsAuthenticated = true;
 
         // can now start ENC, RMAC and RENC - if applicable
-        if (mUseENC) {
-            LOG.debug("enabling command encryption");
+        if (mSecurityPolicy.requireCENC) {
+            LOG.debug("starting command encryption");
             mWrapper.startENC();
         }
-        if (mUseRMAC) {
-            LOG.debug("enabling response authentication");
+        if (mSecurityPolicy.requireRMAC) {
+            LOG.debug("starting response authentication");
             mWrapper.startRMAC();
         }
-        if(mUseRENC) {
-            LOG.debug("enabling response encryption");
+        if(mSecurityPolicy.requireRENC) {
+            LOG.debug("starting response encryption");
             mWrapper.startRENC();
         }
-    }
 
-    private void reset() {
-        mSessionKeys = null;
-        mWrapper = null;
-        mSCP = null;
-        mIsAuthenticated = false;
+        // the channel is now established
+        mIsEstablished = true;
     }
 
     /**
@@ -366,9 +382,9 @@ public class GPSecureChannel extends CardChannel {
     private void checkAndSelectProtocol(InitUpdateResponse init) throws CardException {
         // determine and check SCP protocol
         int scpProto = init.scpProtocol;
-        if (mUseProtocol != 0 && scpProto != mUseProtocol) {
+        if (mExpectedProtocol != 0 && scpProto != mExpectedProtocol) {
             throw new CardException("Unexpected SCP version " + HexUtil.hex8(scpProto)
-                    + ", expected " + HexUtil.hex8(mUseProtocol));
+                    + ", expected " + HexUtil.hex8(mExpectedProtocol));
         }
 
         // determine and check SCP parameters
@@ -376,24 +392,30 @@ public class GPSecureChannel extends CardChannel {
         if (init.scpProtocol == 3) {
             // SCP03 has the parameters in the INIT UPDATE response,
             // so check them for previous expectations and use them.
-            if (mUseParameters != 0 && scpParams != mUseParameters) {
+            if (mExpectedParameters != 0 && scpParams != mExpectedParameters) {
                 throw new CardException("Unexpected SCP parameters " + HexUtil.hex8(scpParams)
-                        + ", expected " + HexUtil.hex8(mUseProtocol));
+                        + ", expected " + HexUtil.hex8(mExpectedProtocol));
             }
         } else {
             // check that we have been told the parameters
-            if (mUseParameters == 0) {
+            if (mExpectedParameters == 0) {
                 throw new CardException("SCP parameters not provided - required for SCP version" + HexUtil.hex8(scpProto));
             }
             // use the expected parameters
-            scpParams = mUseParameters;
+            scpParams = mExpectedParameters;
         }
 
-        // check configuration against policy
-        mPolicy.checkProtocol(scpProto, scpParams);
-
         // we now know the protocol to be used
-        mSCP = SCP0102Parameters.decode(scpProto, scpParams);
+        SCPProtocol selected = SCP0102Protocol.decode(scpProto, scpParams);
+
+        // check against the protocol policy
+        mProtocolPolicy.checkProtocol(selected);
+
+        // check against security policy
+        selected.checkSecuritySupported(mSecurityPolicy);
+
+        // decision to use the protocol
+        mActiveProtocol = selected;
     }
 
     /**
@@ -436,12 +458,12 @@ public class GPSecureChannel extends CardChannel {
         byte authParam = 0;
         // always enable MAC
         authParam |= GP.EXTERNAL_AUTHENTICATE_P1_MAC;
-        // ENC and RMAC are optional
-        if (mUseENC)
+        // ENC, RMAC and RENC are optional
+        if (mSecurityPolicy.requireCENC)
             authParam |= GP.EXTERNAL_AUTHENTICATE_P1_ENC;
-        if (mUseRMAC)
+        if (mSecurityPolicy.requireCMAC)
             authParam |= GP.EXTERNAL_AUTHENTICATE_P1_RMAC;
-        if (mUseRENC)
+        if (mSecurityPolicy.requireRENC)
             authParam |= GP.EXTERNAL_AUTHENTICATE_P1_RENC;
         // build the command
         CommandAPDU authCommand = APDUUtil.buildCommand(
@@ -573,7 +595,7 @@ public class GPSecureChannel extends CardChannel {
         public String toString() {
             StringBuffer sb = new StringBuffer();
             sb.append("INIT UPDATE response:");
-            sb.append("\n scpProtocol ");
+            sb.append("\n scpVersion ");
             sb.append(HexUtil.hex8(scpProtocol));
             if (scpProtocol == 3) {
                 sb.append("\n scp03Parameters ");

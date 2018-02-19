@@ -32,12 +32,11 @@ public abstract class SCPWrapper {
     /**
      * Construct an SCP wrapper
      * @param keys to use for the session
-     * @param macEnabled if MAC should be enabled immediately
      */
-    SCPWrapper(GPKeySet keys, boolean macEnabled) {
+    SCPWrapper(GPKeySet keys) {
         mKeys = keys;
-        // SCP0102 start with MAC enabled
-        mMAC = macEnabled;
+        // SCP0102 and SCP03 all start with MAC enabled
+        mMAC = true;
         // other options must be enabled by client
         mENC = false;
         mRMAC = false;
@@ -45,21 +44,27 @@ public abstract class SCPWrapper {
     }
 
     /**
-     * Used by subclasses to start command encryption
+     * Used to start command encryption when it is expected
+     *
+     * Subclasses may want to set up state.
      */
     protected void startENC() {
         mENC = true;
     }
 
     /**
-     * Used by subclasses to start response authentication
+     * Used to start response authentication when it is expected
+     *
+     * Subclasses may want to set up state.
      */
     protected void startRMAC() {
         mRMAC = true;
     }
 
     /**
-     * Used by subclasses to start response authentication
+     * Used to start response encryption when it is expected
+     *
+     * Subclasses may want to set up state.
      */
     protected void startRENC() {
         mRENC = true;
