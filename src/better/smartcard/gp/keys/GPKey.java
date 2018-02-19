@@ -159,7 +159,7 @@ public class GPKey {
         if (mSecret.length != keyLength) {
             throw new IllegalArgumentException(
                     "Wrong key length " + mSecret.length
-                            + "for " + mCipher + ", need " + keyLength);
+                            + " for " + mCipher + ", need " + keyLength);
         }
     }
 

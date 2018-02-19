@@ -139,8 +139,10 @@ public class GPInstall extends GPCommand {
         os.println("  privileges " + HexUtil.bytesToHex(appPrivs));
         byte[] appParams = HexUtil.hexToBytes(appletParameters);
         os.println("  parameters " + HexUtil.bytesToHex(appParams));
+        os.println();
 
         // perform the installation
+        os.println("Installing now...");
         issuer.installApplet(pkgAID, modAID, appAID, appPrivs, appParams);
 
         // happy happy joy joy
