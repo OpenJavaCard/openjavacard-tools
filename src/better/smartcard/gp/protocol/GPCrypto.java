@@ -10,6 +10,9 @@ import java.io.ByteArrayOutputStream;
 import java.security.Key;
 import java.util.Arrays;
 
+/**
+ * Wrappers for cryptographic functions used in GP
+ */
 public class GPCrypto {
 
     //private static final Logger LOG = LoggerFactory.getLogger(GPCrypto.class);
