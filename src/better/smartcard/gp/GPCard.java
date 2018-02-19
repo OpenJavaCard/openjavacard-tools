@@ -195,6 +195,10 @@ public class GPCard {
         return mCardKeyInfo;
     }
 
+    public GPSecureChannel getSecureChannel() {
+        return mSecure;
+    }
+
     public GPRegistry getRegistry() {
         return mRegistry;
     }
@@ -335,7 +339,7 @@ public class GPCard {
                 throw new CardException("Card did not return a GP key information template");
             } else {
                 LOG.debug("key information:\n" + mCardKeyInfo.toString());
-                if (mCardKeyInfo.matchesKeyset(mKeys)) {
+                if (mCardKeyInfo.matchesKeysetForUsage(mKeys)) {
                     LOG.debug("keys match key information");
                 } else {
                     throw new CardException("Keys do not match key information from card");

@@ -5,6 +5,7 @@ import better.smartcard.gp.protocol.GPCrypto;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -114,6 +115,10 @@ public class GPKeySet {
      */
     public int getKeyVersion() {
         return mKeyVersion;
+    }
+
+    public List<GPKey> getKeys() {
+        return new ArrayList<>(mKeys);
     }
 
     /**

@@ -31,7 +31,7 @@ public class GPKeyInfo {
         return new ArrayList<>(mKeyInfos);
     }
 
-    public boolean matchesKeyset(GPKeySet keys) {
+    public boolean matchesKeysetForUsage(GPKeySet keys) {
         for (GPKeyInfoEntry keyInfo : mKeyInfos) {
             GPKey key = keys.getKeyById(keyInfo.getKeyId());
             if (key == null) {
@@ -39,6 +39,19 @@ public class GPKeyInfo {
             }
             int keyVersion = keys.getKeyVersion();
             if (keyVersion != 0 && keyInfo.getKeyVersion() != keyVersion) {
+                return false;
+            }
+            if (!keyInfo.matchesKey(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean matchesKeysetForReplacement(GPKeySet keys) {
+        for (GPKeyInfoEntry keyInfo : mKeyInfos) {
+            GPKey key = keys.getKeyById(keyInfo.getKeyId());
+            if (key == null) {
                 return false;
             }
             if (!keyInfo.matchesKey(key)) {
