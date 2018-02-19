@@ -69,9 +69,6 @@ public class Main {
         jc.addCommand(new CardAPDU(gpContext));
         jc.addCommand(new CardProbe(gpContext));
 
-        jc.addCommand(new DbgLog(gpContext));
-        jc.addCommand(new DbgMemory(gpContext));
-
         jc.addCommand(new GPInfo(gpContext));
         jc.addCommand(new GPList(gpContext));
         jc.addCommand(new GPLoad(gpContext));
@@ -83,6 +80,7 @@ public class Main {
 
         jc.addCommand(new CapInfo());
         jc.addCommand(new CapSize());
+
         jc.parse(arguments);
         main.execute(jc);
     }
