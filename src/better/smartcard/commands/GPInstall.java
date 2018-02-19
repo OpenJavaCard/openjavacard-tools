@@ -59,20 +59,20 @@ public class GPInstall extends GPCommand {
 
     @Parameter(
             names = "--cap-file",
-            description = "CAP file to load before installing",
+            description = "CAP files to load",
             required = false
     )
     List<File> capFiles;
 
     @Parameter(
             names = "--reload",
-            description = "Reload from the given CAP file (deletes old package)"
+            description = "Reload provided packages, replacing old versions"
     )
     boolean reload;
 
     @Parameter(
             names = "--reinstall",
-            description = "Reinstall the applet (deletes old instance)"
+            description = "Reinstall the applet, replacing old instances"
     )
     boolean reinstall;
 

@@ -22,7 +22,7 @@ import java.util.List;
 public class GPLoad extends GPCommand {
 
     @Parameter(
-            description = "CAP file to load",
+            description = "CAP files to load",
             required = true
     )
     List<File> files;
