@@ -1,7 +1,5 @@
 package better.smartcard.gp.protocol;
 
-import java.util.Iterator;
-
 public enum GPPrivilege {
     SECURITY_DOMAIN(0, GP.PRIV1_SECURITY_DOMAIN, "Security Domain"),
     DAP_VERIFICATION(0, GP.PRIV1_DAP_VERIFICATION, "DAP Verification"),
