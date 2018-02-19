@@ -1,6 +1,8 @@
 package better.smartcard.gp.scp;
 
-public class SCP03Parameters extends SCPParameters {
+import javax.smartcardio.CardException;
+
+public class SCP03Protocol extends SCPProtocol {
 
     public final boolean pseudoRandomChallenge;
 
@@ -13,12 +15,29 @@ public class SCP03Parameters extends SCPParameters {
      *
      * @param parameters
      */
-    protected SCP03Parameters(int parameters) {
+    protected SCP03Protocol(int parameters) {
         super(3, parameters);
 
         pseudoRandomChallenge = ((parameters & 0x10) != 0);
         rmacSupport = ((parameters & 0x20) != 0);
         rencSupport = ((parameters & 0x40) != 0);
+    }
+
+    @Override
+    public void checkSecuritySupported(SCPSecurityPolicy securityPolicy) throws CardException {
+        /* CMAC and CENC are always supported in SCP03 */
+        /* check for RMAC */
+        if(securityPolicy.requireRMAC) {
+            if(!rmacSupport) {
+                throw new CardException("Security policy error: card does not support RMAC");
+            }
+        }
+        /* check for RENC */
+        if(securityPolicy.requireRENC) {
+            if(!rencSupport) {
+                throw new CardException("Security policy error: card does not support RENC");
+            }
+        }
     }
 
     @Override

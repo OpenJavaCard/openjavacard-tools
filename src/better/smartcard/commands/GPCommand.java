@@ -3,7 +3,8 @@ package better.smartcard.commands;
 import better.smartcard.gp.GPCard;
 import better.smartcard.gp.GPContext;
 import better.smartcard.gp.keys.GPKeyDiversification;
-import better.smartcard.gp.scp.SCPPolicy;
+import better.smartcard.gp.scp.SCPProtocolPolicy;
+import better.smartcard.gp.scp.SCPSecurityPolicy;
 import better.smartcard.util.AID;
 import com.beust.jcommander.Parameter;
 
@@ -66,22 +67,10 @@ public abstract class GPCommand implements Runnable {
     protected int scpParameters = 0;
 
     @Parameter(
-            names = "--scp-use-enc",
-            description = "Require SCP command encryption"
+            names = "--scp-security",
+            description = "Require specific SCP security level"
     )
-    protected boolean scpUseENC;
-
-    @Parameter(
-            names = "--scp-use-rmac",
-            description = "Require SCP response authentication"
-    )
-    protected boolean scpUseRMAC;
-
-    @Parameter(
-            names = "--scp-use-renc",
-            description = "Require SCP response encryption"
-    )
-    protected boolean useRENC;
+    protected SCPSecurityPolicy scpSecurity = SCPSecurityPolicy.CMAC;
 
     protected GPContext mContext;
 
@@ -115,7 +104,8 @@ public abstract class GPCommand implements Runnable {
         }
         GPCard card = mContext.findSingleCard(reader, sdAID);
         try {
-            card.setProtocolPolicy(determineSCPPolicy());
+            card.setProtocolPolicy(new SCPProtocolPolicy(scpProtocol, scpParameters));
+            card.setSecurityPolicy(scpSecurity);
             card.connect();
             performOperation(mContext, card);
             card.disconnect();
@@ -125,10 +115,6 @@ public abstract class GPCommand implements Runnable {
     }
 
     protected void performOperation(GPContext context, GPCard card) throws CardException {
-    }
-
-    private SCPPolicy determineSCPPolicy() {
-        return new SCPPolicy(scpProtocol, scpParameters);
     }
 
     private KeyStore openKeyStore() {

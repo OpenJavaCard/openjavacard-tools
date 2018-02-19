@@ -6,8 +6,9 @@ import better.smartcard.gp.protocol.GPCardData;
 import better.smartcard.gp.protocol.GPKeyInfo;
 import better.smartcard.gp.protocol.GPLifeCycle;
 import better.smartcard.gp.scp.GPSecureChannel;
-import better.smartcard.gp.scp.SCPParameters;
-import better.smartcard.gp.scp.SCPPolicy;
+import better.smartcard.gp.scp.SCPProtocol;
+import better.smartcard.gp.scp.SCPProtocolPolicy;
+import better.smartcard.gp.scp.SCPSecurityPolicy;
 import better.smartcard.protocol.ISO7816;
 import better.smartcard.protocol.SWException;
 import better.smartcard.util.AID;
@@ -56,7 +57,11 @@ public class GPCard {
     /**
      * Protocol policy for the secure channel
      */
-    SCPPolicy mPolicy;
+    SCPProtocolPolicy mProtocolPolicy;
+    /**
+     * Security policy for the secure channel
+     */
+    SCPSecurityPolicy mSecurityPolicy;
     /**
      * Plain basic channel
      */
@@ -145,7 +150,7 @@ public class GPCard {
     public GPCard(GPContext context, CardTerminal terminal) {
         mContext = context;
         mTerminal = terminal;
-        mPolicy = SCPPolicy.PERMISSIVE;
+        mProtocolPolicy = SCPProtocolPolicy.PERMISSIVE;
         mKeys = GPKeySet.GLOBALPLATFORM;
         mRegistry = new GPRegistry(this);
         mIssuerDomain = new GPIssuerDomain(this);
@@ -207,19 +212,23 @@ public class GPCard {
         return mIssuerDomain;
     }
 
-    public SCPPolicy getPolicy() {
-        return mPolicy;
+    public SCPProtocolPolicy getPolicy() {
+        return mProtocolPolicy;
     }
 
-    public SCPParameters getProtocol() {
-        if (mSecure == null || !mSecure.isAuthenticated()) {
+    public SCPProtocol getProtocol() {
+        if (mSecure == null || !mSecure.isEstablished()) {
             return null;
         }
-        return mSecure.getProtocol();
+        return mSecure.getActiveProtocol();
     }
 
-    public void setProtocolPolicy(SCPPolicy policy) {
-        mPolicy = policy;
+    public void setProtocolPolicy(SCPProtocolPolicy policy) {
+        mProtocolPolicy = policy;
+    }
+
+    public void setSecurityPolicy(SCPSecurityPolicy policy) {
+        mSecurityPolicy = policy;
     }
 
     /**
@@ -347,7 +356,7 @@ public class GPCard {
             }
 
             // create a secure channel object
-            mSecure = new GPSecureChannel(this, mBasic, mPolicy, mKeys);
+            mSecure = new GPSecureChannel(this, mBasic, mKeys, mProtocolPolicy, mSecurityPolicy);
 
             // set up policy of the secure channel
             if (mCardData != null) {
@@ -591,7 +600,7 @@ public class GPCard {
      * @throws CardException for terminal and card errors
      */
     public ResponseAPDU transactSecure(CommandAPDU command) throws CardException {
-        if (mSecure == null || !mSecure.isAuthenticated()) {
+        if (mSecure == null || !mSecure.isEstablished()) {
             throw new CardException("Secure channel not available");
         }
         return mSecure.transmit(command);
@@ -618,7 +627,7 @@ public class GPCard {
      * @throws CardException for terminal and card errors
      */
     public ResponseAPDU transactPlain(CommandAPDU command) throws CardException {
-        if (mSecure != null && mSecure.isAuthenticated()) {
+        if (mSecure != null && mSecure.isEstablished()) {
             return mSecure.transmit(command);
         } else {
             return transmit(mBasic, command);

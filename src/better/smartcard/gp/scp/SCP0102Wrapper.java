@@ -22,7 +22,7 @@ public class SCP0102Wrapper extends SCPWrapper {
     /**
      * SCP parameters in use
      */
-    private final SCP0102Parameters mSCP;
+    private final SCP0102Protocol mSCP;
     /**
      * IV for C-MAC
      */
@@ -44,8 +44,8 @@ public class SCP0102Wrapper extends SCPWrapper {
      * @param keys to use for the session
      * @param parameters determined for the session
      */
-    SCP0102Wrapper(GPKeySet keys, SCP0102Parameters parameters) {
-        super(keys, true); // we start with MAC enabled
+    SCP0102Wrapper(GPKeySet keys, SCP0102Protocol parameters) {
+        super(keys); // we start with MAC enabled
 
         // check for unsupported parameters
         if (!parameters.initExplicit) {
@@ -78,7 +78,7 @@ public class SCP0102Wrapper extends SCPWrapper {
             throw new CardException("SCP01/02 does not allow sensitive data that needs padding");
         }
 
-        if(mSCP.scpProtocol == 1) {
+        if(mSCP.scpVersion == 1) {
             result = GPCrypto.enc_des_ecb(sessionKEK, data);
         } else {
             if(mSCP.initExplicit) {
@@ -158,7 +158,7 @@ public class SCP0102Wrapper extends SCPWrapper {
                 mICV = new byte[8];
             } else if (mSCP.icvEncrypt) {
                 // encrypt the ICV if enabled
-                if (mSCP.scpProtocol == 1) {
+                if (mSCP.scpVersion == 1) {
                     mICV = GPCrypto.enc_3des_ecb(macKey, mICV);
                 } else {
                     mICV = GPCrypto.enc_des_ecb(macKey, mICV);
@@ -182,7 +182,7 @@ public class SCP0102Wrapper extends SCPWrapper {
             byte[] macData = macBuffer.toByteArray();
 
             // perform the MAC computation
-            if (mSCP.scpProtocol == 1) {
+            if (mSCP.scpVersion == 1) {
                 mICV = GPCrypto.mac_3des(macKey, macData, mICV);
             } else {
                 mICV = GPCrypto.mac_des_3des(macKey, macData, mICV);
@@ -201,12 +201,12 @@ public class SCP0102Wrapper extends SCPWrapper {
 
             // enc requires mac
             if (!mMAC) {
-                throw new UnsupportedOperationException("Can not wrap: ENC without MAC");
+                throw new UnsupportedOperationException("Cannot wrap command: ENC without MAC");
             }
 
             // perform version-dependent padding
             byte[] plainBuf;
-            if (mSCP.scpProtocol == 1) {
+            if (mSCP.scpVersion == 1) {
                 // SCP01 has its own magic padding scheme
                 plainBuf = GPCrypto.pad80_scp01(data, 8);
             } else {
@@ -258,7 +258,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
             // check for sufficient length
             if (data.length < 8) {
-                throw new CardException("Can not unwrap: response too short");
+                throw new CardException("Cannot unwrap response: too short");
             }
 
             // extract the MAC value
@@ -276,7 +276,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
             // compare MAC values
             if (!Arrays.equals(mac, myMAC)) {
-                throw new CardException("Can not unwrap: bad response MAC");
+                throw new CardException("Cannot unwrap response: bad MAC");
             }
 
             // remember MAC as IV for next round

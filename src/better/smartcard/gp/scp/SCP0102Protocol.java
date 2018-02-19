@@ -2,10 +2,12 @@ package better.smartcard.gp.scp;
 
 import better.smartcard.util.HexUtil;
 
+import javax.smartcardio.CardException;
+
 /**
  * Represents SCP parameters for SCP01 and SCP02
  */
-public class SCP0102Parameters extends SCPParameters {
+public class SCP0102Protocol extends SCPProtocol {
 
     /**
      * Number of keys required (usually 1 or 3)
@@ -36,7 +38,7 @@ public class SCP0102Parameters extends SCPParameters {
      */
     public final boolean wellKnown;
 
-    SCP0102Parameters(int protocol, int parameters) {
+    SCP0102Protocol(int protocol, int parameters) {
         super(protocol, parameters);
 
         switch (protocol) {
@@ -74,6 +76,21 @@ public class SCP0102Parameters extends SCPParameters {
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown protocol SCP" + HexUtil.hex8(protocol));
+        }
+    }
+
+    @Override
+    public void checkSecuritySupported(SCPSecurityPolicy securityPolicy) throws CardException {
+        /* CMAC and CENC are always supported in SCP01/02 */
+        /* check for RMAC */
+        if(securityPolicy.requireRMAC) {
+            if(!rmacSupport) {
+                throw new CardException("Security policy error: card does not support RMAC");
+            }
+        }
+        /* check for RENC */
+        if(securityPolicy.requireRENC) {
+            throw new CardException("Security policy error: SCP01/02 does not support RENC");
         }
     }
 

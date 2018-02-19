@@ -5,7 +5,7 @@ import better.smartcard.gp.GPContext;
 import better.smartcard.gp.protocol.GPCardData;
 import better.smartcard.gp.protocol.GPKeyInfo;
 import better.smartcard.gp.protocol.GPLifeCycle;
-import better.smartcard.gp.scp.SCPParameters;
+import better.smartcard.gp.scp.SCPProtocol;
 import better.smartcard.util.ATRUtil;
 import com.beust.jcommander.Parameters;
 
@@ -63,11 +63,11 @@ public class GPInfo extends GPCommand {
         }
         os.println();
 
-        SCPParameters scpParameters = card.getProtocol();
-        if (scpParameters == null) {
+        SCPProtocol scpProtocol = card.getProtocol();
+        if (scpProtocol == null) {
             os.println("No SCP parameters");
         } else {
-            os.println(scpParameters.toVerboseString());
+            os.println(scpProtocol.toVerboseString());
         }
         os.println();
 
