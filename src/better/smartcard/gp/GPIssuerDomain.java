@@ -1,16 +1,20 @@
 package better.smartcard.gp;
 
+import better.smartcard.gp.keys.GPKey;
+import better.smartcard.gp.keys.GPKeySet;
 import better.smartcard.gp.protocol.GP;
+import better.smartcard.gp.protocol.GPKeyInfo;
+import better.smartcard.gp.scp.GPSecureChannel;
 import better.smartcard.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 public class GPIssuerDomain {
@@ -102,6 +106,44 @@ public class GPIssuerDomain {
         LOG.debug("deletion finished");
     }
 
+    public void checkKeys(GPKeySet newKeys) throws CardException {
+        GPKeyInfo keyInfo = mCard.getCardKeyInfo();
+        if(!keyInfo.matchesKeysetForReplacement(newKeys)) {
+            throw new CardException("Keys inappropriate for card");
+        }
+    }
+
+    public void replaceKeys(GPKeySet newKeys) throws CardException {
+        byte keyVersion = (byte)newKeys.getKeyVersion();
+
+        List<GPKey> keys = newKeys.getKeys();
+        if(keys.isEmpty()) {
+            throw new CardException("No keys provided for replacement");
+        }
+        boolean multipleKeys = keys.size() > 1;
+        GPKey firstKey = keys.get(0);
+        byte firstKeyId = firstKey.getId();
+
+        byte[] data = buildKeyBlock(keyVersion, keys);
+        //performPutKey(firstKeyId, keyVersion, data, multipleKeys);
+    }
+
+    private byte[] buildKeyBlock(byte keyVersion, List<GPKey> keys) throws CardException {
+        GPSecureChannel secureChannel = mCard.getSecureChannel();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        // first the common version
+        bos.write(keyVersion);
+        // then the keys
+        for(GPKey key: keys) {
+            // encrypt the key
+            byte[] secret = key.getSecret();
+            byte[] encrypted = secureChannel.encryptSensitiveData(secret);
+            // add the encrypted data
+            bos.write(encrypted, 0, encrypted.length);
+        }
+        return bos.toByteArray();
+    }
+
     public void cardInitialized() throws CardException {
         LOG.debug("cardInitialized()");
         performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_INITIALIZED);
@@ -159,6 +201,20 @@ public class GPIssuerDomain {
                 GP.SET_STATUS_FOR_SD_AND_APPS,
                 state,
                 aid.getBytes()
+        );
+        mCard.transactSecureAndCheck(command);
+    }
+
+    private void performPutKey(byte keyId, byte keyVersion, byte[] keyData, boolean multipleKeys) throws CardException {
+        LOG.trace("performPutKey()");
+        boolean moreCommands = false;
+        byte p1 = (byte)(keyVersion | (moreCommands?0x80:0x00));
+        byte p2 = (byte)(keyId | (multipleKeys?0x80:0x00));
+        CommandAPDU command = APDUUtil.buildCommand(
+                GP.CLA_GP,
+                GP.INS_PUT_KEY,
+                p1, p2,
+                keyData
         );
         mCard.transactSecureAndCheck(command);
     }
