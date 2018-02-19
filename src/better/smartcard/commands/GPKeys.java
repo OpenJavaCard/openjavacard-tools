@@ -54,7 +54,14 @@ public class GPKeys extends GPCommand {
         PrintStream os = System.out;
         GPKeySet newKeys = createNewKeys();
 
-        os.println("New keys:\n" + newKeys);
+        os.println("New " + newKeys);
+        os.println();
+
+        os.println("Checking key compatibility...");
+        card.getIssuerDomain().checkKeys(newKeys);
+        os.println("Check complete.");
+        os.println();
+
     }
 
     private GPKeySet createNewKeys() {
