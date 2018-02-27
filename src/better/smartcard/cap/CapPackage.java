@@ -4,6 +4,7 @@ import better.smartcard.commands.GPLoad;
 import better.smartcard.gp.GPLoadFile;
 import better.smartcard.tlv.TLVUtil;
 import better.smartcard.util.AID;
+import better.smartcard.util.BinUtil;
 import better.smartcard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -229,7 +230,7 @@ public class CapPackage implements VerboseString {
             byte[] raw = bos.toByteArray();
 
             // split the result into appropriate blocks
-            byte[][] blocks = splitBlocks(raw, blockSize);
+            byte[][] blocks = BinUtil.splitBlocks(raw, blockSize);
 
             // add the blocks to the load file
             for(byte[] block: blocks) {
@@ -237,25 +238,6 @@ public class CapPackage implements VerboseString {
             }
         } catch (IOException e) {
             throw new Error("Error writing load file", e);
-        }
-        return res;
-    }
-
-    private byte[][] splitBlocks(byte[] data, int blockSize) {
-        int numBytes = data.length;
-        int numBlocks = numBytes / blockSize;
-        if(numBytes % blockSize > 0) {
-            numBlocks++;
-        }
-        byte[][] res = new byte [numBlocks][];
-        int offset = 0;
-        for(int i = 0; i < numBlocks; i++) {
-            int size = blockSize;
-            if(offset + size > numBytes) {
-                size = numBytes - offset;
-            }
-            res[i] = Arrays.copyOfRange(data, offset, offset + size);
-            offset += size;
         }
         return res;
     }
