@@ -1,6 +1,6 @@
 package better.smartcard.gp.keys;
 
-import better.smartcard.gp.protocol.GPCrypto;
+import better.smartcard.gp.crypto.GPCrypto;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
