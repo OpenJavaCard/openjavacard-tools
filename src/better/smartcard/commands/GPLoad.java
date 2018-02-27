@@ -31,13 +31,13 @@ public class GPLoad extends GPCommand {
             names = "--reload",
             description = "Reload by deleting previous package"
     )
-    boolean reload;
+    boolean reload = false;
 
     @Parameter(
             names = "--lazy",
             description = "Only load if not present"
     )
-    boolean lazy;
+    boolean lazy = false;
 
     public GPLoad(GPContext context) {
         super(context);
