@@ -4,6 +4,10 @@ import better.smartcard.util.HexUtil;
 
 public class TLV {
 
+    public static final byte[] encode(int tag, byte[] data) {
+        return new TLV(tag, data).getEncoded();
+    }
+
     int mTag;
 
     byte[] mData;

@@ -1,5 +1,7 @@
 package better.smartcard.util;
 
+import java.util.Arrays;
+
 /** Utilities related to treating integers as binary words */
 public class BinUtil {
 
@@ -17,6 +19,25 @@ public class BinUtil {
         buf[off] = (byte) (sValue >> 8);
         buf[off + 1] = (byte) sValue;
         return (short) (off + 2);
+    }
+
+    public static byte[][] splitBlocks(byte[] data, int blockSize) {
+        int numBytes = data.length;
+        int numBlocks = numBytes / blockSize;
+        if(numBytes % blockSize > 0) {
+            numBlocks++;
+        }
+        byte[][] res = new byte [numBlocks][];
+        int offset = 0;
+        for(int i = 0; i < numBlocks; i++) {
+            int size = blockSize;
+            if(offset + size > numBytes) {
+                size = numBytes - offset;
+            }
+            res[i] = Arrays.copyOfRange(data, offset, offset + size);
+            offset += size;
+        }
+        return res;
     }
 
 }
