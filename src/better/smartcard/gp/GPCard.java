@@ -254,10 +254,29 @@ public class GPCard {
     }
 
     /**
+     * Set the ISD to use for talking to the card
+     * @param isd to be used
+     */
+    public void setCardISD(AID isd) {
+        ensureNotConnected();
+        mISD = isd;
+    }
+
+    /**
+     * Set the keyset to use for talking to the card
+     * @param keys to be used
+     */
+    public void setKeys(GPKeySet keys) {
+        ensureNotConnected();
+        mKeys = keys;
+    }
+
+    /**
      * Set the protocol policy to use for talking to the card
      * @param policy to be used
      */
     public void setProtocolPolicy(SCPProtocolPolicy policy) {
+        ensureNotConnected();
         mProtocolPolicy = policy;
     }
 
@@ -266,7 +285,17 @@ public class GPCard {
      * @param policy to be used
      */
     public void setSecurityPolicy(SCPSecurityPolicy policy) {
+        ensureNotConnected();
         mSecurityPolicy = policy;
+    }
+
+    /**
+     * Internal: Ensure that the client is not connected
+     */
+    private void ensureNotConnected() {
+        if(mIsConnected) {
+            throw new IllegalStateException("Already in a session");
+        }
     }
 
     /**
