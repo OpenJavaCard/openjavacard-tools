@@ -249,7 +249,7 @@ public class GPIssuerDomain {
      */
     public void cardInitialized() throws CardException {
         LOG.debug("cardInitialized()");
-        performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_INITIALIZED);
+        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_INITIALIZED);
     }
 
     /**
@@ -258,7 +258,7 @@ public class GPIssuerDomain {
      */
     public void cardSecured() throws CardException {
         LOG.debug("cardSecured()");
-        performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_SECURED);
+        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_SECURED);
     }
 
     /**
@@ -268,7 +268,7 @@ public class GPIssuerDomain {
      */
     public void lockCard() throws CardException {
         LOG.debug("cardInitialized()");
-        performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_LOCKED);
+        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_LOCKED);
     }
 
     /**
@@ -276,7 +276,7 @@ public class GPIssuerDomain {
      */
     public void unlockCard() throws CardException {
         LOG.debug("unlockCard()");
-        performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_SECURED);
+        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_SECURED);
     }
 
     /**
@@ -285,7 +285,7 @@ public class GPIssuerDomain {
      */
     public void terminateCard() throws CardException {
         LOG.debug("terminateCard()");
-        performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_TERMINATED);
+        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_TERMINATED);
     }
 
     private void performStoreData(byte[] block, byte blockNumber, boolean lastBlock) throws CardException {

@@ -181,7 +181,7 @@ public class GPCard {
     }
 
     /* Provided or detected ISD */
-    public AID getCardISD() {
+    public AID getISD() {
         return mISD;
     }
 
@@ -235,9 +235,9 @@ public class GPCard {
      *
      * @return a uniquely identifying string
      */
-    public String getCardIdentifier() {
+    public String getLifetimeIdentifier() {
         if(mCardLifeCycle != null) {
-            return mCardLifeCycle.getCardIdentifier();
+            return mCardLifeCycle.getLifetimeIdentifier();
         }
         return null;
     }
@@ -258,7 +258,7 @@ public class GPCard {
      * Set the ISD to use for talking to the card
      * @param isd to be used
      */
-    public void setCardISD(AID isd) {
+    public void setISD(AID isd) {
         ensureNotConnected();
         mISD = isd;
     }
