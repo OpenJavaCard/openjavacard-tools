@@ -108,8 +108,9 @@ public abstract class GPCommand implements Runnable {
         }
         GPCard card = mContext.findSingleCard(reader, sdAID);
         try {
+            AID isdAID = card.getISD();
             os.println("Host GP configuration:");
-            os.println("  ISD " + card.getISD());
+            os.println("  ISD " + ((isdAID==null)?"auto":isdAID));
             int protocol = HexUtil.unhex8(scpProtocol);
             int parameters = HexUtil.unhex8(scpParameters);
             SCPProtocolPolicy protocolPolicy = new SCPProtocolPolicy(protocol, parameters);
