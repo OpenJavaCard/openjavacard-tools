@@ -38,10 +38,10 @@ public class GPContext {
                 card.setCardISD(sd);
             }
             // detect GP applet
-            boolean detected = card.detect();
-            if (!detected) {
-                throw new Error("Could not find a GlobalPlatform applet on the card");
-            }
+            //boolean detected = card.detect();
+            //if (!detected) {
+            //    throw new Error("Could not find a GlobalPlatform applet on the card");
+            //}
         } catch (CardException e) {
             throw new Error("Error detecting card", e);
         }
