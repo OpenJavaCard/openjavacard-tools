@@ -56,6 +56,8 @@ public class GP implements ISO7816 {
     public static final byte INS_PUT_KEY = (byte) 0xD8;
 
     public static final byte INS_STORE_DATA = (byte) 0xE2;
+    public static final byte STORE_DATA_P1_MORE_BLOCKS = (byte)0x00;
+    public static final byte STORE_DATA_P1_LAST_BLOCK = (byte)0x80;
 
     public static final byte INS_DELETE = (byte) 0xE4;
     public static final byte DELETE_P2_DELETE_INDICATED = (byte) 0x00;
