@@ -62,6 +62,16 @@ public class GPCard {
      */
     Card mCard;
     /**
+     * SmartcardIO basic channel
+     */
+    CardChannel mBasic;
+    /**
+     * AID of the ISD
+     *
+     * Provided by user or detected automatically by probing.
+     */
+    AID mISD;
+    /**
      * Keys to use for secure channel
      */
     GPKeySet mKeys;
@@ -74,21 +84,21 @@ public class GPCard {
      */
     SCPSecurityPolicy mSecurityPolicy;
     /**
-     * Plain basic channel
-     */
-    CardChannel mBasic;
-    /**
-     * Our SCP secure channel
+     * Card issuer identification number
      *
-     * Initialized when secure session starts.
-     */
-    GPSecureChannel mSecure;
-    /**
-     * AID of the ISD
+     * Optional. Retrieved during connection process.
      *
-     * Provided by used or detected.
+     * May be present when "unique identification" is supported.
      */
-    AID mISD;
+    byte[] mCardIIN;
+    /**
+     * Card image number
+     *
+     * Optional. Retrieved during connection process.
+     *
+     * May be present when "unique identification" is supported.
+     */
+    byte[] mCardCIN;
     /**
      * Card life cycle data
      *
@@ -102,36 +112,25 @@ public class GPCard {
     /**
      * Card data
      *
-     * Retrieved during connection process.
+     * Required. Retrieved during connection process.
      *
-     * Used to determine the security protocol to use
-     * when detection is permitted. Otherwise will be
-     * used to verify the protocol.
+     * Used to determine the security protocol.
      */
     GPCardData mCardData;
     /**
-     * Card issuer identification number
-     *
-     * Optional. Retrieved during connection process
-     * if the card indicates in the card data that
-     * unique identification is supported.
-     */
-    byte[] mCardIIN;
-    /**
-     * Card image number
-     *
-     * Optional. Retrieved during connection process
-     * if the card indicates in the card data that
-     * unique identification is supported.
-     */
-    byte[] mCardCIN;
-    /**
      * Card key info
      *
-     * Retrieved during connection process and used
-     * to set up the secure session.
+     * Required. Retrieved during connection process.
+     *
+     * This indicates what keys the ISD wants to authenticate with.
      */
     GPKeyInfo mCardKeyInfo;
+    /**
+     * Our SCP secure channel
+     *
+     * Created when secure session starts.
+     */
+    GPSecureChannel mSecure;
     /**
      * Registry instance
      *
