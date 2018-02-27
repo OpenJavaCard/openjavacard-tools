@@ -6,9 +6,11 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 /**
- * GlobalPlatform Card Production Life Cycle
+ * GlobalPlatform Card Production Life Cycle data
  * <p/>
- * This describes the card and how it has been treated.
+ * This describes the card and how it has been treated
+ * in various phases of production and provisioning.
+ * <p/>
  */
 public class GPLifeCycle {
 

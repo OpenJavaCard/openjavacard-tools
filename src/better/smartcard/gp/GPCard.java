@@ -20,6 +20,19 @@ import org.slf4j.LoggerFactory;
 import javax.smartcardio.*;
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Service object for a GlobalPlatform card
+ *
+ * This is responsible for identifying cards and their ISD
+ * and generally ties the other modules together.
+ *
+ * All card communication by the library goes through here.
+ *
+ * Information that an ISD provides without authentication
+ * can be gotten to via this class. Other information can
+ * be obtained through the GPIssuerDomain and GPRegistry
+ * objects.
+ */
 public class GPCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPCard.class);
@@ -37,17 +50,15 @@ public class GPCard {
     };
 
     /**
-     * Library context used for this card
-     *
-     * Not currently used but should be the source of keys.
+     * Library context in use
      */
     GPContext mContext;
     /**
-     * Terminal handle
+     * SmartcardIO terminal handle
      */
     CardTerminal mTerminal;
     /**
-     * Card handle
+     * SmartcardIO card handle
      */
     Card mCard;
     /**
@@ -55,11 +66,11 @@ public class GPCard {
      */
     GPKeySet mKeys;
     /**
-     * Protocol policy for the secure channel
+     * Protocol policy for secure channel
      */
     SCPProtocolPolicy mProtocolPolicy;
     /**
-     * Security policy for the secure channel
+     * Security policy for secure channel
      */
     SCPSecurityPolicy mSecurityPolicy;
     /**
@@ -142,11 +153,17 @@ public class GPCard {
      * True when we are connected to an ISD
      *
      * Being connected is defined as having a connection
-     * to a card with the ISD being selected on some channel,
-     * ready for performing operations on it.
+     * to a card with authentication completed as required
+     * by the active security policy.
      */
     boolean mIsConnected;
 
+    /**
+     * Main constructor
+     *
+     * @param context
+     * @param terminal
+     */
     public GPCard(GPContext context, CardTerminal terminal) {
         mContext = context;
         mTerminal = terminal;
@@ -156,6 +173,7 @@ public class GPCard {
         mIssuerDomain = new GPIssuerDomain(this);
     }
 
+    /* Host information */
     public CardTerminal getTerminal() {
         return mTerminal;
     }
@@ -200,6 +218,7 @@ public class GPCard {
         return mCardKeyInfo;
     }
 
+    /* Subobjects for various services */
     public GPSecureChannel getSecureChannel() {
         return mSecure;
     }
@@ -216,6 +235,11 @@ public class GPCard {
         return mProtocolPolicy;
     }
 
+    /**
+     * Returns the negotiated security protocol
+     *
+     * @return description of the protocol
+     */
     public SCPProtocol getProtocol() {
         if (mSecure == null || !mSecure.isEstablished()) {
             return null;
@@ -223,10 +247,18 @@ public class GPCard {
         return mSecure.getActiveProtocol();
     }
 
+    /**
+     * Set the protocol policy to use for talking to the card
+     * @param policy to be used
+     */
     public void setProtocolPolicy(SCPProtocolPolicy policy) {
         mProtocolPolicy = policy;
     }
 
+    /**
+     * Set the security policy to use for talking to the card
+     * @param policy to be used
+     */
     public void setSecurityPolicy(SCPSecurityPolicy policy) {
         mSecurityPolicy = policy;
     }
@@ -234,9 +266,10 @@ public class GPCard {
     /**
      * Determine the ISD of the card
      * <p/>
-     * This will attempt to determine the ISD of the card
-     * by trying several well-known AIDs.
-     *
+     * This will determine the ISD, just falling through if one has been provided.
+     * <p/>
+     * If no ISD has been provided this will scan several well-known AIDs.
+     * <p/>
      * @return true if we think we have an ISD
      * @throws CardException
      */
@@ -275,10 +308,10 @@ public class GPCard {
     }
 
     /**
-     * Connect (and authenticate) to the card
+     * Connect to the card
      *
-     * @return
-     * @throws CardException
+     * @return true if connected
+     * @throws CardException on error
      */
     public boolean connect() throws CardException {
         // check already connected
@@ -358,7 +391,7 @@ public class GPCard {
             // create a secure channel object
             mSecure = new GPSecureChannel(this, mBasic, mKeys, mProtocolPolicy, mSecurityPolicy);
 
-            // set up policy of the secure channel
+            // set protocol expectation of secure channel
             if (mCardData != null) {
                 mSecure.expectProtocol(
                         mCardData.getSecurityProtocol(),
@@ -382,6 +415,11 @@ public class GPCard {
         return mIsConnected;
     }
 
+    /**
+     * Disconnect from the card
+     *
+     * @throws CardException
+     */
     public void disconnect() throws CardException {
         // tear down the secure channel
         if (mSecure != null) {
@@ -403,6 +441,12 @@ public class GPCard {
         LOG.debug("disconnected");
     }
 
+    /**
+     * Try to determine the ISD of the card
+     *
+     * @return AID of the ISD, if found
+     * @throws CardException
+     */
     private AID findISD() throws CardException {
         AID isd = mISD;
         if(isd == null) {
@@ -567,7 +611,7 @@ public class GPCard {
                 continue;
             }
             // check for various cases of "empty"
-            //   XXX rethink this
+            //   XXX rethink this loop
             if (sw == ISO7816.SW_NO_ERROR
                     || sw == ISO7816.SW_FILE_NOT_FOUND
                     || sw == ISO7816.SW_REFERENCED_DATA_NOT_FOUND) {

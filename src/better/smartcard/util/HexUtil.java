@@ -3,6 +3,7 @@ package better.smartcard.util;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
+/** Utilities for hexadecimal conversion */
 public class HexUtil {
 
     public static String hex8(int value) {

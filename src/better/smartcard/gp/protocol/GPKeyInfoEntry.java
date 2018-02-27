@@ -10,6 +10,7 @@ import better.smartcard.gp.keys.GPKeyCipher;
  * <p/>
  * Each of these describes a single key with given
  * version and ID. Size and type are also specified.
+ * <p/>
  */
 public class GPKeyInfoEntry {
 

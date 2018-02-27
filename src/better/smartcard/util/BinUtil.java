@@ -1,5 +1,6 @@
 package better.smartcard.util;
 
+/** Utilities related to treating integers as binary words */
 public class BinUtil {
 
     public static final short makeShort(byte b1, byte b2) {
