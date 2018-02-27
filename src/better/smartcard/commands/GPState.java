@@ -13,15 +13,10 @@ import java.util.List;
 
 @Parameters(
         commandNames = "gp-state",
-        commandDescription = "GlobalPlatform: set the state of the card or an applet"
+        commandDescription = "GlobalPlatform: set state of the card or applets"
 )
 public class GPState extends GPCommand {
 
-    @Parameter(
-            names = "--confirm-locking",
-            description = "Confirm a locking or unlocking action"
-    )
-    boolean confirmLocking = false;
     @Parameter(
             names = "--confirm-irreversible",
             description = "Confirm an irreversible action"
@@ -91,12 +86,10 @@ public class GPState extends GPCommand {
         }
         if(cardLock) {
             os.println("Locking card");
-            checkLocking();
             isd.lockCard();
         }
         if(cardUnlock) {
             os.println("Unlocking card");
-            checkLocking();
             isd.unlockCard();
         }
         if(cardTerminate) {
@@ -107,17 +100,9 @@ public class GPState extends GPCommand {
 
         for(AID app: appLock) {
             os.println("Locking applet " + app);
-            checkLocking();
         }
         for(AID app: appUnlock) {
             os.println("Unlocking applet " + app);
-            checkLocking();
-        }
-    }
-
-    private void checkLocking() {
-        if(!confirmLocking) {
-            throw new Error("Locking action: must confirm with --confirm-locking");
         }
     }
 

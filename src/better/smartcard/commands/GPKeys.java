@@ -15,7 +15,7 @@ import java.io.PrintStream;
 
 @Parameters(
         commandNames = "gp-keys",
-        commandDescription = "Adds or replaces keys in an SD"
+        commandDescription = "GlobalPlatform: set card security keys"
 )
 public class GPKeys extends GPCommand {
 

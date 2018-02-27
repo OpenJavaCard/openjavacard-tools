@@ -6,6 +6,7 @@ import better.smartcard.gp.keys.GPKeyDiversification;
 import better.smartcard.gp.scp.SCPProtocolPolicy;
 import better.smartcard.gp.scp.SCPSecurityPolicy;
 import better.smartcard.util.AID;
+import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
 
 import javax.smartcardio.CardException;
@@ -43,32 +44,32 @@ public abstract class GPCommand implements Runnable {
     protected String keystorePassword = null;
 
     @Parameter(
-            names = "--sd",
-            description = "Use specified security domain"
+            names = "--isd",
+            description = "Use specified ISD"
     )
     protected String sd;
 
     @Parameter(
-            names = "--scp-diversification",
+            names = "--scp-diversify",
             description = "Use specified key diversification"
     )
-    protected GPKeyDiversification diversification = GPKeyDiversification.NONE;
+    protected GPKeyDiversification scpDiversify = GPKeyDiversification.NONE;
 
     @Parameter(
             names = "--scp-protocol",
             description = "Require specified SCP protocol"
     )
-    protected int scpProtocol = 0;
+    protected String scpProtocol = "00";
 
     @Parameter(
             names = "--scp-parameters",
             description = "Require specified SCP parameters"
     )
-    protected int scpParameters = 0;
+    protected String scpParameters = "00";
 
     @Parameter(
             names = "--scp-security",
-            description = "Require specific SCP security level"
+            description = "Require specified SCP security level"
     )
     protected SCPSecurityPolicy scpSecurity = SCPSecurityPolicy.CMAC;
 
@@ -84,6 +85,9 @@ public abstract class GPCommand implements Runnable {
 
     @Override
     public void run() {
+        if(scpDiversify != GPKeyDiversification.NONE) {
+            throw new Error("Key diversification is not supported yet");
+        }
         PrintStream os = System.out;
         if(keystoreFile != null) {
             os.println("Opening keystore " + keystoreFile);
@@ -104,10 +108,20 @@ public abstract class GPCommand implements Runnable {
         }
         GPCard card = mContext.findSingleCard(reader, sdAID);
         try {
-            card.setProtocolPolicy(new SCPProtocolPolicy(scpProtocol, scpParameters));
+            os.println("Host GP configuration:");
+            os.println("  ISD " + card.getCardISD());
+            int protocol = HexUtil.unhex8(scpProtocol);
+            int parameters = HexUtil.unhex8(scpParameters);
+            SCPProtocolPolicy protocolPolicy = new SCPProtocolPolicy(protocol, parameters);
+            os.println("  Protocol policy " + protocolPolicy);
+            card.setProtocolPolicy(protocolPolicy);
+            os.println("  Security policy " + scpSecurity);
             card.setSecurityPolicy(scpSecurity);
+            os.println();
+            os.println("CONNECTING");
             card.connect();
             performOperation(mContext, card);
+            os.println("DISCONNECTING");
             card.disconnect();
         } catch (CardException e) {
             throw new Error("Error performing operation", e);

@@ -75,6 +75,7 @@ public class Main {
         jc.addCommand(new GPDelete(gpContext));
         jc.addCommand(new GPExtradite(gpContext));
         jc.addCommand(new GPState(gpContext));
+        jc.addCommand(new GPIdentity(gpContext));
         jc.addCommand(new GPKeys(gpContext));
 
         jc.addCommand(new CapInfo());
