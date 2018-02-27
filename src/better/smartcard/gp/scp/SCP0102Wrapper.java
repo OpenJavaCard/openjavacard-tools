@@ -45,7 +45,7 @@ public class SCP0102Wrapper extends SCPWrapper {
      * @param parameters determined for the session
      */
     SCP0102Wrapper(GPKeySet keys, SCP0102Protocol parameters) {
-        super(keys); // we start with MAC enabled
+        super(keys);
 
         // check for unsupported parameters
         if (!parameters.initExplicit) {
