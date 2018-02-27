@@ -165,8 +165,9 @@ public class GPCard {
     public GPCard(GPContext context, CardTerminal terminal) {
         mContext = context;
         mTerminal = terminal;
-        mProtocolPolicy = SCPProtocolPolicy.PERMISSIVE;
         mKeys = GPKeySet.GLOBALPLATFORM;
+        mProtocolPolicy = SCPProtocolPolicy.PERMISSIVE;
+        mSecurityPolicy = SCPSecurityPolicy.CMAC;
         mRegistry = new GPRegistry(this);
         mIssuerDomain = new GPIssuerDomain(this);
     }
