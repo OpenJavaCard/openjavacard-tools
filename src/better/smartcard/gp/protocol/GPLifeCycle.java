@@ -60,10 +60,10 @@ public class GPLifeCycle {
     }
 
     public String getCardIdentifier() {
-        return "card-"
-                + getFieldHex(GPLifeCycle.Field.ICFabricator)
-                + "-" + getFieldHex(GPLifeCycle.Field.ICType)
-                + "-" + getFieldHex(GPLifeCycle.Field.ICSerialNumber);
+        return "card"
+                + "-f" + getFieldHex(GPLifeCycle.Field.ICFabricator)
+                + "-t" + getFieldHex(GPLifeCycle.Field.ICType)
+                + "-s" + getFieldHex(GPLifeCycle.Field.ICSerialNumber);
     }
 
     public void read(byte[] buf) {
