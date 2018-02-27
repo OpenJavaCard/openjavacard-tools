@@ -27,6 +27,14 @@ public class GPIssuerDomain {
         mCard = card;
     }
 
+    /**
+     * Load the given load file onto the card
+     *
+     * Will create a package on the card.
+     *
+     * @param file to load
+     * @throws CardException
+     */
     public void loadFile(GPLoadFile file) throws CardException {
         LOG.debug("loading package " + file.getPackageAID());
         // prepare parameters
@@ -47,6 +55,22 @@ public class GPIssuerDomain {
         LOG.debug("load complete");
     }
 
+    /**
+     * Install an applet using the specified package and module
+     *
+     * Will create an actual, potentially selectable, applet on the card.
+     *
+     * If no appletAID is specified the moduleAID will be used.
+     * If no appletPrivs is specified the applet will have no privileges.
+     * If no appletParams is specified the install data will be empty.
+     *
+     * @param packageAID AID of the package to install
+     * @param moduleAID AID of the module to install
+     * @param appletAID AID for the new applet (optional)
+     * @param appletPrivs privileges for the new applet (optional)
+     * @param appletParams parameters for the new applet (optional)
+     * @throws CardException
+     */
     public void installApplet(AID packageAID, AID moduleAID,
                               AID appletAID, byte[] appletPrivs, byte[] appletParams)
             throws CardException {
@@ -80,10 +104,32 @@ public class GPIssuerDomain {
         LOG.debug("install complete");
     }
 
+    /**
+     * Delete an object on the card
+     *
+     * Can be used for applets and packages.
+     *
+     * Related/dependent objects will not be deleted. Attempting
+     * to delete an object that is still in use will fail.
+     *
+     * @param aid of the object to be deleted
+     * @throws CardException
+     */
     public void deleteObject(AID aid) throws CardException {
         deleteObject(aid, false);
     }
 
+    /**
+     * Delete an object on the card
+     *
+     * Can be used for applets and packages.
+     *
+     * This variant allows the deletion of related/dependent objects.
+     *
+     * @param aid of the object to be deleted
+     * @param related true if dependent objects should be deleted
+     * @throws CardException
+     */
     public void deleteObject(AID aid, boolean related) throws CardException {
         LOG.debug("deleting object " + aid + (related?" and related":""));
         int aidLen = aid.getLength();
@@ -106,6 +152,20 @@ public class GPIssuerDomain {
         LOG.debug("deletion finished");
     }
 
+    /**
+     * Check compatibility of keys
+     *
+     * This can and should be used to check keys before uploading
+     * them to the card. It verifies if the given keys comply with
+     * the GPKeyInfo supplied by the card.
+     *
+     * Service methods in this library will perform this check
+     * automatically. This method is provided for use in client
+     * application logic.
+     *
+     * @param newKeys to check
+     * @throws CardException
+     */
     public void checkKeys(GPKeySet newKeys) throws CardException {
         GPKeyInfo keyInfo = mCard.getCardKeyInfo();
         if(!keyInfo.matchesKeysetForReplacement(newKeys)) {
@@ -113,6 +173,16 @@ public class GPIssuerDomain {
         }
     }
 
+    /**
+     * Replace secure messaging keys
+     *
+     * This will irreversibly replace the secure messaging keys.
+     *
+     * Compatibility of the keys will be checked before the operation.
+     *
+     * @param newKeys to set
+     * @throws CardException
+     */
     public void replaceKeys(GPKeySet newKeys) throws CardException {
         byte keyVersion = (byte)newKeys.getKeyVersion();
 
@@ -144,26 +214,46 @@ public class GPIssuerDomain {
         return bos.toByteArray();
     }
 
+    /**
+     * Change the card state to INITIALIZED
+     * @throws CardException
+     */
     public void cardInitialized() throws CardException {
         LOG.debug("cardInitialized()");
         performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_INITIALIZED);
     }
 
+    /**
+     * Change the card state to SECURED
+     * @throws CardException
+     */
     public void cardSecured() throws CardException {
         LOG.debug("cardSecured()");
         performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_SECURED);
     }
 
+    /**
+     * Lock the card
+     *
+     * @throws CardException
+     */
     public void lockCard() throws CardException {
         LOG.debug("cardInitialized()");
         performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_LOCKED);
     }
 
+    /**
+     * Unlock locked card
+     */
     public void unlockCard() throws CardException {
         LOG.debug("unlockCard()");
         performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_SECURED);
     }
 
+    /**
+     * Terminate the card
+     * @throws CardException
+     */
     public void terminateCard() throws CardException {
         LOG.debug("terminateCard()");
         performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_TERMINATED);
