@@ -432,6 +432,16 @@ public class GPCard {
                 mSecure.expectProtocol(
                         mCardData.getSecurityProtocol(),
                         mCardData.getSecurityParameters());
+            } else {
+                int version = mProtocolPolicy.mScpVersion;
+                int parameters = mProtocolPolicy.mScpParameters;
+                if(version == 0 || parameters == 0) {
+                    throw new CardException("Card has sent no card data. Must specify SCP protocol and parameters.");
+                } else {
+                    mSecure.expectProtocol(
+                            mProtocolPolicy.mScpVersion,
+                            mProtocolPolicy.mScpParameters);
+                }
             }
 
             // try to open the secure channel
