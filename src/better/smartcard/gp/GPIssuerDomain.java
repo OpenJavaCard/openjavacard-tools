@@ -210,17 +210,21 @@ public class GPIssuerDomain {
      * @throws CardException
      */
     public void replaceKeys(GPKeySet newKeys) throws CardException {
-        byte keyVersion = (byte)newKeys.getKeyVersion();
-
+        // do a safety check on the keys first
+        checkKeys(newKeys);
+        // check that we have keys (paranoid?)
         List<GPKey> keys = newKeys.getKeys();
         if(keys.isEmpty()) {
-            throw new CardException("No keys provided for replacement");
+            throw new CardException("No keys provided");
         }
+        // determine various parameters
+        byte keyVersion = (byte)newKeys.getKeyVersion();
         boolean multipleKeys = keys.size() > 1;
         GPKey firstKey = keys.get(0);
         byte firstKeyId = firstKey.getId();
-
+        // build a key block for the set
         byte[] data = buildKeyBlock(keyVersion, keys);
+        // upload the key block
         //performPutKey(firstKeyId, keyVersion, data, multipleKeys);
     }
 
