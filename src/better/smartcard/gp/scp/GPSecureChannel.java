@@ -461,7 +461,7 @@ public class GPSecureChannel extends CardChannel {
         // ENC, RMAC and RENC are optional
         if (mSecurityPolicy.requireCENC)
             authParam |= GP.EXTERNAL_AUTHENTICATE_P1_ENC;
-        if (mSecurityPolicy.requireCMAC)
+        if (mSecurityPolicy.requireRMAC)
             authParam |= GP.EXTERNAL_AUTHENTICATE_P1_RMAC;
         if (mSecurityPolicy.requireRENC)
             authParam |= GP.EXTERNAL_AUTHENTICATE_P1_RENC;
