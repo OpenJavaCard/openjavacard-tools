@@ -151,10 +151,10 @@ public class GPCardData {
                     mSecurityParameters = csd[1];
                     break;
                 case TAG_APPLICATION_TAG5:
-                    LOG.info("CardData: card details: " + HexUtil.bytesToHex(data));
+                    LOG.debug("CardData: card details: " + HexUtil.bytesToHex(data));
                     break;
                 case TAG_APPLICATION_TAG6:
-                    LOG.info("CardData: chip details: " + HexUtil.bytesToHex(data));
+                    LOG.debug("CardData: chip details: " + HexUtil.bytesToHex(data));
                     break;
                 default:
                     LOG.warn("Unknown card data tag " + HexUtil.hex8(tag)
