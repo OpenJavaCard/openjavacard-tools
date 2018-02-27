@@ -23,16 +23,10 @@ public class GPList extends GPCommand {
     boolean showAll;
 
     @Parameter(
-            names = {"--isd"},
+            names = {"--sd"},
             description = "Show issuer security domain (ISD)"
     )
-    boolean showISD;
-
-    @Parameter(
-            names = {"--ssd"},
-            description = "Show supplementary security domain (SSD)"
-    )
-    boolean showSSD;
+    boolean showSD;
 
     @Parameter(
             names = {"--elf"},
@@ -55,26 +49,25 @@ public class GPList extends GPCommand {
         PrintStream os = System.out;
         os.println();
         if (!showAll) {
-            if (showISD || showSSD || showELF || showAPP) {
+            if (showSD || showELF || showAPP) {
                 showAll = false;
             } else {
                 showAll = true;
             }
         }
         if (showAll) {
-            showISD = true;
-            showSSD = true;
+            showSD = true;
             showELF = true;
             showAPP = true;
         }
-        printRegistry(os, card, showISD, showSSD, showELF, showAPP);
+        printRegistry(os, card, showSD, showELF, showAPP);
     }
 
     public static void printRegistry(PrintStream os, GPCard card,
-                                     boolean showISD, boolean showSSD, boolean showELF, boolean showAPP) {
+                                     boolean showSD, boolean showELF, boolean showAPP) {
         GPRegistry registry = card.getRegistry();
 
-        if (showISD) {
+        if (showSD) {
             GPRegistry.ISDEntry isd = registry.getISD();
             if (isd == null) {
                 os.println("NO ISD FOUND!");
@@ -82,9 +75,6 @@ public class GPList extends GPCommand {
                 os.println(isd.toVerboseString());
             }
             os.println();
-        }
-
-        if (showSSD) {
             List<GPRegistry.AppEntry> ssds = registry.getAllSSDs();
             if (!ssds.isEmpty()) {
                 for (GPRegistry.AppEntry ssd : ssds) {
