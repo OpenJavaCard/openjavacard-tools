@@ -7,6 +7,7 @@ import better.smartcard.gp.protocol.GPKeyInfo;
 import better.smartcard.gp.protocol.GPLifeCycle;
 import better.smartcard.gp.scp.SCPProtocol;
 import better.smartcard.util.ATRUtil;
+import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameters;
 
 import javax.smartcardio.Card;
@@ -30,20 +31,31 @@ public class GPInfo extends GPCommand {
         os.println();
 
         CardTerminal terminal = card.getTerminal();
-        os.println("Terminal information:");
+        os.println("Host terminal information:");
         os.println("  Name \"" + terminal.getName() + "\"");
         os.println("  Class " + terminal.getClass().getName());
         os.println();
 
         Card scard = card.getCard();
-        os.println("Card information:");
+        os.println("Host card information:");
         os.println("  Protocol " + scard.getProtocol());
         os.println("  ATR " + ATRUtil.toString(scard.getATR()));
         os.println("  Class " + scard.getClass().getName());
-        os.println("  ISD " + card.getCardISD());
+        os.println();
+
+        os.println("Host GP information:");
         String identifier = card.getCardIdentifier();
         if(identifier != null) {
-            os.println("  Identifier: " + identifier);
+            os.println("  LID " + identifier);
+        }
+        os.println("  ISD " + card.getCardISD());
+        byte[] iin = card.getCardIIN();
+        if(iin != null) {
+            os.println("  IIN " + HexUtil.bytesToHex(iin));
+        }
+        byte[] cin = card.getCardCIN();
+        if(cin != null) {
+            os.println("  CIN " + HexUtil.bytesToHex(cin));
         }
         os.println();
 
@@ -65,7 +77,7 @@ public class GPInfo extends GPCommand {
 
         SCPProtocol scpProtocol = card.getProtocol();
         if (scpProtocol == null) {
-            os.println("No SCP parameters");
+            os.println("Could not determine SCP protocol");
         } else {
             os.println(scpProtocol.toVerboseString());
         }
@@ -73,7 +85,7 @@ public class GPInfo extends GPCommand {
 
         GPKeyInfo keyInfo = card.getCardKeyInfo();
         if (keyInfo == null) {
-            os.println("Card did not provide a key info template");
+            os.println("Card did not provide key info template");
         } else {
             os.println(keyInfo.toString());
         }

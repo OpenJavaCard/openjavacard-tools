@@ -10,7 +10,7 @@ import java.util.List;
 
 @Parameters(
         commandNames = "cap-info",
-        commandDescription = "Show information about a cap file"
+        commandDescription = "JavaCard CAP: Show information about a cap file"
 )
 public class CapInfo implements Runnable {
 

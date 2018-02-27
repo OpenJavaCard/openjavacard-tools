@@ -11,7 +11,7 @@ import java.util.List;
 
 @Parameters(
         commandNames = "cap-size",
-        commandDescription = "Show size of a cap file, predict on-card size"
+        commandDescription = "JavaCard CAP: Show size of a cap file, predict on-card size"
 )
 public class CapSize implements Runnable {
 

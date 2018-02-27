@@ -91,15 +91,6 @@ public class GPInstall extends GPCommand {
             reinstall = true;
         }
 
-        // load if requested
-        if(capFiles != null && !capFiles.isEmpty()) {
-            GPLoad load = new GPLoad(context);
-            load.setFiles(capFiles);
-            load.setReload(reload);
-            load.performOperation(context, card);
-            registry.update();
-        }
-
         // determine install parameters
         AID pkgAID = packageAID;
         AID modAID = moduleAID;
@@ -110,25 +101,39 @@ public class GPInstall extends GPCommand {
             appAID = modAID;
         }
 
-        // default for the pkg AID
+        // delete previous applet instance if requested
+        if(registry.hasApplet(appAID)) {
+            if(reinstall) {
+                os.println("Deleting old applet");
+                issuer.deleteObject(appAID);
+                os.println("Deleting old package");
+                issuer.deleteObject(pkgAID, false);
+                registry.update();
+            } else {
+                throw new Error("Card already has applet " + appAID);
+            }
+        }
+
+        // load packages if provided, reloading as requested
+        if(capFiles != null && !capFiles.isEmpty()) {
+            os.println("Loading provided packages");
+            GPLoad load = new GPLoad(context);
+            load.setFiles(capFiles);
+            load.setReload(reload);
+            load.performOperation(context, card);
+            registry.update();
+        }
+
+        // default for the pkg AID so only the module must be provided,
+        // which is convenient when installing a pre-installed module
         if(pkgAID == null) {
-            os.println("Searching card for module " + modAID);
+            os.println("Searching registry for module " + modAID);
             GPRegistry.ELFEntry elf = registry.findPackageForModule(modAID);
             if(elf == null) {
                 throw new Error("Could not find module " + modAID + " on card");
             }
             pkgAID = elf.getAID();
             os.println("Found module in package " + pkgAID);
-        }
-
-        // delete previous instance if requested
-        if(registry.hasApplet(appAID)) {
-            if(reinstall) {
-                os.println("Deleting old applet");
-                issuer.deleteObject(appAID);
-            } else {
-                throw new Error("Card already has applet " + appAID);
-            }
         }
 
         // print major parameters
