@@ -352,7 +352,7 @@ public class GPCard {
     public boolean connect() throws CardException {
         // check already connected
         if (mIsConnected) {
-            LOG.info("already connected");
+            LOG.debug("already connected");
             return true;
         }
 
@@ -369,7 +369,7 @@ public class GPCard {
             selectFileByName(mISD);
 
             // XXX
-            LOG.info("static keys:\n" + mKeys.toString());
+            LOG.debug("static keys:\n" + mKeys.toString());
 
             // get the CPLC for reference
             try {
@@ -399,13 +399,13 @@ public class GPCard {
             if(mCardData != null && mCardData.isUniquelyIdentifiable()) {
                 mCardIIN = readCardIIN();
                 if (mCardIIN == null) {
-                    LOG.info("card has no IIN");
+                    LOG.debug("card has no IIN");
                 } else {
                     LOG.debug("card IIN: " + HexUtil.bytesToHex(mCardIIN));
                 }
                 mCardCIN = readCardCIN();
                 if (mCardCIN == null) {
-                    LOG.info("card has no CIN");
+                    LOG.debug("card has no CIN");
                 } else {
                     LOG.debug("card CIN: " + HexUtil.bytesToHex(mCardCIN));
                 }
