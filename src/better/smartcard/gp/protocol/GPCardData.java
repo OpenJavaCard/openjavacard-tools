@@ -15,6 +15,11 @@ import java.util.List;
  * <p/>
  * This data structure is an OID-ridden descriptor indicating
  * the GP version, the supported security protocol and other bits.
+ * <p/>
+ * It is supposed to be the dataset needed to initiate communication
+ * with a known but so far unidentified card. In practice one would
+ * also consult the IIN/CIN identifiers or lifecycle data from CPLC.
+ * <p/>
  */
 public class GPCardData {
 

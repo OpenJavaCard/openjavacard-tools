@@ -1,5 +1,13 @@
 package better.smartcard.gp.protocol;
 
+/**
+ * Representation of GP privileges
+ * <p/>
+ * Privileges are given to applets and security domains.
+ * <p/>
+ * Some privileges are specific to one or the other.
+ * <p/>
+ */
 public enum GPPrivilege {
     SECURITY_DOMAIN(0, GP.PRIV1_SECURITY_DOMAIN, "Security Domain"),
     DAP_VERIFICATION(0, GP.PRIV1_DAP_VERIFICATION, "DAP Verification"),

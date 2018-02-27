@@ -1,5 +1,8 @@
 package better.smartcard.util;
 
+/**
+ * Utilities related to java arrays
+ */
 public class ArrayUtil {
 
     public static byte[] concatenate(byte[] a, byte[] b) {
