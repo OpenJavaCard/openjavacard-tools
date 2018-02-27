@@ -2,7 +2,6 @@ package better.smartcard.gp.keys;
 
 import better.smartcard.gp.crypto.GPCrypto;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -102,10 +101,6 @@ public class GPKeySet {
      * @param masterKey  to be used
      */
     public GPKeySet(String name, int keyVersion, byte[] masterKey) {
-        /*
-        XXX old and working
-        this(name, keyVersion, (byte) 1, masterKey, masterKey, masterKey);
-        */
         this(name, keyVersion);
         putKey(new GPKey(GPKeyType.MASTER, (byte)0, GPKeyCipher.DES3, masterKey));
     }
