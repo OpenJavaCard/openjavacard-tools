@@ -5,6 +5,7 @@ import better.smartcard.gp.keys.GPKeySet;
 import better.smartcard.gp.protocol.GP;
 import better.smartcard.gp.protocol.GPKeyInfo;
 import better.smartcard.gp.scp.GPSecureChannel;
+import better.smartcard.tlv.TLV;
 import better.smartcard.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,31 @@ public class GPIssuerDomain {
 
     public GPIssuerDomain(GPCard card) {
         mCard = card;
+    }
+
+    /**
+     * Change the identity values of the card
+     *
+     * This allows setting of the CIN, IIN as well as the AID of the ISD.
+     *
+     * Note that all parameters are optional.
+     *
+     * @param cin to set or null
+     * @param iin to set or null
+     * @param isd to set or null
+     * @throws CardException
+     */
+    public void changeIdentity(byte[] cin, byte[] iin, byte[] isd) throws CardException {
+        LOG.debug("setting card identity");
+        StoreDataRequest req = new StoreDataRequest();
+        req.cardCIN = cin;
+        req.cardIIN = iin;
+        req.cardISD = isd;
+        byte[][] blocks = BinUtil.splitBlocks(req.toBytes(), 128);
+        for(byte i = 0; i < blocks.length; i++) {
+            boolean lastBlock = i == (blocks.length - 1);
+            performStoreData(blocks[i], i, lastBlock);
+        }
     }
 
     /**
@@ -259,6 +285,18 @@ public class GPIssuerDomain {
         performSetStatusISD(mCard.getCardISD(), GP.CARD_STATE_TERMINATED);
     }
 
+    private void performStoreData(byte[] block, byte blockNumber, boolean lastBlock) throws CardException {
+        LOG.trace("performStoreData()");
+        CommandAPDU command = APDUUtil.buildCommand(
+                GP.CLA_GP,
+                GP.INS_STORE_DATA,
+                lastBlock ? GP.STORE_DATA_P1_LAST_BLOCK : GP.STORE_DATA_P1_MORE_BLOCKS,
+                blockNumber,
+                block
+        );
+        mCard.transactSecureAndCheck(command);
+    }
+
     private void performSetStatusISD(AID aid, byte state) throws CardException {
         LOG.trace("performSetStatusISD()");
         CommandAPDU command = APDUUtil.buildCommand(
@@ -350,6 +388,36 @@ public class GPIssuerDomain {
         InstallForInstallResponse response = new InstallForInstallResponse();
         response.readBytes(responseAPDU.getData());
         return response;
+    }
+
+    private static class StoreDataRequest implements ToBytes {
+        private static final int TAG_ISSUER_IDENTIFICATION_NUMBER = 0x42;
+        private static final int TAG_CARD_IMAGE_NUMBER = 0x45;
+        private static final int TAG_ISD_AID = 0x4F;
+
+        byte[] cardIIN;
+        byte[] cardCIN;
+        byte[] cardISD;
+        byte[] cardData;
+
+        @Override
+        public byte[] toBytes() {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            try {
+                if(cardIIN != null) {
+                    bos.write(TLV.encode(TAG_ISSUER_IDENTIFICATION_NUMBER, cardIIN));
+                }
+                if(cardCIN != null) {
+                    bos.write(TLV.encode(TAG_CARD_IMAGE_NUMBER, cardCIN));
+                }
+                if(cardISD != null) {
+                    bos.write(TLV.encode(TAG_ISD_AID, cardISD));
+                }
+            } catch (IOException e) {
+                throw new Error("Error serializing INSTALL [for  LOAD] request", e);
+            }
+            return bos.toByteArray();
+        }
     }
 
     private static class InstallForLoadRequest implements ToBytes {
