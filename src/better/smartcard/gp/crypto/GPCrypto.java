@@ -1,4 +1,4 @@
-package better.smartcard.gp.protocol;
+package better.smartcard.gp.crypto;
 
 import better.smartcard.gp.keys.GPKey;
 import better.smartcard.gp.keys.GPKeyCipher;
