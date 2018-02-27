@@ -29,7 +29,7 @@ public class GPIdentity extends GPCommand {
 
     @Parameter(
             names = "--new-isd",
-            description = "New AID for the ISD"
+            description = "New AID for the ISD of the card"
     )
     String newCardISD;
 
@@ -39,11 +39,19 @@ public class GPIdentity extends GPCommand {
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
-        PrintStream os = System.out;
-        card.getIssuerDomain().changeIdentity(
-                HexUtil.hexToBytes(newCardCIN),
-                HexUtil.hexToBytes(newCardIIN),
-                HexUtil.hexToBytes(newCardISD));
+        byte[] iin = null;
+        byte[] cin = null;
+        byte[] isd = null;
+        if(newCardIIN != null) {
+            iin = HexUtil.hexToBytes(newCardIIN);
+        }
+        if(newCardCIN != null) {
+            cin = HexUtil.hexToBytes(newCardCIN);
+        }
+        if(newCardISD != null) {
+            isd = HexUtil.hexToBytes(newCardISD);
+        }
+        card.getIssuerDomain().changeIdentity(iin, cin, isd);
     }
 
 }
