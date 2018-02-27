@@ -6,8 +6,6 @@ import better.smartcard.gp.protocol.GPKeyInfoEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.KeyStore;
-
 public class GPKeyStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPKeyStore.class);
