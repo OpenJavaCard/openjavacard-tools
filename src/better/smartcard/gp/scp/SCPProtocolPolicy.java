@@ -61,8 +61,8 @@ public final class SCPProtocolPolicy {
      */
     public String toString() {
         String version = mScpVersion == 0 ? "*" : HexUtil.hex8(mScpVersion);
-        String parameters = mScpParameters == 0 ? "*" : HexUtil.hex8(mScpParameters);
-        return "SCP" + version + "(" + parameters + ")";
+        String parameters = mScpParameters == 0 ? "" : ("(" + HexUtil.hex8(mScpParameters) + ")");
+        return "SCP" + version + parameters;
     }
 
     /** @return true if the given SCP version is allowed */
