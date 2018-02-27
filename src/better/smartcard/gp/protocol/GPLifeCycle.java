@@ -59,7 +59,7 @@ public class GPLifeCycle {
         return HexUtil.bytesToHex(value);
     }
 
-    public String getCardIdentifier() {
+    public String getLifetimeIdentifier() {
         return "card"
                 + "-f" + getFieldHex(GPLifeCycle.Field.ICFabricator)
                 + "-t" + getFieldHex(GPLifeCycle.Field.ICType)

@@ -35,7 +35,7 @@ public class GPContext {
             card = new GPCard(this, terminal);
             // tell the client if we know the SD AID
             if(sd != null) {
-                card.setCardISD(sd);
+                card.setISD(sd);
             }
             // detect GP applet
             //boolean detected = card.detect();

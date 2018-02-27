@@ -14,7 +14,7 @@ public class GPKeyStore {
     }
 
     GPKeySet selectKeys(GPCard card) {
-        String cardId = card.getCardIdentifier();
+        String cardId = card.getLifetimeIdentifier();
         LOG.info("selecting keys for " + cardId);
         GPKeyInfo ki = card.getCardKeyInfo();
         for(GPKeyInfoEntry ke: ki.getKeyInfos()) {

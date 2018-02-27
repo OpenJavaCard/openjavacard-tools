@@ -44,11 +44,11 @@ public class GPInfo extends GPCommand {
         os.println();
 
         os.println("Host GP information:");
-        String identifier = card.getCardIdentifier();
+        String identifier = card.getLifetimeIdentifier();
         if(identifier != null) {
             os.println("  LID " + identifier);
         }
-        os.println("  ISD " + card.getCardISD());
+        os.println("  ISD " + card.getISD());
         byte[] iin = card.getCardIIN();
         if(iin != null) {
             os.println("  IIN " + HexUtil.bytesToHex(iin));
