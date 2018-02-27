@@ -5,7 +5,7 @@ import better.smartcard.gp.keys.GPKey;
 import better.smartcard.gp.keys.GPKeySet;
 import better.smartcard.gp.keys.GPKeyType;
 import better.smartcard.gp.protocol.GP;
-import better.smartcard.gp.protocol.GPCrypto;
+import better.smartcard.gp.crypto.GPCrypto;
 import better.smartcard.protocol.ISO7816;
 import better.smartcard.protocol.SW;
 import better.smartcard.protocol.SWException;

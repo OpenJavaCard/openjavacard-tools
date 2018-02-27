@@ -3,7 +3,7 @@ package better.smartcard.gp.scp;
 import better.smartcard.gp.keys.GPKey;
 import better.smartcard.gp.keys.GPKeySet;
 import better.smartcard.gp.keys.GPKeyType;
-import better.smartcard.gp.protocol.GPCrypto;
+import better.smartcard.gp.crypto.GPCrypto;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
