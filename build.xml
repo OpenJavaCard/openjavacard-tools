@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="javacard-tools">
+<project name="javacard-tools"
+         default="build">
 
     <taskdef resource="proguard/ant/task.properties"
              classpath="/opt/proguard/lib/proguard.jar"/>
@@ -8,14 +9,15 @@
         <delete dir="build"/>
     </target>
 
-    <target name="compile">
-        <mkdir dir="build/classes"/>
+    <target name="build"
+            depends="build-jar">
+    </target>
 
+    <target name="build-depend">
+        <mkdir dir="build/classes"/>
         <mkdir dir="build/classes/slf4j-api"/>
         <mkdir dir="build/classes/slf4j-simple"/>
         <mkdir dir="build/classes/jcommander"/>
-        <mkdir dir="build/classes/javacard-tools"/>
-
         <!-- Compile dependencies -->
         <javac
                 debug="on"
@@ -33,7 +35,12 @@
                 includeantruntime="true"
                 destdir="build/classes/jcommander"
                 srcdir="dep/jcommander/src/main/java"/>
+    </target>
 
+    <target name="build-code"
+            depends="build-depend">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/classes/javacard-tools"/>
         <!-- Compile our own code -->
         <javac
                 debug="on"
@@ -45,15 +52,15 @@
                 <pathelement path="build/classes/slf4j-simple"/>
                 <pathelement path="build/classes/jcommander"/>
                 <pathelement path="lib/commons-codec-1.10.jar"/>
-                <pathelement path="../../javacard/javacard-debug/build/client/classes"/>
             </classpath>
         </javac>
 
     </target>
 
-    <target name="jar">
+    <target name="build-jar"
+            depends="build-code">
         <mkdir dir="build/jar"/>
-
+        <!-- Build the plain JAR -->
         <jar
                 destfile="build/jar/javacard-tools-plain.jar">
             <zipgroupfileset dir="lib" includes="commons-codec-1.10.jar"/>
@@ -67,13 +74,17 @@
                 <attribute name="Main-Class" value="better.smartcard.tool.Main"/>
             </manifest>
         </jar>
+    </target>
 
-        <!--
+    <target name="build-proguard"
+            depends="build-jar">
+        <mkdir dir="build/jar"/>
+        <!-- Obfuscate using proguard -->
         <proguard>
             -verbose
             -injars build/jar/javacard-tools-plain.jar
-            -outjars build/jar/javacard-tools-obfuscated.jar
-            -printmapping build/jar/javacard-tools-mapping.txt
+            -outjars build/jar/javacard-tools-proguard.jar
+            -printmapping build/jar/javacard-tools-proguard.map
             -libraryjars ${java.home}/lib/rt.jar
             -libraryjars ${java.home}/lib/jce.jar
             -keepattributes *Annotation*
@@ -81,7 +92,6 @@
                 public static void main(java.lang.String[]);
             }
         </proguard>
-        -->
     </target>
 
 </project>
