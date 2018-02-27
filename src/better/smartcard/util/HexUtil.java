@@ -40,6 +40,13 @@ public class HexUtil {
         });
     }
 
+    public static byte unhex8(String string) {
+        if(string.length() != 2) {
+            throw new IllegalArgumentException();
+        }
+        return hexToBytes(string)[0];
+    }
+
     public static String bytesToHex(byte[] bytes) {
         if (bytes == null) {
             return "(null)";

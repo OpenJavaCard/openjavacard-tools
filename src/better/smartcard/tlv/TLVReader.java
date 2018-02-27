@@ -3,8 +3,31 @@ package better.smartcard.tlv;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class TLVReader {
+
+    public static TLV decodeSingle(byte[] bytes) {
+        TLVReader reader = new TLVReader(bytes);
+        TLV tlv;
+        try {
+            tlv = reader.readTLV();
+        } catch (IOException e) {
+            throw new Error("Could not decode TLV", e);
+        }
+        return tlv;
+    }
+
+    public static TLV decodeSingle(byte[] bytes, int tagExpected) {
+        TLVReader reader = new TLVReader(bytes);
+        TLV tlv;
+        try {
+            tlv = reader.readTLV(tagExpected);
+        } catch (IOException e) {
+            throw new Error("Could not decode TLV", e);
+        }
+        return tlv;
+    }
 
     InputStream mStream;
 
