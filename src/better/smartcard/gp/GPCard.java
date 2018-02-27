@@ -147,7 +147,6 @@ public class GPCard {
      * that it enables.
      */
     GPIssuerDomain mIssuerDomain;
-
     /**
      * True when we are connected to an ISD
      *
@@ -176,43 +175,41 @@ public class GPCard {
     public CardTerminal getTerminal() {
         return mTerminal;
     }
-
     public Card getCard() {
         return mCard;
     }
 
+    /* Provided or detected ISD */
     public AID getCardISD() {
         return mISD;
     }
 
-    public void setCardISD(AID isd) {
-        mISD = isd;
+    /* Provided or resolved keyset */
+    public GPKeySet getKeys() {
+        return mKeys;
     }
 
-    public byte[] getCardIIN() {
+    /* Policy information */
+    public SCPProtocolPolicy getProtocolPolicy() {
+        return mProtocolPolicy;
+    }
+    public SCPSecurityPolicy getSecurityPolicy() {
+        return mSecurityPolicy;
+    }
+
+    /* Information provided by card */
+    public byte[]      getCardIIN() {
         return mCardIIN;
     }
-
-    public byte[] getCardCIN() {
+    public byte[]      getCardCIN() {
         return mCardCIN;
     }
-
-    public String getCardIdentifier() {
-        if(mCardLifeCycle == null) {
-            return null;
-        } else {
-            return mCardLifeCycle.getCardIdentifier();
-        }
-    }
-
     public GPLifeCycle getCardLifeCycle() {
         return mCardLifeCycle;
     }
-
     public GPCardData getCardData() {
         return mCardData;
     }
-
     public GPKeyInfo getCardKeyInfo() {
         return mCardKeyInfo;
     }
@@ -221,17 +218,27 @@ public class GPCard {
     public GPSecureChannel getSecureChannel() {
         return mSecure;
     }
-
     public GPRegistry getRegistry() {
         return mRegistry;
     }
-
     public GPIssuerDomain getIssuerDomain() {
         return mIssuerDomain;
     }
 
-    public SCPProtocolPolicy getPolicy() {
-        return mProtocolPolicy;
+    /**
+     * Returns a lifetime identifier for the card
+     *
+     * This is constructed from information in the lifecycle structure.
+     *
+     * XXX revisit identity strategy
+     *
+     * @return a uniquely identifying string
+     */
+    public String getCardIdentifier() {
+        if(mCardLifeCycle != null) {
+            return mCardLifeCycle.getCardIdentifier();
+        }
+        return null;
     }
 
     /**
