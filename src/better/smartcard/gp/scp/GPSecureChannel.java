@@ -151,42 +151,10 @@ public class GPSecureChannel extends CardChannel {
      */
     @Override
     public ResponseAPDU transmit(CommandAPDU command) throws CardException {
-        boolean traceEnabled = LOG.isTraceEnabled();
-
-        // bug out if the channel is not open
-        if (mWrapper == null) {
-            throw new CardException("Secure channel is closed");
+        if(!mIsEstablished) {
+            throw new CardException("Secure channel is not established");
         }
-
-        // log the command
-        if(traceEnabled) {
-            LOG.trace("apdu > " + APDUUtil.toString(command));
-        }
-
-        // wrap the command (sign, encrypt)
-        CommandAPDU wrappedCommand = mWrapper.wrap(command);
-        // send the wrapped command
-        ResponseAPDU wrappedResponse = mCard.transmit(mChannel, wrappedCommand);
-        // unwrap the response, but not if it is an error
-        int sw = wrappedResponse.getSW();
-        ResponseAPDU response = wrappedResponse;
-        if (sw == ISO7816.SW_NO_ERROR || SW.isWarning(sw)) {
-            // unwrap the response (decrypt, verify)
-            response = mWrapper.unwrap(wrappedResponse);
-        } else {
-            // data in error responses is illegal
-            int dataLen = response.getNr();
-            if (dataLen > 0) {
-                throw new CardException("Card sent data in an error response");
-            }
-        }
-
-        // log the response
-        if(traceEnabled) {
-            LOG.trace("apdu < " + APDUUtil.toString(response));
-        }
-
-        return response;
+        return transmitInternal(command);
     }
 
     /**
@@ -227,6 +195,55 @@ public class GPSecureChannel extends CardChannel {
         mWrapper = null;
         mSessionKeys = null;
         mActiveProtocol = null;
+    }
+
+    /**
+     * Internal transmit method
+     *
+     * This variant does not check if the channel is fully established.
+     * This is used during secure channel setup.
+     *
+     * @param command be wrapped and sent
+     * @return the unwrapped response
+     * @throws CardException
+     */
+    private ResponseAPDU transmitInternal(CommandAPDU command) throws CardException {
+        boolean traceEnabled = LOG.isTraceEnabled();
+
+        // bug out if the channel is not open
+        if (mWrapper == null) {
+            throw new CardException("Secure channel is not connected");
+        }
+
+        // log the command
+        if(traceEnabled) {
+            LOG.trace("apdu > " + APDUUtil.toString(command));
+        }
+
+        // wrap the command (sign, encrypt)
+        CommandAPDU wrappedCommand = mWrapper.wrap(command);
+        // send the wrapped command
+        ResponseAPDU wrappedResponse = mCard.transmit(mChannel, wrappedCommand);
+        // unwrap the response, but not if it is an error
+        int sw = wrappedResponse.getSW();
+        ResponseAPDU response = wrappedResponse;
+        if (sw == ISO7816.SW_NO_ERROR || SW.isWarning(sw)) {
+            // unwrap the response (decrypt, verify)
+            response = mWrapper.unwrap(wrappedResponse);
+        } else {
+            // data in error responses is illegal
+            int dataLen = response.getNr();
+            if (dataLen > 0) {
+                throw new CardException("Card sent data in an error response");
+            }
+        }
+
+        // log the response
+        if(traceEnabled) {
+            LOG.trace("apdu < " + APDUUtil.toString(response));
+        }
+
+        return response;
     }
 
     /**
@@ -399,7 +416,7 @@ public class GPSecureChannel extends CardChannel {
         } else {
             // check that we have been told the parameters
             if (mExpectedParameters == 0) {
-                throw new CardException("SCP parameters not provided - required for SCP version" + HexUtil.hex8(scpProto));
+                throw new CardException("SCP parameters not provided - required for SCP" + HexUtil.hex8(scpProto));
             }
             // use the expected parameters
             scpParams = mExpectedParameters;
@@ -420,6 +437,8 @@ public class GPSecureChannel extends CardChannel {
 
     /**
      * Assemble and transact an INITIALIZE UPDATE command
+     *
+     * The command will be sent on the underlying unencrypted channel.
      *
      * @param keyVersion    to indicate
      * @param keyId         to indicate
@@ -450,6 +469,8 @@ public class GPSecureChannel extends CardChannel {
     /**
      * Assemble and transact an EXTERNAL AUTHENTICATE command
      *
+     * The command will be sent on the encrypted secure channel.
+     *
      * @param hostCryptogram to send
      * @throws CardException on error
      */
@@ -474,7 +495,7 @@ public class GPSecureChannel extends CardChannel {
                 hostCryptogram
         );
         // send it over the secure channel
-        ResponseAPDU authResponse = transmit(authCommand);
+        ResponseAPDU authResponse = transmitInternal(authCommand);
         // check for errors
         checkResponse(authResponse);
         // nothing to return
