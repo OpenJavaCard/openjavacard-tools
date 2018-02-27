@@ -39,11 +39,11 @@ public class GPIssuerDomain {
      * @param isd to set or null
      * @throws CardException
      */
-    public void changeIdentity(byte[] cin, byte[] iin, byte[] isd) throws CardException {
+    public void changeIdentity(byte[] iin, byte[] cin, byte[] isd) throws CardException {
         LOG.debug("setting card identity");
         StoreDataRequest req = new StoreDataRequest();
-        req.cardCIN = cin;
         req.cardIIN = iin;
+        req.cardCIN = cin;
         req.cardISD = isd;
         byte[][] blocks = BinUtil.splitBlocks(req.toBytes(), 128);
         for(byte i = 0; i < blocks.length; i++) {
