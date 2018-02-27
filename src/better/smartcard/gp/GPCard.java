@@ -515,6 +515,12 @@ public class GPCard {
         return isd;
     }
 
+    /**
+     * Perform an ISO SELECT FILE BY NAME operation
+     * @param name
+     * @return
+     * @throws CardException
+     */
     private byte[] selectFileByName(AID name) throws CardException {
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_ISO,
@@ -526,6 +532,12 @@ public class GPCard {
         return transactPlainAndCheck(command).getData();
     }
 
+    /**
+     * Perform a GlobalPlatform GET DATA operation
+     * @param p1p2
+     * @return
+     * @throws CardException
+     */
     private byte[] readData(short p1p2) throws CardException {
         LOG.trace("readData(" + HexUtil.hex16(p1p2) + ")");
         CommandAPDU command = APDUUtil.buildCommand(
@@ -548,6 +560,11 @@ public class GPCard {
         return response;
     }
 
+    /**
+     * Read the GlobalPlatform Life Cycle Data object
+     * @return
+     * @throws CardException
+     */
     private GPLifeCycle readCPLC() throws CardException {
         LOG.debug("readCPLC()");
         GPLifeCycle res = new GPLifeCycle();
@@ -556,6 +573,11 @@ public class GPCard {
         return res;
     }
 
+    /**
+     * Read the GlobalPlatform Card Data object
+     * @return
+     * @throws CardException
+     */
     private GPCardData readCardData() throws CardException {
         LOG.debug("readCardData()");
         GPCardData res = null;
@@ -567,21 +589,41 @@ public class GPCard {
         return res;
     }
 
+    /**
+     * Read the cards Issuer Identification Number
+     * @return
+     * @throws CardException
+     */
     private byte[] readCardIIN() throws CardException {
         LOG.debug("readCardIIN()");
         return readData(GP.GET_DATA_P12_ISSUER_ID_NUMBER);
     }
 
+    /**
+     * Read the cards Card Image Number
+     * @return
+     * @throws CardException
+     */
     private byte[] readCardCIN() throws CardException {
         LOG.debug("readCardCIN()");
         return readData(GP.GET_DATA_P12_CARD_IMG_NUMBER);
     }
 
+    /**
+     * Read the GlobalPlatform Application Information object
+     * @return
+     * @throws CardException
+     */
     private byte[] readApplicationInfo() throws CardException {
         LOG.debug("readApplicationInfo()");
         return readData(GP.GET_DATA_P12_APPLICATION_INFO);
     }
 
+    /**
+     * Read the GlobalPlatform Key Information object
+     * @return
+     * @throws CardException
+     */
     private GPKeyInfo readKeyInfo() throws CardException {
         LOG.debug("readKeyInfo()");
         GPKeyInfo res = new GPKeyInfo();
@@ -590,23 +632,44 @@ public class GPCard {
         return res;
     }
 
+    /**
+     * Read status information for the ISD
+     * @return
+     * @throws CardException
+     */
     byte[] readStatusISD() throws CardException {
         return readStatus(GP.GET_STATUS_P1_ISD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
     }
 
+    /**
+     * Read status information for all Apps and SDs
+     * @return
+     * @throws CardException
+     */
     byte[] readStatusAppsAndSD() throws CardException {
         return readStatus(GP.GET_STATUS_P1_APP_AND_SD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
     }
 
+    /**
+     * Read status information for all ELF
+     * @return
+     * @throws CardException
+     */
     byte[] readStatusELF() throws CardException {
         return readStatus(GP.GET_STATUS_P1_ELF_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
     }
 
+    /**
+     * Read status information for all ExM and ELF
+     * @return
+     * @throws CardException
+     */
     byte[] readStatusEXMandELF() throws CardException {
         return readStatus(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
     }
 
     /**
+     * Perform a GlobalPlatform READ STATUS operation
      *
      * @param p1Subset
      * @param p2Format
@@ -614,12 +677,12 @@ public class GPCard {
      * @throws CardException
      */
     private byte[] readStatus(byte p1Subset, byte p2Format) throws CardException {
-        byte[] criteria = {0x4F, 0x00};
+        byte[] criteria = {0x4F, 0x00}; // XXX !?
         return readStatus(p1Subset, p2Format, criteria);
     }
 
     /**
-     * Perform a GlobalPlatform SET STATUS operations
+     * Perform a GlobalPlatform SET STATUS operation
      *
      * @param p1Subset
      * @param p2Format
