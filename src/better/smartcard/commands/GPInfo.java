@@ -91,7 +91,7 @@ public class GPInfo extends GPCommand {
         }
         os.println();
 
-        GPList.printRegistry(os, card, true, true, true, true);
+        GPList.printRegistry(os, card, true, true, true);
     }
 
 }
