@@ -13,10 +13,10 @@ public class GenericCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericCard.class);
 
-
     GenericContext mContext;
     CardTerminal mTerminal;
     Card mCard;
+    CardChannel mBasic;
 
     public GenericCard(GenericContext context, CardTerminal terminal) {
         mContext = context;
@@ -28,12 +28,21 @@ public class GenericCard {
         return mCard != null;
     }
 
+    public Card getCard() {
+        return mCard;
+    }
+
     public CardChannel getBasicChannel() {
         return mCard.getBasicChannel();
     }
 
     public void connect() throws CardException {
         mCard = mTerminal.connect("*");
+        mBasic = mCard.getBasicChannel();
+    }
+
+    public ResponseAPDU transmit(CommandAPDU command) throws CardException {
+        return transmit(mBasic, command);
     }
 
     /**
@@ -48,6 +57,16 @@ public class GenericCard {
         LOG.info("apdu > " + APDUUtil.toString(command));
         ResponseAPDU response = channel.transmit(command);
         LOG.info("apdu < " + APDUUtil.toString(response));
+        return response;
+    }
+
+    public ResponseAPDU transmitAndCheck(CommandAPDU command) throws CardException {
+        return transmitAndCheck(mBasic, command);
+    }
+
+    public ResponseAPDU transmitAndCheck(CardChannel channel, CommandAPDU command) throws CardException {
+        ResponseAPDU response = transmit(channel, command);
+        checkResponse(response);
         return response;
     }
 
