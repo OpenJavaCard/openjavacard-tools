@@ -10,6 +10,9 @@ public class ConverterFactory implements IStringConverterFactory {
         if(forType.equals(AID.class)) {
             return AIDConverter.class;
         }
+        if(forType.equals(byte[].class)) {
+            return BytesConverter.class;
+        }
         return null;
     }
 }
