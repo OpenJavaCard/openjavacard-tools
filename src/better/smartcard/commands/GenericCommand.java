@@ -4,6 +4,8 @@ import better.smartcard.generic.GenericCard;
 import better.smartcard.generic.GenericContext;
 import better.smartcard.gp.GPCard;
 import better.smartcard.gp.GPContext;
+import better.smartcard.util.ATRUtil;
+import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
 
 import javax.smartcardio.Card;
@@ -29,9 +31,9 @@ public abstract class GenericCommand implements Runnable {
 
         GenericCard card = mContext.findSingleCard(reader);
         try {
-            os.println("CONNECTING");
             card.connect();
-            os.println("PERFORMING");
+            Card c = card.getCard();
+            os.println("CONNECTED " + c.getProtocol() + " ATR=" + ATRUtil.toString(c.getATR()));
             performOperation(card);
         } catch (Exception e) {
             throw new Error("Error performing operation", e);
