@@ -59,7 +59,7 @@ public class GPInstall extends GPCommand {
 
     @Parameter(
             names = "--cap-file",
-            description = "CAP files to load",
+            description = "CAP file to load",
             required = false
     )
     List<File> capFiles;
@@ -86,9 +86,18 @@ public class GPInstall extends GPCommand {
         GPRegistry registry = card.getRegistry();
         GPIssuerDomain issuer = card.getIssuerDomain();
 
+        byte[] appPrivs = GPPrivilege.toBytes(appletPrivileges);
+        byte[] appParams = HexUtil.hexToBytes(appletParameters);
+
         // reload implies reinstall
         if(reload) {
             reinstall = true;
+        }
+
+        // check if we need to load
+        boolean mustLoad = false;
+        if(capFiles != null && !capFiles.isEmpty()) {
+            mustLoad = true;
         }
 
         // determine install parameters
@@ -101,21 +110,19 @@ public class GPInstall extends GPCommand {
             appAID = modAID;
         }
 
-        // delete previous applet instance if requested
+        // delete old applet
         if(registry.hasApplet(appAID)) {
             if(reinstall) {
-                os.println("Deleting old applet");
+                os.println("Deleting old applet " + appAID);
                 issuer.deleteObject(appAID);
-                os.println("Deleting old package");
-                issuer.deleteObject(pkgAID, false);
                 registry.update();
             } else {
                 throw new Error("Card already has applet " + appAID);
             }
         }
 
-        // load packages if provided, reloading as requested
-        if(capFiles != null && !capFiles.isEmpty()) {
+        // load packages
+        if(mustLoad) {
             os.println("Loading provided packages");
             GPLoad load = new GPLoad(context);
             load.setFiles(capFiles);
@@ -124,33 +131,36 @@ public class GPInstall extends GPCommand {
             registry.update();
         }
 
-        // default for the pkg AID so only the module must be provided,
-        // which is convenient when installing a pre-installed module
+        // determine and check the package id
         if(pkgAID == null) {
-            os.println("Searching registry for module " + modAID);
+            // determine package from module using registry
+            os.println("Searching for module " + modAID);
             GPRegistry.ELFEntry elf = registry.findPackageForModule(modAID);
             if(elf == null) {
                 throw new Error("Could not find module " + modAID + " on card");
             }
             pkgAID = elf.getAID();
             os.println("Found module in package " + pkgAID);
+        } else {
+            // otherwise the module must be present at this point
+            if(!registry.hasPackage(pkgAID)) {
+                throw new Error("Card does not have package " + pkgAID);
+            }
         }
 
         // print major parameters
         os.println("Installing applet " + appAID);
         os.println("  package " + pkgAID);
         os.println("  module " + modAID);
-        byte[] appPrivs = GPPrivilege.toBytes(appletPrivileges);
         os.println("  privileges " + HexUtil.bytesToHex(appPrivs));
-        byte[] appParams = HexUtil.hexToBytes(appletParameters);
         os.println("  parameters " + HexUtil.bytesToHex(appParams));
         os.println();
 
         // perform the installation
-        os.println("Installing now...");
         issuer.installApplet(pkgAID, modAID, appAID, appPrivs, appParams);
 
         // happy happy joy joy
         os.println("Installation complete");
     }
+
 }
