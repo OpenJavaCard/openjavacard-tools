@@ -38,7 +38,7 @@ public class GenericAPDU extends GenericCommand {
             names = "--data",
             description = "Command data"
     )
-    String dataLiteral;
+    byte[] data;
 
     @Parameter(
             names = "--data-file",
@@ -72,10 +72,9 @@ public class GenericAPDU extends GenericCommand {
         String capduStr = apdu;
         capduStr = capduStr.replace(":", "");
         capduStr = capduStr.replace(" ", "");
-        if(dataLiteral != null) {
-            byte[] data = HexUtil.hexToBytes(dataLiteral);
+        if(data != null) {
             capduStr += HexUtil.hex8(data.length);
-            capduStr += dataLiteral;
+            capduStr += HexUtil.bytesToHex(data);
         }
         if(dataFile != null) {
             if(dataFile.exists() && dataFile.isFile()) {
