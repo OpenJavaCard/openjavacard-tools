@@ -35,7 +35,7 @@ public class GPState extends GPCommand {
     boolean cardInitialized;
     @Parameter(
             names = "--card-secured",
-            description = "Set card state to SECURED (irreversible, can still lock or terminate)"
+            description = "Set card state to SECURED (irreversible)"
     )
     boolean cardSecured;
     @Parameter(
@@ -55,12 +55,12 @@ public class GPState extends GPCommand {
     boolean cardTerminate;
 
     @Parameter(
-            names = "--app-lock",
+            names = "--applet-lock",
             description = "Lock the indicated applet"
     )
     List<AID> appLock;
     @Parameter(
-            names = "--app-unlock",
+            names = "--applet-unlock",
             description = "Unlock the indicated applet"
     )
     List<AID> appUnlock;
