@@ -55,6 +55,19 @@ public class GPRegistry {
         return new ArrayList<>(mAllELFs);
     }
 
+    public Entry findAppletOrPackage(AID aid) {
+        Entry res;
+        res = findApplet(aid);
+        if(res != null) {
+            return res;
+        }
+        res = findPackage(aid);
+        if(res != null) {
+            return res;
+        }
+        return res;
+    }
+
     public AppEntry findApplet(AID aid) {
         for(AppEntry app: mAllApps) {
             if(app.mAID.equals(aid)) {
