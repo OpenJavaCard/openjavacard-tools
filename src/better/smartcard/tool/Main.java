@@ -1,6 +1,7 @@
 package better.smartcard.tool;
 
 import better.smartcard.commands.*;
+import better.smartcard.generic.GenericContext;
 import better.smartcard.gp.GPContext;
 import better.smartcard.tool.converter.ConverterFactory;
 import com.beust.jcommander.JCommander;
@@ -65,8 +66,8 @@ public class Main {
         jc.addConverterFactory(new ConverterFactory());
         jc.addCommand(new Help(jc));
 
-        jc.addCommand(new CardAPDU(gpContext));
-        jc.addCommand(new CardProbe(gpContext));
+        jc.addCommand(new GenericAPDU(gpContext));
+        jc.addCommand(new GenericProbe(gpContext));
 
         jc.addCommand(new GPInfo(gpContext));
         jc.addCommand(new GPList(gpContext));
