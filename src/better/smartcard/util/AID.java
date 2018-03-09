@@ -5,20 +5,25 @@ import java.util.Arrays;
 /**
  * Representation for ISO7816 AIDs and RIDs
  */
-public class AID {
+public class AID implements VerboseString {
 
-    /** The length of the RID-prefix common to all AIDs */
-    private static final int RID_LENGTH = 5;
+    private static final int RID_OFFSET =  0;
+    private static final int RID_LENGTH =  5;
+    private static final int PIX_OFFSET =  5;
+    private static final int PIX_LENGTH = 11;
 
     /** Binary value of the AID */
-    byte[] mBytes;
+    private final byte[] mBytes;
 
     /**
      * Construct an AID from a byte array
      * @param bytes indicating the AID
      */
     public AID(byte[] bytes) {
-        mBytes = bytes;
+        if(bytes.length < RID_LENGTH) {
+            throw new IllegalArgumentException("AID must be 5 bytes long");
+        }
+        mBytes = bytes.clone();
     }
 
     /**
@@ -28,6 +33,9 @@ public class AID {
      * @param length of the AID
      */
     public AID(byte[] bytes, int offset, int length) {
+        if(length < RID_LENGTH) {
+            throw new IllegalArgumentException("AID must be 5 bytes long");
+        }
         mBytes = Arrays.copyOfRange(bytes, offset, offset + length);
     }
 
@@ -54,10 +62,25 @@ public class AID {
         return new AID(getRIDBytes());
     }
 
+    public int getRIDLength() {
+        return RID_LENGTH;
+    }
+
     /** @return the RID part of the AID as a byte array */
     public byte[] getRIDBytes() {
         byte[] res = new byte[RID_LENGTH];
-        System.arraycopy(mBytes, 0, res, 0, RID_LENGTH);
+        System.arraycopy(mBytes, RID_OFFSET, res, 0, RID_LENGTH);
+        return res;
+    }
+
+    public int getPIXLength() {
+        return mBytes.length - RID_LENGTH;
+    }
+
+    public byte[] getPIXBytes() {
+        int len = getPIXLength();
+        byte[] res = new byte[PIX_LENGTH];
+        System.arraycopy(mBytes, PIX_OFFSET, res, 0, len);
         return res;
     }
 
@@ -97,6 +120,18 @@ public class AID {
     public static AID fromArrayString(String string) {
         String hex = string.replace("0x", "").replace(":", "");
         return new AID(hex);
+    }
+
+    @Override
+    public String toVerboseString() {
+        byte[] rid = getRIDBytes();
+        byte[] pix = getPIXBytes();
+        String res = "";
+        res += HexUtil.bytesToHex(rid);
+        if(pix.length > 0) {
+            res += HexUtil.bytesToHex(pix);
+        }
+        return res;
     }
 
 }
