@@ -45,8 +45,8 @@ public interface ISO7816 {
     public static final int SW_CORRECT_LENGTH_00 = 0x6C00;
     public static final int SW_INS_NOT_SUPPORTED = 0x6D00;
     public static final int SW_CLA_NOT_SUPPORTED = 0x6E00;
-    static final int SW_COMMAND_CHAINING_NOT_SUPPORTED = 0x6884;
-    static final int SW_LAST_COMMAND_EXPECTED = 0x6883;
+    public static final int SW_COMMAND_CHAINING_NOT_SUPPORTED = 0x6884;
+    public static final int SW_LAST_COMMAND_EXPECTED = 0x6883;
     public static final int SW_UNKNOWN = 0x6F00;
     public static final int SW_FILE_FULL = 0x6A84;
     public static final int SW_LOGICAL_CHANNEL_NOT_SUPPORTED = 0x6881;
