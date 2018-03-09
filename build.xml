@@ -74,7 +74,6 @@
             <fileset dir="build/classes/slf4j-simple"/>
             <fileset dir="build/classes/jcommander"/>
             <fileset dir="build/classes/javacard-tools"/>
-            <fileset dir="../../javacard/javacard-debug/build/client/classes"/>
             <manifest>
                 <attribute name="Main-Class" value="better.smartcard.tool.Main"/>
             </manifest>
