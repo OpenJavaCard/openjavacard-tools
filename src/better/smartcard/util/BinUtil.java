@@ -5,6 +5,11 @@ import java.util.Arrays;
 /** Utilities related to treating integers as binary words */
 public class BinUtil {
 
+    public static final byte getByte(byte buf[], int off)
+            throws ArrayIndexOutOfBoundsException, NullPointerException {
+        return (byte)(buf[off] & 0xFF);
+    }
+
     public static final short makeShort(byte b1, byte b2) {
         return (short) (((short) b1 << 8) + ((short) b2 & 0xff));
     }
