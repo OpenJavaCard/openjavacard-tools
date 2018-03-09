@@ -1,5 +1,6 @@
 package better.smartcard.commands;
 
+import better.smartcard.generic.GenericContext;
 import better.smartcard.gp.GPContext;
 import com.beust.jcommander.Parameters;
 
@@ -7,11 +8,11 @@ import com.beust.jcommander.Parameters;
         commandNames = "probe",
         commandDescription = "Probe for supported readers and cards"
 )
-public class CardProbe implements Runnable {
+public class GenericProbe implements Runnable {
 
-    private GPContext mContext;
+    private GenericContext mContext;
 
-    public CardProbe(GPContext context) {
+    public GenericProbe(GenericContext context) {
         mContext = context;
     }
 
@@ -19,4 +20,5 @@ public class CardProbe implements Runnable {
     public void run() {
         mContext.findTerminals(null);
     }
+
 }
