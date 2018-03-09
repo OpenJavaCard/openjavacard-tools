@@ -4,3 +4,6 @@
 [submodule "dep/slf4j"]
 	path = dep/slf4j
 	url = https://github.com/qos-ch/slf4j.git
+[submodule "dep/commons-codec"]
+	path = dep/commons-codec
+	url = https://github.com/apache/commons-codec.git

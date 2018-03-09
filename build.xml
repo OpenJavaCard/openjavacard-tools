@@ -15,10 +15,16 @@
 
     <target name="build-depend">
         <mkdir dir="build/classes"/>
+        <mkdir dir="build/classes/commons-codec"/>
         <mkdir dir="build/classes/slf4j-api"/>
         <mkdir dir="build/classes/slf4j-simple"/>
         <mkdir dir="build/classes/jcommander"/>
         <!-- Compile dependencies -->
+        <javac
+                debug="on"
+                includeantruntime="true"
+                destdir="build/classes/commons-codec"
+                srcdir="dep/commons-codec/src/main/java"/>
         <javac
                 debug="on"
                 includeantruntime="true"
@@ -48,10 +54,10 @@
                 destdir="build/classes/javacard-tools"
                 srcdir="src">
             <classpath>
+                <pathelement path="build/classes/commons-codec"/>
                 <pathelement path="build/classes/slf4j-api"/>
                 <pathelement path="build/classes/slf4j-simple"/>
                 <pathelement path="build/classes/jcommander"/>
-                <pathelement path="lib/commons-codec-1.10.jar"/>
             </classpath>
         </javac>
 
@@ -61,9 +67,8 @@
             depends="build-code">
         <mkdir dir="build/jar"/>
         <!-- Build the plain JAR -->
-        <jar
-                destfile="build/jar/javacard-tools-plain.jar">
-            <zipgroupfileset dir="lib" includes="commons-codec-1.10.jar"/>
+        <jar destfile="build/jar/javacard-tools-plain.jar">
+            <fileset dir="build/classes/commons-codec"/>
             <fileset dir="build/classes/slf4j-api"
                      excludes="org/slf4j/impl/Static*.class"/>
             <fileset dir="build/classes/slf4j-simple"/>
