@@ -2,6 +2,7 @@ package better.smartcard.commands;
 
 import better.smartcard.gp.GPCard;
 import better.smartcard.gp.GPContext;
+import better.smartcard.util.AID;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -18,14 +19,14 @@ public class GPExtradite extends GPCommand {
             description = "Domain to extradite to",
             required = true
     )
-    String domainAID;
+    AID domainAID;
 
     @Parameter(
             names = "--applet",
             description = "Applet to extradite",
             required = true
     )
-    String appletAID;
+    AID appletAID;
 
     public GPExtradite(GPContext context) {
         super(context);
