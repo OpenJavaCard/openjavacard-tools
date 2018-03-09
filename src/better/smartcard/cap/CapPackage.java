@@ -132,7 +132,7 @@ public class CapPackage implements VerboseString {
         for (Map.Entry<Object, Object> entry : attributes.entrySet()) {
             String name = entry.getKey().toString();
             String value = (String) entry.getValue();
-            LOG.debug("attribute " + name + " = " + value);
+            LOG.trace("attribute " + name + " = " + value);
             // simple properties
             if (name == ATTR_JC_CAP_FILE_VERSION) {
                 mCapFileVersion = value;
@@ -164,7 +164,7 @@ public class CapPackage implements VerboseString {
                 String[] split = rest.split("-");
                 int index = extractAttributeIndex(split);
                 String propName = extractAttributeName(split);
-                LOG.debug("applet " + index + " attr " + propName + " value " + value);
+                LOG.trace("applet " + index + " attr " + propName + " value " + value);
                 CapApplet app = getOrCreateApplet(index - 1);
                 app.readAttribute(propName, value);
             }
@@ -174,7 +174,7 @@ public class CapPackage implements VerboseString {
                 String[] split = rest.split("-");
                 int index = extractAttributeIndex(split);
                 String propName = extractAttributeName(split);
-                LOG.debug("import " + index + " attr " + propName + " value " + value);
+                LOG.trace("import " + index + " attr " + propName + " value " + value);
                 CapImport imp = getOrCreateImport(index - 1);
                 imp.readAttribute(propName, value);
             }
@@ -187,7 +187,7 @@ public class CapPackage implements VerboseString {
             if(key.startsWith(jcPkgPrefix)) {
                 String name = key.substring(jcPkgPrefix.length());
                 CapComponentType type = CapComponentType.forFilename(name);
-                LOG.debug("component " + name);
+                LOG.trace("component " + name);
                 if(type != null) {
                     CapComponent com = new CapComponent(type, data);
                     addComponent(com);
@@ -271,7 +271,7 @@ public class CapPackage implements VerboseString {
             mApplets.setSize(index + 1);
         }
         if (res == null) {
-            LOG.debug("new applet " + index);
+            LOG.trace("new applet " + index);
             res = new CapApplet();
             mApplets.set(index, res);
         }
@@ -286,7 +286,7 @@ public class CapPackage implements VerboseString {
             mImports.setSize(index + 1);
         }
         if (res == null) {
-            LOG.debug("new import " + index);
+            LOG.trace("new import " + index);
             res = new CapImport();
             mImports.set(index, res);
         }
