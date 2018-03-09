@@ -9,6 +9,7 @@ import better.smartcard.gp.keys.GPKeyType;
 import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.beust.jcommander.validators.PositiveInteger;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -20,14 +21,16 @@ import java.io.PrintStream;
 public class GPKeys extends GPCommand {
 
     @Parameter(
-            names = "--new-version"
+            names = "--new-version",
+            validateValueWith = PositiveInteger.class
     )
-    byte newKeyVersion = 1;
+    int newKeyVersion = 1;
 
     @Parameter(
-            names = "--new-id"
+            names = "--new-id",
+            validateValueWith = PositiveInteger.class
     )
-    byte newKeyId = 1;
+    int newKeyId = 1;
 
     @Parameter(
             names = "--new-cipher"
@@ -65,6 +68,13 @@ public class GPKeys extends GPCommand {
     }
 
     private GPKeySet createNewKeys() {
+        if(newKeyVersion > 255) {
+            throw new Error("Bad key version");
+        }
+        // XXX this is not comprehensive because of the loop and protocol variations
+        if(newKeyId > 255) {
+            throw new Error("Bad key id");
+        }
         GPKeySet keys = new GPKeySet("commandline", newKeyVersion);
         String[] keyTypes = newKeyTypes.split(":");
         String[] keySecrets = newKeySecrets.split(":");
