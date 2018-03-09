@@ -22,13 +22,13 @@ public class GPKeys extends GPCommand {
 
     @Parameter(
             names = "--new-version",
-            validateValueWith = PositiveInteger.class
+            validateWith = PositiveInteger.class
     )
     int newKeyVersion = 1;
 
     @Parameter(
             names = "--new-id",
-            validateValueWith = PositiveInteger.class
+            validateWith = PositiveInteger.class
     )
     int newKeyId = 1;
 
