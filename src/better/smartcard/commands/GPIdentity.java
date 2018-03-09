@@ -19,19 +19,19 @@ public class GPIdentity extends GPCommand {
             names = "--new-iin",
             description = "New Issuer Identification Number (IIN)"
     )
-    String newCardIIN;
+    byte[] iin;
 
     @Parameter(
             names = "--new-cin",
             description = "New Card Identification Number (CIN)"
     )
-    String newCardCIN;
+    byte[] cin;
 
     @Parameter(
             names = "--new-isd",
             description = "New AID for the ISD of the card"
     )
-    String newCardISD;
+    byte[] isd;
 
     public GPIdentity(GPContext context) {
         super(context);
@@ -39,18 +39,6 @@ public class GPIdentity extends GPCommand {
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
-        byte[] iin = null;
-        byte[] cin = null;
-        byte[] isd = null;
-        if(newCardIIN != null) {
-            iin = HexUtil.hexToBytes(newCardIIN);
-        }
-        if(newCardCIN != null) {
-            cin = HexUtil.hexToBytes(newCardCIN);
-        }
-        if(newCardISD != null) {
-            isd = HexUtil.hexToBytes(newCardISD);
-        }
         card.getIssuerDomain().changeIdentity(iin, cin, isd);
     }
 
