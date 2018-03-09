@@ -61,5 +61,13 @@ public interface ISO7816 {
     public static final byte OFFSET_CDATA = 5;
 
     public static final byte CLA_ISO7816 = 0;
+
+    public static final byte INS_SELECT = (byte)0xA4;
+
+    public static final byte SELECT_P1_BY_FILEID = 0x00;
+    public static final byte SELECT_P1_BY_NAME = 0x04;
+    public static final byte SELECT_P2_FIRST_OR_ONLY = 0x00;
+    public static final byte SELECT_P2_NEXT = 0x02;
+
     public static final byte INS_EXTERNAL_AUTHENTICATE = -126;
 }
