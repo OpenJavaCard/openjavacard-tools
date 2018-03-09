@@ -106,7 +106,7 @@ public abstract class GPCommand implements Runnable {
         if(sd != null) {
             sdAID = new AID(sd);
         }
-        GPCard card = mContext.findSingleCard(reader, sdAID);
+        GPCard card = mContext.findSingleGPCard(reader, sdAID);
         try {
             AID isdAID = card.getISD();
             os.println("Host GP configuration:");
