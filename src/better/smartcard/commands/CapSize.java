@@ -30,7 +30,7 @@ public class CapSize implements Runnable {
 
             CapFile cap;
             try {
-                os.println("Reading CAP file " + file + "...");
+                os.println("Reading CAP file " + file);
                 CapReader reader = new CapReader(file);
                 cap = reader.open();
             } catch (Exception ex) {
@@ -40,7 +40,6 @@ public class CapSize implements Runnable {
             CapPackage pkg;
             GPLoadFile loadFile;
             try {
-                os.println("Generating load file...");
                 pkg = cap.getPackages().get(0);
                 loadFile = pkg.generateCombinedLoadFile(128);
             } catch (Exception e) {
