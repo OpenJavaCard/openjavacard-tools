@@ -1,4 +1,7 @@
-package better.smartcard.util;
+package better.smartcard.iso;
+
+import better.smartcard.util.HexUtil;
+import better.smartcard.util.VerboseString;
 
 import java.util.Arrays;
 

@@ -2,7 +2,7 @@ package better.smartcard.commands;
 
 import better.smartcard.gp.GPCard;
 import better.smartcard.gp.GPContext;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 

@@ -5,7 +5,7 @@ import better.smartcard.gp.GPContext;
 import better.smartcard.gp.keys.GPKeyDiversification;
 import better.smartcard.gp.scp.SCPProtocolPolicy;
 import better.smartcard.gp.scp.SCPSecurityPolicy;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
 

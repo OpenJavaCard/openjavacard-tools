@@ -1,6 +1,6 @@
 package better.smartcard.generic;
 
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

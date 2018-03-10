@@ -1,6 +1,6 @@
 package better.smartcard.cap;
 
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import better.smartcard.util.HexUtil;
 
 public class CapHeader {

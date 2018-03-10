@@ -1,7 +1,7 @@
 package better.smartcard.gp;
 
 import better.smartcard.generic.GenericContext;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;

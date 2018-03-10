@@ -4,7 +4,7 @@ import better.smartcard.gp.protocol.GP;
 import better.smartcard.gp.protocol.GPPrivilege;
 import better.smartcard.tlv.TLV;
 import better.smartcard.tlv.TLVUtil;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import better.smartcard.util.HexUtil;
 import better.smartcard.util.VerboseString;
 import org.slf4j.Logger;

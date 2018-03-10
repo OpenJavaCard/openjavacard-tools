@@ -5,6 +5,7 @@ import better.smartcard.gp.keys.GPKeySet;
 import better.smartcard.gp.protocol.GP;
 import better.smartcard.gp.protocol.GPKeyInfo;
 import better.smartcard.gp.scp.GPSecureChannel;
+import better.smartcard.iso.AID;
 import better.smartcard.tlv.TLV;
 import better.smartcard.util.*;
 import org.slf4j.Logger;

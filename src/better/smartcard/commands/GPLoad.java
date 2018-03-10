@@ -4,7 +4,7 @@ import better.smartcard.cap.CapFile;
 import better.smartcard.cap.CapPackage;
 import better.smartcard.cap.CapReader;
 import better.smartcard.gp.*;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
