@@ -526,7 +526,7 @@ public class GPCard {
                 GP.CLA_ISO,
                 GP.INS_SELECT,
                 GP.SELECT_P1_BY_NAME,
-                GP.SELECT_P2_FIRST,
+                GP.SELECT_P2_FIRST_OR_ONLY,
                 name.getBytes()
         );
         return transactPlainAndCheck(command).getData();
