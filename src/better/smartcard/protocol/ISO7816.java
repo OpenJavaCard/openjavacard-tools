@@ -26,48 +26,47 @@ package better.smartcard.protocol;
  * the CardAPDU buffer byte array to access ISO 7816-4 defined header information.
  */
 public interface ISO7816 {
-    public static final int SW_NO_ERROR = 0x9000;
-    public static final int SW_BYTES_REMAINING_00 = 0x6100;
-    public static final int SW_WRONG_LENGTH = 0x6700;
-    public static final int SW_SECURITY_STATUS_NOT_SATISFIED = 0x6982;
-    public static final int SW_FILE_INVALID = 0x6983;
-    public static final int SW_DATA_INVALID = 0x6984;
-    public static final int SW_CONDITIONS_NOT_SATISFIED = 0x6985;
-    public static final int SW_COMMAND_NOT_ALLOWED = 0x6986;
-    public static final int SW_APPLET_SELECT_FAILED = 0x6999;
-    public static final int SW_WRONG_DATA = 0x6A80;
-    public static final int SW_FUNC_NOT_SUPPORTED = 0x6A81;
-    public static final int SW_FILE_NOT_FOUND = 0x6A82;
-    public static final int SW_RECORD_NOT_FOUND = 0x6A83;
-    public static final int SW_INCORRECT_P1P2 = 0x6A86;
-    public static final int SW_REFERENCED_DATA_NOT_FOUND = 0x6A88;
-    public static final int SW_WRONG_P1P2 = 0x6B00;
-    public static final int SW_CORRECT_LENGTH_00 = 0x6C00;
-    public static final int SW_INS_NOT_SUPPORTED = 0x6D00;
-    public static final int SW_CLA_NOT_SUPPORTED = 0x6E00;
-    public static final int SW_COMMAND_CHAINING_NOT_SUPPORTED = 0x6884;
-    public static final int SW_LAST_COMMAND_EXPECTED = 0x6883;
-    public static final int SW_UNKNOWN = 0x6F00;
-    public static final int SW_FILE_FULL = 0x6A84;
-    public static final int SW_LOGICAL_CHANNEL_NOT_SUPPORTED = 0x6881;
-    public static final int SW_SECURE_MESSAGING_NOT_SUPPORTED = 0x6882;
-    public static final int SW_WARNING_STATE_UNCHANGED = 0x6200;
+    int SW_NO_ERROR = 0x9000;
+    int SW_BYTES_REMAINING_00 = 0x6100;
+    int SW_WRONG_LENGTH = 0x6700;
+    int SW_SECURITY_STATUS_NOT_SATISFIED = 0x6982;
+    int SW_FILE_INVALID = 0x6983;
+    int SW_DATA_INVALID = 0x6984;
+    int SW_CONDITIONS_NOT_SATISFIED = 0x6985;
+    int SW_COMMAND_NOT_ALLOWED = 0x6986;
+    int SW_APPLET_SELECT_FAILED = 0x6999;
+    int SW_WRONG_DATA = 0x6A80;
+    int SW_FUNC_NOT_SUPPORTED = 0x6A81;
+    int SW_FILE_NOT_FOUND = 0x6A82;
+    int SW_RECORD_NOT_FOUND = 0x6A83;
+    int SW_INCORRECT_P1P2 = 0x6A86;
+    int SW_REFERENCED_DATA_NOT_FOUND = 0x6A88;
+    int SW_WRONG_P1P2 = 0x6B00;
+    int SW_CORRECT_LENGTH_00 = 0x6C00;
+    int SW_INS_NOT_SUPPORTED = 0x6D00;
+    int SW_CLA_NOT_SUPPORTED = 0x6E00;
+    int SW_COMMAND_CHAINING_NOT_SUPPORTED = 0x6884;
+    int SW_LAST_COMMAND_EXPECTED = 0x6883;
+    int SW_UNKNOWN = 0x6F00;
+    int SW_FILE_FULL = 0x6A84;
+    int SW_LOGICAL_CHANNEL_NOT_SUPPORTED = 0x6881;
+    int SW_SECURE_MESSAGING_NOT_SUPPORTED = 0x6882;
+    int SW_WARNING_STATE_UNCHANGED = 0x6200;
 
-    public static final byte OFFSET_CLA = 0;
-    public static final byte OFFSET_INS = 1;
-    public static final byte OFFSET_P1 = 2;
-    public static final byte OFFSET_P2 = 3;
-    public static final byte OFFSET_LC = 4;
-    public static final byte OFFSET_CDATA = 5;
+    byte OFFSET_CLA = 0;
+    byte OFFSET_INS = 1;
+    byte OFFSET_P1 = 2;
+    byte OFFSET_P2 = 3;
+    byte OFFSET_LC = 4;
+    byte OFFSET_CDATA = 5;
 
-    public static final byte CLA_ISO7816 = 0;
+    byte CLA_ISO7816 = 0;
 
-    public static final byte INS_SELECT = (byte)0xA4;
+    byte INS_SELECT = (byte)0xA4;
+    byte SELECT_P1_BY_FILEID = 0x00;
+    byte SELECT_P1_BY_NAME = 0x04;
+    byte SELECT_P2_FIRST_OR_ONLY = 0x00;
+    byte SELECT_P2_NEXT = 0x02;
 
-    public static final byte SELECT_P1_BY_FILEID = 0x00;
-    public static final byte SELECT_P1_BY_NAME = 0x04;
-    public static final byte SELECT_P2_FIRST_OR_ONLY = 0x00;
-    public static final byte SELECT_P2_NEXT = 0x02;
-
-    public static final byte INS_EXTERNAL_AUTHENTICATE = -126;
+    byte INS_EXTERNAL_AUTHENTICATE = -126;
 }
