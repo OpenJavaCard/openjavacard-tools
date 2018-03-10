@@ -12,7 +12,7 @@ import better.smartcard.util.HexUtil;
 public class GP implements ISO7816 {
 
     public static final byte CLA_ISO = (byte) CLA_ISO7816;
-    public static final byte CLA_GP = (byte) 0x80;
+    public static final byte CLA_GP  = (byte) 0x80;
     public static final byte CLA_MAC = (byte) 0x84;
 
     public static final byte INS_INITIALIZE_UPDATE = (byte) 0x50;
@@ -24,9 +24,9 @@ public class GP implements ISO7816 {
     public static final byte EXTERNAL_AUTHENTICATE_P1_RENC = 0x20;
 
     public static final byte INS_SELECT = ISO7816.INS_SELECT;
-    public static final byte SELECT_P1_BY_NAME = 0x04;
-    public static final byte SELECT_P2_FIRST = 0x00;
-    public static final byte SELECT_P2_NEXT = 0x02;
+    public static final byte SELECT_P1_BY_NAME = ISO7816.SELECT_P1_BY_NAME;
+    public static final byte SELECT_P2_FIRST_OR_ONLY = ISO7816.SELECT_P2_FIRST_OR_ONLY;
+    public static final byte SELECT_P2_NEXT = ISO7816.SELECT_P2_NEXT;
 
     public static final byte INS_MANAGE_CHANNEL = (byte) 0x70;
 
