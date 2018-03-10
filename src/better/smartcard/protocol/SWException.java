@@ -8,19 +8,23 @@ public class SWException extends CardException {
 
     int mSWCode;
 
-    SW mSWData;
+    SWInfo mSWData;
 
     public SWException(String message, int sw) {
         super(message);
         mSWCode = sw;
-        mSWData = SW.get(sw);
+        mSWData = SWInfo.get(sw);
+    }
+
+    public SWException(int sw) {
+        this(null, sw);
     }
 
     public int getCode() {
         return mSWCode;
     }
 
-    public SW getData() {
+    public SWInfo getInfo() {
         return mSWData;
     }
 
