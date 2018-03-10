@@ -63,15 +63,15 @@ public abstract class SCPProtocol implements VerboseString {
     }
 
     /**
-     * Check that the given security policy is supported
+     * Determine if the given security policy is supported
      *
      * This is version-specific because protocols express
      * support in version-dependent parameter bits and
      * have varying support for advanced features.
      *
-     * @param securityPolicy to check against
+     * @param securityPolicy to check
      */
-    public abstract void checkSecuritySupported(SCPSecurityPolicy securityPolicy) throws CardException;
+    public abstract boolean isSecuritySupported(SCPSecurityPolicy securityPolicy) throws CardException;
 
     /**
      * Stringify the parameters

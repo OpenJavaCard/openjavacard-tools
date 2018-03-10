@@ -431,7 +431,7 @@ public class GPSecureChannel extends CardChannel {
         mProtocolPolicy.checkProtocol(selected);
 
         // check against security policy
-        selected.checkSecuritySupported(mSecurityPolicy);
+        mSecurityPolicy.checkProtocol(selected);
 
         // decision to use the protocol
         mActiveProtocol = selected;

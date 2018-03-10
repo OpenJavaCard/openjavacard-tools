@@ -1,5 +1,7 @@
 package better.smartcard.gp.scp;
 
+import javax.smartcardio.CardException;
+
 /**
  * SCP security policies
  *
@@ -41,4 +43,16 @@ public enum SCPSecurityPolicy {
         requireRMAC = reqRMAC;
         requireRENC = reqRENC;
     }
+
+    /**
+     * Verify that the given protocol complies with this policy
+     * @param protocol to check
+     * @throws CardException if the protocol does not comply
+     */
+    public void checkProtocol(SCPProtocol protocol) throws CardException {
+        if(!protocol.isSecuritySupported(this)) {
+            throw new CardException("Security protocol " + protocol + " is insufficient for this security policy");
+        }
+    }
+
 }
