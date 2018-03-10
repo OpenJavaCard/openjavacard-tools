@@ -2,24 +2,35 @@
 <project name="javacard-tools"
          default="build">
 
-    <taskdef resource="proguard/ant/task.properties"
-             classpath="/opt/proguard/lib/proguard.jar"/>
+    <target name="ext-proguard">
+        <taskdef resource="proguard/ant/task.properties"
+                 classpath="/opt/proguard/lib/proguard.jar"/>
+    </target>
 
-    <target name="clean">
+    <target name="clean"
+            description="Delete build output">
         <delete dir="build"/>
     </target>
 
     <target name="build"
-            depends="build-jar">
+            depends="build-jar"
+            description="Build everything">
     </target>
 
-    <target name="build-depend">
+    <target name="build-dirs"
+            description="Build directories">
+        <mkdir dir="build"/>
         <mkdir dir="build/classes"/>
+        <mkdir dir="build/jar"/>
+    </target>
+
+    <target name="build-depend"
+            depends="build-dirs"
+            description="Build dependencies">
         <mkdir dir="build/classes/commons-codec"/>
         <mkdir dir="build/classes/slf4j-api"/>
         <mkdir dir="build/classes/slf4j-simple"/>
         <mkdir dir="build/classes/jcommander"/>
-        <!-- Compile dependencies -->
         <javac
                 debug="on"
                 includeantruntime="true"
@@ -45,14 +56,10 @@
 
     <target name="build-code"
             depends="build-depend">
-        <mkdir dir="build/classes"/>
         <mkdir dir="build/classes/javacard-tools"/>
-        <!-- Compile our own code -->
-        <javac
-                debug="on"
-                includeantruntime="true"
-                destdir="build/classes/javacard-tools"
-                srcdir="src">
+        <javac includeantruntime="false"
+               destdir="build/classes/javacard-tools"
+               srcdir="src">
             <classpath>
                 <pathelement path="build/classes/commons-codec"/>
                 <pathelement path="build/classes/slf4j-api"/>
@@ -60,13 +67,10 @@
                 <pathelement path="build/classes/jcommander"/>
             </classpath>
         </javac>
-
     </target>
 
     <target name="build-jar"
             depends="build-code">
-        <mkdir dir="build/jar"/>
-        <!-- Build the plain JAR -->
         <jar destfile="build/jar/javacard-tools-plain.jar">
             <fileset dir="build/classes/commons-codec"/>
             <fileset dir="build/classes/slf4j-api"
@@ -81,9 +85,7 @@
     </target>
 
     <target name="build-proguard"
-            depends="build-jar">
-        <mkdir dir="build/jar"/>
-        <!-- Obfuscate using proguard -->
+            depends="ext-proguard,build-jar">
         <proguard>
             -verbose
             -injars build/jar/javacard-tools-plain.jar
