@@ -2,8 +2,8 @@ package better.smartcard.commands;
 
 import better.smartcard.generic.GenericCard;
 import better.smartcard.generic.GenericContext;
-import better.smartcard.protocol.ISO7816;
-import better.smartcard.protocol.SWException;
+import better.smartcard.iso.ISO7816;
+import better.smartcard.iso.SWException;
 import better.smartcard.tool.converter.HexByteConverter;
 import better.smartcard.tool.converter.HexShortConverter;
 import better.smartcard.util.AID;

@@ -1,4 +1,4 @@
-package better.smartcard.protocol;
+package better.smartcard.iso;
 
 /**
  * Constants and helpers related to ISO7816 command CLA fields

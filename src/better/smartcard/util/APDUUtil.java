@@ -1,7 +1,7 @@
 package better.smartcard.util;
 
-import better.smartcard.protocol.ISO7816;
-import better.smartcard.protocol.SWInfo;
+import better.smartcard.iso.ISO7816;
+import better.smartcard.iso.SWInfo;
 
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
