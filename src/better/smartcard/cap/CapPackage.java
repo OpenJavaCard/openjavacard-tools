@@ -3,7 +3,7 @@ package better.smartcard.cap;
 import better.smartcard.gp.GPLoadFile;
 import better.smartcard.tlv.TLVUtil;
 import better.smartcard.iso.AID;
-import better.smartcard.util.BinUtil;
+import better.smartcard.util.ArrayUtil;
 import better.smartcard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,7 +228,7 @@ public class CapPackage implements VerboseString {
             byte[] raw = bos.toByteArray();
 
             // split the result into appropriate blocks
-            byte[][] blocks = BinUtil.splitBlocks(raw, blockSize);
+            byte[][] blocks = ArrayUtil.splitBlocks(raw, blockSize);
 
             // add the blocks to the load file
             for(byte[] block: blocks) {

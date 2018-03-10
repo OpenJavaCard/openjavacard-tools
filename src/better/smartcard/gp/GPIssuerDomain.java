@@ -46,7 +46,7 @@ public class GPIssuerDomain {
         req.cardIIN = iin;
         req.cardCIN = cin;
         req.cardISD = isd;
-        byte[][] blocks = BinUtil.splitBlocks(req.toBytes(), 128);
+        byte[][] blocks = ArrayUtil.splitBlocks(req.toBytes(), 128);
         for(byte i = 0; i < blocks.length; i++) {
             boolean lastBlock = i == (blocks.length - 1);
             performStoreData(blocks[i], i, lastBlock);
