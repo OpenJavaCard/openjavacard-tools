@@ -24,20 +24,15 @@ public class SCP03Protocol extends SCPProtocol {
     }
 
     @Override
-    public void checkSecuritySupported(SCPSecurityPolicy securityPolicy) throws CardException {
+    public boolean isSecuritySupported(SCPSecurityPolicy securityPolicy) {
         /* CMAC and CENC are always supported in SCP03 */
-        /* check for RMAC */
-        if(securityPolicy.requireRMAC) {
-            if(!rmacSupport) {
-                throw new CardException("Security policy error: card does not support RMAC");
-            }
+        if(securityPolicy.requireRMAC && !rmacSupport) {
+                return false;
         }
-        /* check for RENC */
-        if(securityPolicy.requireRENC) {
-            if(!rencSupport) {
-                throw new CardException("Security policy error: card does not support RENC");
-            }
+        if(securityPolicy.requireRENC && !rencSupport) {
+                return false;
         }
+        return true;
     }
 
     @Override
