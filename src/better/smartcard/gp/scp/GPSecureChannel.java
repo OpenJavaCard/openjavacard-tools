@@ -27,66 +27,53 @@ public class GPSecureChannel extends CardChannel {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPSecureChannel.class);
 
-    /**
-     * Random for generating the host challenge
-     */
+    /** Random for generating the host challenge */
     private SecureRandom mRandom;
 
-    /**
-     * Reference to the card for communication
-     */
+    /** Reference to the card for communication */
     private GPCard mCard;
 
-    /**
-     * Underlying card channel for communication
-     */
+    /** Underlying card channel for communication */
     private CardChannel mChannel;
 
-    /**
-     * Initial static keys
-     */
+    /** Initial static keys */
     private GPKeySet mStaticKeys;
 
-    /**
-     * Protocol policy in effect
-     */
+    /** Protocol policy in effect */
     private SCPProtocolPolicy mProtocolPolicy;
 
-    /**
-     * Security policy in effect
-     */
+    /** Security policy in effect */
     private SCPSecurityPolicy mSecurityPolicy;
 
-    /**
-     * Expected SCP protocol - 0 means ANY
-     */
+    /** Expected SCP protocol - 0 means ANY */
     private int mExpectedProtocol = 0;
 
-    /**
-     * Expected SCP parameters - 0 means ANY
-     */
+    /** Expected SCP parameters - 0 means ANY */
     private int mExpectedParameters = 0;
 
-    /**
-     * SCP protocol and parameters in use
-     */
+    /** SCP protocol and parameters in use */
     private SCPProtocol mActiveProtocol;
 
-    /**
-     * Derived session keys
-     */
+    /** Derived session keys */
     private GPKeySet mSessionKeys;
 
-    /**
-     * Helper performing wrapping/unwrapping of APDUs
-     */
+    /** Helper performing wrapping/unwrapping of APDUs */
     private SCPWrapper mWrapper;
 
-    /**
-     * True when authentication has succeeded and not been broken
-     */
+    /** True when authentication has succeeded and is unbroken */
     private boolean mIsEstablished;
 
+    /**
+     * Construct a new secure channel
+     *
+     * Objects are not intended to be reconfigured.
+     *
+     * @param card this channel is for
+     * @param channel to communicate on
+     * @param keys to use
+     * @param protocolPolicy to conform to
+     * @param securityPolicy to conform to
+     */
     public GPSecureChannel(GPCard card, CardChannel channel,
                            GPKeySet keys,
                            SCPProtocolPolicy protocolPolicy,
@@ -100,28 +87,43 @@ public class GPSecureChannel extends CardChannel {
         reset();
     }
 
-    public SCPProtocol getActiveProtocol() {
-        return mActiveProtocol;
-    }
-
-    public boolean isEstablished() {
-        return mIsEstablished;
-    }
-
-    public void expectProtocol(int protocol, int parameters) throws CardException {
-        mProtocolPolicy.checkProtocol(protocol, parameters);
-        mExpectedProtocol = protocol;
-        mExpectedParameters = parameters;
-    }
-
+    /** @return the card this channel is for */
     @Override
     public Card getCard() {
         return mChannel.getCard();
     }
 
+    /** @return the channel number of this channel */
     @Override
     public int getChannelNumber() {
         return mChannel.getChannelNumber();
+    }
+
+    /** @return the active SCP protocol on this channel */
+    public SCPProtocol getActiveProtocol() {
+        return mActiveProtocol;
+    }
+
+    /** @return true if the channel is established */
+    public boolean isEstablished() {
+        return mIsEstablished;
+    }
+
+    /**
+     * Inform the secure channel about the protocol to be used
+     *
+     * This call exists because protocol determination may happen late.
+     *
+     * The channel will check the protocol against its policy.
+     *
+     * @param protocol to be used
+     * @param parameters to be used
+     * @throws CardException when the protocol fails policy check
+     */
+    public void expectProtocol(int protocol, int parameters) throws CardException {
+        mProtocolPolicy.checkProtocol(protocol, parameters);
+        mExpectedProtocol = protocol;
+        mExpectedParameters = parameters;
     }
 
     /**

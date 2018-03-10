@@ -9,35 +9,26 @@ import javax.smartcardio.CardException;
  */
 public class SCP0102Protocol extends SCPProtocol {
 
-    /**
-     * Number of keys required (usually 1 or 3)
-     */
+    /** Number of keys required (usually 1 or 3) */
     public final int numKeys;
-    /**
-     * If true then C-MAC is computed on the unmodified CardAPDU (original CLA, INS, length)
-     */
+    /** If true then C-MAC is computed on the unmodified CardAPDU (original CLA, INS, length) */
     public final boolean cmacUnmodified;
-    /**
-     * If true then initialization must be explicit
-     */
+    /** If true then initialization must be explicit*/
     public final boolean initExplicit;
-    /**
-     * If true then the ICV (initial IV) is computed as MAC(AID), else it is MAC(ZEROBLOCK)
-     */
+    /** If true then the ICV (initial IV) is computed as MAC(AID), else it is MAC(ZEROBLOCK) */
     public final boolean icvMACAID;
-    /**
-     * If true then the ICV goes through an additional encryption step
-     */
+    /** If true then the ICV goes through an additional encryption step */
     public final boolean icvEncrypt;
-    /**
-     * True if R-MAC is supported
-     */
+    /** True if R-MAC is supported */
     public final boolean rmacSupport;
-    /**
-     * True if the card uses the well-known deterministic challenge generator
-     */
+    /** True if the card uses the well-known deterministic challenge generator */
     public final boolean wellKnown;
 
+    /**
+     * Parse the given protocol parameters
+     * @param protocol to be used
+     * @param parameters to be used
+     */
     SCP0102Protocol(int protocol, int parameters) {
         super(protocol, parameters);
 
