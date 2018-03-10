@@ -14,6 +14,7 @@ public class AID implements VerboseString {
     public static final int RID_OFFSET =  0;
     /** Length of a RID in an AID (5) */
     public static final int RID_LENGTH =  5;
+
     /** Offset of a PIX in an AID (5) */
     public static final int PIX_OFFSET =  5;
     /** Maximum length of a PIX in an AID (11) */
@@ -80,12 +81,12 @@ public class AID implements VerboseString {
         return res;
     }
 
-    /** Get the length of the PIX part of this AID */
+    /** @return the length of the PIX part of this AID */
     public int getPIXLength() {
         return mBytes.length - RID_LENGTH;
     }
 
-    /** Get the bytes comprising the PIX part of this AID */
+    /** @return bytes comprising the PIX part of this AID */
     public byte[] getPIXBytes() {
         int len = getPIXLength();
         byte[] res = new byte[PIX_LENGTH];
@@ -131,6 +132,7 @@ public class AID implements VerboseString {
         return new AID(hex);
     }
 
+    /** Stringify the AID verbosely */
     @Override
     public String toVerboseString() {
         byte[] rid = getRIDBytes();
