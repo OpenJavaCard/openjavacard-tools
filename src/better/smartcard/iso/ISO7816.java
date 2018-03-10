@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package better.smartcard.protocol;
+package better.smartcard.iso;
 
 /**
  * <code>ISO7816</code> encapsulates constants related to ISO 7816-3 and ISO 7816-4.

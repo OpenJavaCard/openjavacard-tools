@@ -1,6 +1,6 @@
 package better.smartcard.gp.protocol;
 
-import better.smartcard.protocol.ISO7816;
+import better.smartcard.iso.ISO7816;
 import better.smartcard.util.HexUtil;
 
 /**

@@ -1,8 +1,7 @@
 package better.smartcard.generic;
 
-import better.smartcard.gp.GPCard;
-import better.smartcard.protocol.ISO7816;
-import better.smartcard.protocol.SWException;
+import better.smartcard.iso.ISO7816;
+import better.smartcard.iso.SWException;
 import better.smartcard.util.APDUUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
