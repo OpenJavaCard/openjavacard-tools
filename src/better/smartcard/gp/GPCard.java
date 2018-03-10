@@ -11,7 +11,7 @@ import better.smartcard.gp.scp.SCPProtocolPolicy;
 import better.smartcard.gp.scp.SCPSecurityPolicy;
 import better.smartcard.iso.ISO7816;
 import better.smartcard.iso.SWException;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import better.smartcard.util.APDUUtil;
 import better.smartcard.util.HexUtil;
 import org.slf4j.Logger;

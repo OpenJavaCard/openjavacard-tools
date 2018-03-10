@@ -1,6 +1,6 @@
 package better.smartcard.tool.converter;
 
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.IStringConverterFactory;
 

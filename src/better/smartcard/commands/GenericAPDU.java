@@ -6,7 +6,7 @@ import better.smartcard.iso.ISO7816;
 import better.smartcard.iso.SWException;
 import better.smartcard.tool.converter.HexByteConverter;
 import better.smartcard.tool.converter.HexShortConverter;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import better.smartcard.util.APDUUtil;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;

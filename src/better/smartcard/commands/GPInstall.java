@@ -5,7 +5,7 @@ import better.smartcard.gp.GPContext;
 import better.smartcard.gp.GPIssuerDomain;
 import better.smartcard.gp.GPRegistry;
 import better.smartcard.gp.protocol.GPPrivilege;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;

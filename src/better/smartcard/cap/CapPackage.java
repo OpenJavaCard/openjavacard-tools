@@ -1,9 +1,8 @@
 package better.smartcard.cap;
 
-import better.smartcard.commands.GPLoad;
 import better.smartcard.gp.GPLoadFile;
 import better.smartcard.tlv.TLVUtil;
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 import better.smartcard.util.BinUtil;
 import better.smartcard.util.VerboseString;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.jar.Attributes;
 

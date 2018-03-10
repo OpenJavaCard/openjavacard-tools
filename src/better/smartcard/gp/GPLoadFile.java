@@ -1,6 +1,6 @@
 package better.smartcard.gp;
 
-import better.smartcard.util.AID;
+import better.smartcard.iso.AID;
 
 import java.util.ArrayList;
 import java.util.List;
