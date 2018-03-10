@@ -1,7 +1,7 @@
 package better.smartcard.util;
 
 import better.smartcard.protocol.ISO7816;
-import better.smartcard.protocol.SW;
+import better.smartcard.protocol.SWInfo;
 
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
@@ -52,7 +52,7 @@ public class APDUUtil {
         StringBuffer sb = new StringBuffer();
         int sw = apdu.getSW();
         sb.append("SW=" + HexUtil.hex16(sw));
-        SW swData = SW.get(sw);
+        SWInfo swData = SWInfo.get(sw);
         if (swData != null) {
             sb.append(" [");
             sb.append(swData.name);
