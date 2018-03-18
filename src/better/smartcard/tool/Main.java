@@ -1,7 +1,6 @@
 package better.smartcard.tool;
 
 import better.smartcard.commands.*;
-import better.smartcard.generic.GenericContext;
 import better.smartcard.gp.GPContext;
 import better.smartcard.tool.converter.ConverterFactory;
 import com.beust.jcommander.JCommander;
@@ -59,12 +58,12 @@ public class Main {
         }
     }
 
-    public static void main(String[] arguments) {
-        GPContext gpContext = new GPContext();
-        Main main = new Main();
-        JCommander jc = new JCommander(main);
+    public static JCommander makeCommander(GPContext gpContext) {
+        JCommander jc = new JCommander();
         jc.addConverterFactory(new ConverterFactory());
-        jc.addCommand(new Help(jc));
+
+        jc.addCommand(new CapInfo());
+        jc.addCommand(new CapSize());
 
         jc.addCommand(new GenericAPDU(gpContext));
         jc.addCommand(new GenericProbe(gpContext));
@@ -80,9 +79,18 @@ public class Main {
         jc.addCommand(new GPIdentity(gpContext));
         jc.addCommand(new GPKeys(gpContext));
 
-        jc.addCommand(new CapInfo());
-        jc.addCommand(new CapSize());
+        return jc;
+    }
 
+    public static void main(String[] arguments) {
+        GPContext gpContext = new GPContext();
+        JCommander jc = makeCommander(gpContext);
+        Main main = new Main();
+        Help help = new Help(jc);
+        Script script = new Script(gpContext);
+        jc.addObject(main);
+        jc.addCommand(help);
+        jc.addCommand(script);
         jc.parse(arguments);
         main.execute(jc);
     }
