@@ -22,12 +22,6 @@ import java.util.List;
 public class GenericAPDU extends GenericCommand {
 
     @Parameter(
-            names = "--select",
-            description = "Applet to select before executing"
-    )
-    AID select;
-
-    @Parameter(
             names = "--cla",
             description = "CLA of the command",
             converter = HexByteConverter.class,
@@ -61,7 +55,7 @@ public class GenericAPDU extends GenericCommand {
     File apduFile;
 
     @Parameter(
-            description = "Raw binary APDUs"
+            description = "Raw APDUs"
     )
     List<byte[]> raw;
 
@@ -75,20 +69,6 @@ public class GenericAPDU extends GenericCommand {
         CardChannel channel = card.getBasicChannel();
 
         byte[] data = buildData();
-
-        if (select != null) {
-            os.println("SELECT " + select);
-            CommandAPDU scapdu = APDUUtil.buildCommand(
-                    ISO7816.CLA_ISO7816, ISO7816.INS_SELECT,
-                    ISO7816.SELECT_P1_BY_NAME,
-                    ISO7816.SELECT_P2_FIRST_OR_ONLY,
-                    select.getBytes());
-            ResponseAPDU srapdu = card.transmit(channel, scapdu);
-            int sw = srapdu.getSW();
-            if (sw != ISO7816.SW_NO_ERROR) {
-                throw new SWException("Error selecting", sw);
-            }
-        }
 
         if (raw == null || raw.isEmpty()) {
             sendArg(os, card, channel, data);
