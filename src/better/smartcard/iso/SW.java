@@ -28,6 +28,9 @@ public class SW {
     public static String toString(int sw) {
         StringBuffer sb = new StringBuffer();
         SWInfo entry = SWInfo.get(sw);
+        sb.append("SW=");
+        sb.append(HexUtil.hex16(sw));
+        sb.append(" [");
         if (entry != null) {
             if (isWarning(sw)) {
                 sb.append("warning: ");
@@ -56,6 +59,7 @@ public class SW {
                 return "unknown error " + HexUtil.hex16(sw);
             }
         }
+        sb.append("]");
         return sb.toString();
     }
 

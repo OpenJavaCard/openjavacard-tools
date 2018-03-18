@@ -52,8 +52,4 @@ public class SWInfo implements ISO7816 {
         this.name = name;
     }
 
-    public String toString() {
-        return "SW=" + HexUtil.hex16(sw) + " [" + SW.toString(sw) + "]";
-    }
-
 }
