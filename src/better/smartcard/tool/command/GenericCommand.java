@@ -1,12 +1,9 @@
-package better.smartcard.commands;
+package better.smartcard.tool.command;
 
 import better.smartcard.generic.GenericCard;
 import better.smartcard.generic.GenericContext;
-import better.smartcard.gp.GPCard;
-import better.smartcard.gp.GPContext;
 import better.smartcard.iso.AID;
 import better.smartcard.util.ATRUtil;
-import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
 
 import javax.smartcardio.Card;

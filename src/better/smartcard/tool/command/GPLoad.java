@@ -1,4 +1,4 @@
-package better.smartcard.commands;
+package better.smartcard.tool.command;
 
 import better.smartcard.cap.CapFile;
 import better.smartcard.cap.CapPackage;

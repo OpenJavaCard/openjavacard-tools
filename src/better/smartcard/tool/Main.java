@@ -1,6 +1,6 @@
 package better.smartcard.tool;
 
-import better.smartcard.commands.*;
+import better.smartcard.tool.command.*;
 import better.smartcard.gp.GPContext;
 import better.smartcard.tool.converter.ConverterFactory;
 import com.beust.jcommander.JCommander;
