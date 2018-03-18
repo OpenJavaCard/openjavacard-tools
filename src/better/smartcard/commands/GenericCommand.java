@@ -4,6 +4,7 @@ import better.smartcard.generic.GenericCard;
 import better.smartcard.generic.GenericContext;
 import better.smartcard.gp.GPCard;
 import better.smartcard.gp.GPContext;
+import better.smartcard.iso.AID;
 import better.smartcard.util.ATRUtil;
 import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
@@ -20,7 +21,14 @@ public abstract class GenericCommand implements Runnable {
     )
     protected String reader = null;
 
+    @Parameter(
+            names = "--select",
+            description = "Applet to select before performing the operation"
+    )
+    protected AID select = null;
+
     GenericContext mContext;
+    GenericCard    mCard;
 
     public GenericCommand(GenericContext context) {
         mContext = context;
@@ -29,12 +37,18 @@ public abstract class GenericCommand implements Runnable {
     public void run() {
         PrintStream os = System.out;
 
-        GenericCard card = mContext.findSingleCard(reader);
+        mCard = mContext.findSingleCard(reader);
         try {
-            card.connect();
-            Card c = card.getCard();
-            os.println("CONNECTED " + c.getProtocol() + " ATR=" + ATRUtil.toString(c.getATR()));
-            performOperation(card);
+            mCard.connect();
+            Card card = mCard.getCard();
+            os.println("CONNECTED " + card.getProtocol() + " ATR=" + ATRUtil.toString(card.getATR()));
+            if (select != null) {
+                os.println("SELECT " + select);
+                mCard.performSelectByName(select.getBytes(), true);
+            }
+            performOperation(mCard);
+
+            mCard.disconnect();
         } catch (Exception e) {
             throw new Error("Error performing operation", e);
         }
