@@ -82,9 +82,9 @@ public class GenericCard {
      * @throws CardException for terminal and card errors
      */
     public ResponseAPDU transmit(CardChannel channel, CommandAPDU command) throws CardException {
-        LOG.info("apdu > " + APDUUtil.toString(command));
+        LOG.debug("apdu > " + APDUUtil.toString(command));
         ResponseAPDU response = channel.transmit(command);
-        LOG.info("apdu < " + APDUUtil.toString(response));
+        LOG.debug("apdu < " + APDUUtil.toString(response));
         return response;
     }
 
