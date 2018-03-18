@@ -1,4 +1,4 @@
-package better.smartcard.commands;
+package better.smartcard.tool.command;
 
 import better.smartcard.cap.*;
 import com.beust.jcommander.Parameter;

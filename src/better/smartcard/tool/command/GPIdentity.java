@@ -1,13 +1,11 @@
-package better.smartcard.commands;
+package better.smartcard.tool.command;
 
 import better.smartcard.gp.GPCard;
 import better.smartcard.gp.GPContext;
-import better.smartcard.util.HexUtil;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import javax.smartcardio.CardException;
-import java.io.PrintStream;
 
 @Parameters(
         commandNames = "gp-identity",

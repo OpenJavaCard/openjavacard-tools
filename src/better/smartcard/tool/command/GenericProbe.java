@@ -1,7 +1,6 @@
-package better.smartcard.commands;
+package better.smartcard.tool.command;
 
 import better.smartcard.generic.GenericContext;
-import better.smartcard.gp.GPContext;
 import com.beust.jcommander.Parameters;
 
 @Parameters(
