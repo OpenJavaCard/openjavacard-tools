@@ -123,7 +123,7 @@ public class GPIssuerDomain {
         request.moduleAID = moduleAID;
         request.appletAID = appletAID;
         request.privileges = appletPrivs;
-        request.installParameters = new byte[] { (byte)0xC9, (byte)0x00 };
+        request.installParameters = appletParams;
         // perform the request
         InstallForInstallResponse response = performInstallForInstall(request);
         // finish up
@@ -516,8 +516,10 @@ public class GPIssuerDomain {
                     bos.write(privileges);
                 }
                 if(installParameters == null) {
-                    throw new IOException("Install parameters are mandatory");
+                    bos.write(new byte[] { (byte)0x02, (byte)0xC9, (byte)0x00 });
                 } else {
+                    bos.write(installParameters.length + 2);
+                    bos.write((byte)0xC9);
                     bos.write(installParameters.length);
                     bos.write(installParameters);
                 }
