@@ -39,33 +39,39 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @Parameters(
-        commandNames = "scan-name"
+        commandNames = "scan-name",
+        commandDescription = "Generic: Scan a card using SELECT BY NAME"
 )
 public class GenericScanName extends GenericCommand {
 
     @Parameter(
             names = "--base",
-            converter = BytesConverter.class
+            converter = BytesConverter.class,
+            description = "AID to start scanning at"
     )
     byte[] aidBase;
 
     @Parameter(
-            names = "--count"
+            names = "--count",
+            description = "Number of sequential AIDs to try"
     )
     int aidCount = 256;
 
     @Parameter(
-            names = "--depth"
+            names = "--depth",
+            description = "Hierarchical depth of AIDs to try"
     )
     int aidDepth = 1;
 
     @Parameter(
-            names = "--recurse"
+            names = "--recurse",
+            description = "Recurse into found AIDs"
     )
     int aidRecurse;
 
     @Parameter(
-            names = "--verbose"
+            names = "--verbose",
+            description = "Display each AID while scanning"
     )
     boolean verbose;
 
