@@ -79,7 +79,7 @@
             <fileset dir="build/classes/jcommander"/>
             <fileset dir="build/classes/main"/>
             <manifest>
-                <attribute name="Main-Class" value="better.smartcard.tool.Main"/>
+                <attribute name="Main-Class" value="org.openjavacard.tool.Main"/>
             </manifest>
         </jar>
     </target>
@@ -94,8 +94,8 @@
             -libraryjars ${java.home}/lib/rt.jar
             -libraryjars ${java.home}/lib/jce.jar
             -keepattributes *Annotation*
-            -keep public class better.smartcard.tool.Main {
-                public static void main(java.lang.String[]);
+            -keep public class org.openjavacard.tool.Main {
+            public static void main(java.lang.String[]);
             }
         </proguard>
     </target>
