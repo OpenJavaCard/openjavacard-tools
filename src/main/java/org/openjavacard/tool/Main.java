@@ -86,7 +86,6 @@ public class Main {
         jc.addCommand(new CapSize());
 
         jc.addCommand(new GenericAPDU(gpContext));
-        jc.addCommand(new GenericProbe(gpContext));
         jc.addCommand(new GenericScanName(gpContext));
 
         jc.addCommand(new GPInfo(gpContext));
