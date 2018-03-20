@@ -4,6 +4,8 @@ This project is a toolkit for JavaCard development.
 
 CAUTION: This is still in its beta stage.
 
+[![Build Status](https://travis-ci.org/OpenJavaCard/openjavacard-tools.svg?branch=master)](https://travis-ci.org/OpenJavaCard/openjavacard-tools)
+
 It currently contains:
 
  * Implementation of GlobalPlatform as a clean-room library
