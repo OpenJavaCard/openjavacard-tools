@@ -17,6 +17,11 @@
             description="Build everything">
     </target>
 
+    <target name="test"
+            depends="build-test"
+            description="Run tests">
+    </target>
+
     <target name="build-dirs"
             description="Build directories">
         <mkdir dir="build"/>
@@ -67,6 +72,10 @@
                 <pathelement path="build/classes/jcommander"/>
             </classpath>
         </javac>
+    </target>
+
+    <target name="build-test"
+            depends="build-code">
     </target>
 
     <target name="build-jar"
