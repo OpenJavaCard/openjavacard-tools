@@ -59,7 +59,7 @@
         <mkdir dir="build/classes/main"/>
         <javac includeantruntime="false"
                destdir="build/classes/main"
-               srcdir="src">
+               srcdir="src/main/java">
             <classpath>
                 <pathelement path="build/classes/commons-codec"/>
                 <pathelement path="build/classes/slf4j-api"/>
