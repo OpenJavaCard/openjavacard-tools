@@ -61,7 +61,7 @@ public class GenericScanName extends GenericCommand {
             names = "--depth",
             description = "Hierarchical depth of AIDs to try"
     )
-    int aidDepth = 1;
+    int aidDepth = 0;
 
     @Parameter(
             names = "--recurse",
