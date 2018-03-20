@@ -30,12 +30,13 @@ import java.io.*;
 import java.util.List;
 
 @Parameters(
-        commandNames = "script"
+        commandNames = "script",
+        commandDescription = "Run commands from a script"
 )
 public class Script implements Runnable {
 
     @Parameter(
-            description = "Script to execute",
+            description = "Scripts to execute",
             required = true
     )
     List<File> scripts;

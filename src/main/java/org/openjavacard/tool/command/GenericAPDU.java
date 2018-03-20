@@ -36,7 +36,7 @@ import java.util.List;
 
 @Parameters(
         commandNames = "apdu",
-        commandDescription = "Send an APDU to the card "
+        commandDescription = "Generic: Send an APDU to the card "
 )
 public class GenericAPDU extends GenericCommand {
 
