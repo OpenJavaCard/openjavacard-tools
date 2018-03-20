@@ -37,22 +37,8 @@ public class Main {
     )
     boolean help = false;
 
-    @Parameter(
-            names = {"--log", "-l"},
-            description = "Set log level for debugging (info, debug, trace)"
-    )
-    String log = null;
-
     public void execute(JCommander jc) {
         Map<String, JCommander> commands = jc.getCommands();
-
-        if (log != null) {
-            /*
-            Level level = Level.valueOf(log);
-            Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-            rootLogger.setLevel(level);
-            */
-        }
 
         String commandName = jc.getParsedCommand();
         if (commandName == null) {
