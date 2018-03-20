@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="javacard-tools"
+<project name="openjavacard-tools"
          default="build">
 
     <target name="ext-proguard">
@@ -56,9 +56,9 @@
 
     <target name="build-code"
             depends="build-depend">
-        <mkdir dir="build/classes/javacard-tools"/>
+        <mkdir dir="build/classes/main"/>
         <javac includeantruntime="false"
-               destdir="build/classes/javacard-tools"
+               destdir="build/classes/main"
                srcdir="src">
             <classpath>
                 <pathelement path="build/classes/commons-codec"/>
@@ -71,13 +71,13 @@
 
     <target name="build-jar"
             depends="build-code">
-        <jar destfile="build/jar/javacard-tools-plain.jar">
+        <jar destfile="build/jar/openjavacard-tools-plain.jar">
             <fileset dir="build/classes/commons-codec"/>
             <fileset dir="build/classes/slf4j-api"
                      excludes="org/slf4j/impl/Static*.class"/>
             <fileset dir="build/classes/slf4j-simple"/>
             <fileset dir="build/classes/jcommander"/>
-            <fileset dir="build/classes/javacard-tools"/>
+            <fileset dir="build/classes/main"/>
             <manifest>
                 <attribute name="Main-Class" value="better.smartcard.tool.Main"/>
             </manifest>
@@ -88,8 +88,8 @@
             depends="ext-proguard,build-jar">
         <proguard>
             -verbose
-            -injars build/jar/javacard-tools-plain.jar
-            -outjars build/jar/javacard-tools-proguard.jar
+            -injars build/jar/openjavacard-tools-plain.jar
+            -outjars build/jar/openjavacard-tools-proguard.jar
             -printmapping build/jar/javacard-tools-proguard.map
             -libraryjars ${java.home}/lib/rt.jar
             -libraryjars ${java.home}/lib/jce.jar
