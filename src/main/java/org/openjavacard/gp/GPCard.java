@@ -42,12 +42,12 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Service object for a GlobalPlatform card
- *
+ * <p/>
  * This is responsible for identifying cards and their ISD
  * and generally ties the other modules together.
- *
+ * <p/>
  * All card communication by the library goes through here.
- *
+ * <p/>
  * Information that an ISD provides without authentication
  * can be gotten to via this class. Other information can
  * be obtained through the GPIssuerDomain and GPRegistry
@@ -69,25 +69,20 @@ public class GPCard {
             AID_GP, AID_NXP, AID_GEMALTO
     };
 
-    /**
-     * Library context in use
-     */
+    /** Library context in use */
     GPContext mContext;
     /**
-     * SmartcardIO terminal handle
-     */
+     * SmartcardIO terminal handle */
     CardTerminal mTerminal;
     /**
-     * SmartcardIO card handle
-     */
+     * SmartcardIO card handle */
     Card mCard;
     /**
-     * SmartcardIO basic channel
-     */
+     * SmartcardIO basic channel */
     CardChannel mBasic;
     /**
      * AID of the ISD
-     *
+     * <p/>
      * Provided by user or detected automatically by probing.
      */
     AID mISD;
@@ -105,25 +100,25 @@ public class GPCard {
     SCPSecurityPolicy mSecurityPolicy;
     /**
      * Card issuer identification number
-     *
+     * <p/>
      * Optional. Retrieved during connection process.
-     *
+     * <p/>
      * May be present when "unique identification" is supported.
      */
     byte[] mCardIIN;
     /**
      * Card image number
-     *
+     * <p/>
      * Optional. Retrieved during connection process.
-     *
+     * <p/>
      * May be present when "unique identification" is supported.
      */
     byte[] mCardCIN;
     /**
      * Card life cycle data
-     *
+     * <p/>
      * Optional. Retrieved during connection process.
-     *
+     * <p/>
      * This contains information such as the serial number of the card
      * as well as ISO-specified identifiers for the manufacturers
      * involved in making the card.
@@ -131,29 +126,29 @@ public class GPCard {
     GPLifeCycle mCardLifeCycle;
     /**
      * Card data
-     *
+     * <p/>
      * Required. Retrieved during connection process.
-     *
+     * <p/>
      * Used to determine the security protocol.
      */
     GPCardData mCardData;
     /**
      * Card key info
-     *
+     * <p/>
      * Required. Retrieved during connection process.
-     *
+     * <p/>
      * This indicates what keys the ISD wants to authenticate with.
      */
     GPKeyInfo mCardKeyInfo;
     /**
      * Our SCP secure channel
-     *
+     * <p/>
      * Created when secure session starts.
      */
     GPSecureChannel mSecure;
     /**
      * Registry instance
-     *
+     * <p/>
      * Cached representation of ISD-managed on-card
      * objects such as installed applets and security
      * domains.
@@ -161,7 +156,7 @@ public class GPCard {
     GPRegistry mRegistry;
     /**
      * Issuer domain access object
-     *
+     * <p/>
      * This is the interface to be used for communicating
      * with the ISD to perform the various operations
      * that it enables.
@@ -169,7 +164,7 @@ public class GPCard {
     GPIssuerDomain mIssuerDomain;
     /**
      * True when we are connected to an ISD
-     *
+     * <p/>
      * Being connected is defined as having a connection
      * to a card with authentication completed as required
      * by the active security policy.
@@ -192,67 +187,74 @@ public class GPCard {
         mIssuerDomain = new GPIssuerDomain(this);
     }
 
-    /* Host information */
+    /** @return the terminal in use */
     public CardTerminal getTerminal() {
         return mTerminal;
     }
+    /** @return the connected card */
     public Card getCard() {
         return mCard;
     }
-
-    /* Provided or detected ISD */
+    /** @return ISD AID in use */
     public AID getISD() {
         return mISD;
     }
-
-    /* Provided or resolved keyset */
+    /** @return keyset in use */
     public GPKeySet getKeys() {
         return mKeys;
     }
-
-    /* Policy information */
+    /** @return protocol policy in use */
     public SCPProtocolPolicy getProtocolPolicy() {
         return mProtocolPolicy;
     }
+    /** @return security policy in use */
     public SCPSecurityPolicy getSecurityPolicy() {
         return mSecurityPolicy;
     }
 
-    /* Information provided by card */
+    /** @return the active security protocol */
+    /** @return the issuer identification number (IIN) of the card, null if not provided by card */
     public byte[]      getCardIIN() {
         return mCardIIN;
     }
+    /** @return the card image number (CIN) of the card, null if not provided by card */
     public byte[]      getCardCIN() {
         return mCardCIN;
     }
+
+    /** @return ISO lifecycle information of the card, null if not provided by card */
     public GPLifeCycle getCardLifeCycle() {
         return mCardLifeCycle;
     }
+    /** @return GlobalPlatform card data of the card, null if not provided by card */
     public GPCardData getCardData() {
         return mCardData;
     }
+    /** @return GlobalPlatform key information of the card, null if not provided by card */
     public GPKeyInfo getCardKeyInfo() {
         return mCardKeyInfo;
     }
 
-    /* Subobjects for various services */
+    /** @return secure channel client */
     public GPSecureChannel getSecureChannel() {
         return mSecure;
     }
+    /** @return registry client */
     public GPRegistry getRegistry() {
         return mRegistry;
     }
+    /** @return issuer domain client */
     public GPIssuerDomain getIssuerDomain() {
         return mIssuerDomain;
     }
 
     /**
      * Returns a lifetime identifier for the card
-     *
+     * <p/>
      * This is constructed from information in the lifecycle structure.
-     *
+     * <p/>
      * XXX revisit identity strategy
-     *
+     * <p/>
      * @return a uniquely identifying string
      */
     public String getLifetimeIdentifier() {
@@ -537,8 +539,9 @@ public class GPCard {
 
     /**
      * Perform an ISO SELECT FILE BY NAME operation
+     *
      * @param name
-     * @return
+     * @return response data
      * @throws CardException
      */
     private byte[] selectFileByName(AID name) throws CardException {
@@ -554,8 +557,9 @@ public class GPCard {
 
     /**
      * Perform a GlobalPlatform GET DATA operation
+     *
      * @param p1p2
-     * @return
+     * @return data retrieved
      * @throws CardException
      */
     private byte[] readData(short p1p2) throws CardException {
@@ -581,8 +585,9 @@ public class GPCard {
     }
 
     /**
-     * Read the GlobalPlatform Life Cycle Data object
-     * @return
+     * Read the ISO life cycle data object
+     *
+     * @return the object
      * @throws CardException
      */
     private GPLifeCycle readCPLC() throws CardException {
@@ -594,8 +599,9 @@ public class GPCard {
     }
 
     /**
-     * Read the GlobalPlatform Card Data object
-     * @return
+     * Read the GlobalPlatform card data object
+     *
+     * @return the object
      * @throws CardException
      */
     private GPCardData readCardData() throws CardException {
@@ -610,8 +616,9 @@ public class GPCard {
     }
 
     /**
-     * Read the cards Issuer Identification Number
-     * @return
+     * Read the cards Issuer Identification Number (IIN)
+     *
+     * @return the IIN
      * @throws CardException
      */
     private byte[] readCardIIN() throws CardException {
@@ -620,8 +627,9 @@ public class GPCard {
     }
 
     /**
-     * Read the cards Card Image Number
-     * @return
+     * Read the cards Card Image Number (CIN)
+     *
+     * @return the CIN
      * @throws CardException
      */
     private byte[] readCardCIN() throws CardException {
@@ -631,7 +639,8 @@ public class GPCard {
 
     /**
      * Read the GlobalPlatform Application Information object
-     * @return
+     *
+     * @return the object
      * @throws CardException
      */
     private byte[] readApplicationInfo() throws CardException {
@@ -641,7 +650,8 @@ public class GPCard {
 
     /**
      * Read the GlobalPlatform Key Information object
-     * @return
+     *
+     * @return the object
      * @throws CardException
      */
     private GPKeyInfo readKeyInfo() throws CardException {
@@ -654,7 +664,8 @@ public class GPCard {
 
     /**
      * Read status information for the ISD
-     * @return
+     *
+     * @return the object
      * @throws CardException
      */
     byte[] readStatusISD() throws CardException {
@@ -663,7 +674,8 @@ public class GPCard {
 
     /**
      * Read status information for all Apps and SDs
-     * @return
+     *
+     * @return the object
      * @throws CardException
      */
     byte[] readStatusAppsAndSD() throws CardException {
@@ -672,7 +684,8 @@ public class GPCard {
 
     /**
      * Read status information for all ELF
-     * @return
+     *
+     * @return the object
      * @throws CardException
      */
     byte[] readStatusELF() throws CardException {
@@ -681,7 +694,8 @@ public class GPCard {
 
     /**
      * Read status information for all ExM and ELF
-     * @return
+     *
+     * @return the object
      * @throws CardException
      */
     byte[] readStatusEXMandELF() throws CardException {
@@ -690,10 +704,12 @@ public class GPCard {
 
     /**
      * Perform a GlobalPlatform READ STATUS operation
-     *
+     * <p/>
+     * Convenience form. XXX: document
+     * <p/>
      * @param p1Subset
      * @param p2Format
-     * @return
+     * @return data retrieved
      * @throws CardException
      */
     private byte[] readStatus(byte p1Subset, byte p2Format) throws CardException {
@@ -707,7 +723,7 @@ public class GPCard {
      * @param p1Subset
      * @param p2Format
      * @param criteria
-     * @return
+     * @return data retrieved
      * @throws CardException
      */
     private byte[] readStatus(byte p1Subset, byte p2Format, byte[] criteria) throws CardException {
@@ -824,11 +840,11 @@ public class GPCard {
 
     /**
      * Check the given R-APDU for error codes
-     *
+     * <p/>
      * GlobalPlatform is pleasantly simplistic in its error behaviour.
-     *
+     * <p/>
      * Everything except for 0x9000 is an error.
-     *
+     * <p/>
      * @param response to check
      * @throws CardException when the response is an error
      */

@@ -34,6 +34,17 @@ import javax.smartcardio.CardException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Client for GlobalPlatform registry functionality
+ * <p/>
+ * The registry is the on-card database metadata about:
+ * <ul>
+ * <li>Security domains (ISD and SSD)</li>
+ * <li>Executable load files (ELF) - equivalent to a JavaCard package</li>
+ * <li>Executable modules (ExM) - equivalent to a loaded JavaCard applet</li>
+ * <li>Applications (App) - equivalent to an installed JavaCard applet</li>
+ * </ul>
+ */
 public class GPRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPRegistry.class);

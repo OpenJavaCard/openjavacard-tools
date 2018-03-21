@@ -38,6 +38,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Client for GlobalPlatform issuer domain functionality
+ * <p/>
+ * Provides access to card management functionality.
+ */
 public class GPIssuerDomain {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPIssuerDomain.class);
@@ -50,11 +55,11 @@ public class GPIssuerDomain {
 
     /**
      * Change the identity values of the card
-     *
+     * <p/>
      * This allows setting of the CIN, IIN as well as the AID of the ISD.
-     *
+     * <p/>
      * Note that all parameters are optional.
-     *
+     * <p/>
      * @param cin to set or null
      * @param iin to set or null
      * @param isd to set or null
@@ -75,9 +80,9 @@ public class GPIssuerDomain {
 
     /**
      * Load the given load file onto the card
-     *
+     * <p/>
      * Will create a package on the card.
-     *
+     * <p/>
      * @param file to load
      * @throws CardException
      */
@@ -103,13 +108,13 @@ public class GPIssuerDomain {
 
     /**
      * Install an applet using the specified package and module
-     *
+     * <p/>
      * Will create an actual, potentially selectable, applet on the card.
-     *
+     * <p/>
      * If no appletAID is specified the moduleAID will be used.
      * If no appletPrivs is specified the applet will have no privileges.
      * If no appletParams is specified the install data will be empty.
-     *
+     * <p/>
      * @param packageAID AID of the package to install
      * @param moduleAID AID of the module to install
      * @param appletAID AID for the new applet (optional)
@@ -152,12 +157,12 @@ public class GPIssuerDomain {
 
     /**
      * Delete an object on the card
-     *
+     * <p/>
      * Can be used for applets and packages.
-     *
+     * <p/>
      * Related/dependent objects will not be deleted. Attempting
      * to delete an object that is still in use will fail.
-     *
+     * <p/>
      * @param aid of the object to be deleted
      * @throws CardException
      */
@@ -167,11 +172,11 @@ public class GPIssuerDomain {
 
     /**
      * Delete an object on the card
-     *
+     * <p/>
      * Can be used for applets and packages.
-     *
+     * <p/>
      * This variant allows the deletion of related/dependent objects.
-     *
+     * <p/>
      * @param aid of the object to be deleted
      * @param related true if dependent objects should be deleted
      * @throws CardException
@@ -200,15 +205,15 @@ public class GPIssuerDomain {
 
     /**
      * Check compatibility of keys
-     *
+     * <p/>
      * This can and should be used to check keys before uploading
      * them to the card. It verifies if the given keys comply with
      * the GPKeyInfo supplied by the card.
-     *
+     * <p/>
      * Service methods in this library will perform this check
      * automatically. This method is provided for use in client
      * application logic.
-     *
+     * <p/>
      * @param newKeys to check
      * @throws CardException
      */
@@ -221,11 +226,11 @@ public class GPIssuerDomain {
 
     /**
      * Replace secure messaging keys
-     *
+     * <p/>
      * This will irreversibly replace the secure messaging keys.
-     *
+     * <p/>
      * Compatibility of the keys will be checked before the operation.
-     *
+     * <p/>
      * @param newKeys to set
      * @throws CardException
      */
@@ -266,6 +271,7 @@ public class GPIssuerDomain {
 
     /**
      * Change the card state to INITIALIZED
+     *
      * @throws CardException
      */
     public void cardInitialized() throws CardException {
@@ -275,6 +281,7 @@ public class GPIssuerDomain {
 
     /**
      * Change the card state to SECURED
+     *
      * @throws CardException
      */
     public void cardSecured() throws CardException {
@@ -294,6 +301,8 @@ public class GPIssuerDomain {
 
     /**
      * Unlock locked card
+     *
+     * @throws CardException
      */
     public void unlockCard() throws CardException {
         LOG.debug("unlockCard()");
@@ -302,6 +311,7 @@ public class GPIssuerDomain {
 
     /**
      * Terminate the card
+     *
      * @throws CardException
      */
     public void terminateCard() throws CardException {

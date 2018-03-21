@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Represents a set of GlobalPlatform keys
- *
+ * Set of GlobalPlatform keys
+ * <p/>
  * Such a set can be used to represent a single master key,
  * a static set of keys, a set of diversified keys,
  * derived session keys or anything else.
@@ -96,7 +96,7 @@ public class GPKeySet {
      * Construct a keyset from a set of keys
      * <p/>
      * Keys for ENC, MAC and KEK can be specified separately.
-     *
+     * <p/>
      * @param name       of the keyset
      * @param keyVersion of the keyset
      * @param baseKeyId  first key id to use
@@ -115,7 +115,7 @@ public class GPKeySet {
      * Construct a keyset from a common master key
      * <p/>
      * The given key will be used for ENC, MAC and KEK.
-     *
+     * <p/>
      * @param name       of the keyset
      * @param keyVersion of the keyset
      * @param masterKey  to be used
@@ -191,7 +191,7 @@ public class GPKeySet {
      * Perform key diversification on the keyset
      * <p/>
      * Will generate and return a new set of diversified keys.
-     *
+     * <p/>
      * @param diversification function to be used
      * @param data            for diversification
      * @return keyset containing the diversified keys
@@ -273,9 +273,6 @@ public class GPKeySet {
         return derivedSet;
     }
 
-    /**
-     * @return a textual representation of this keyset
-     */
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("keyset \"" + mName + "\"");

@@ -27,12 +27,12 @@ import java.util.List;
 
 /**
  * Representation of a CAP file prepared for loading
- *
+ * <p/>
  * This contains CAP file components in load order,
  * split into blocks no bigger than indicated.
- *
+ * <p/>
  * Once loaded each of these will become an ELF on the card.
- *
+ * <p/>
  * These objects can be produced using methods in
  * {@link org.openjavacard.cap.CapPackage}.
  */
@@ -81,9 +81,9 @@ public class GPLoadFile {
 
     /**
      * Add a block to the load file
-     *
+     * <p/>
      * Use with care! Maximum block size will be adjusted!
-     *
+     * <p/>
      * @param block to add
      */
     public void addBlock(byte[] block) {

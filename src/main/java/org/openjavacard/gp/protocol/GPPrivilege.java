@@ -25,8 +25,7 @@ package org.openjavacard.gp.protocol;
  * <p/>
  * Privileges are given to applets and security domains.
  * <p/>
- * Some privileges are specific to one or the other.
- * <p/>
+ * Some privileges are specific to one type or the other, which is not yet represented here.
  */
 public enum GPPrivilege {
     SECURITY_DOMAIN(0, GP.PRIV1_SECURITY_DOMAIN, "Security Domain"),

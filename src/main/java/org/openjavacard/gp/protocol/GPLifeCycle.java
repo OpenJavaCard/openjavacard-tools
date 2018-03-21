@@ -30,10 +30,12 @@ import java.util.LinkedHashMap;
  * <p/>
  * This describes the card and how it has been treated
  * in various phases of production and provisioning.
- * <p/>
  */
 public class GPLifeCycle {
 
+    /**
+     * Definition of fields in an ISO CPLC
+     */
     public enum Field {
         ICFabricator(2),
         ICType(2),
@@ -54,15 +56,19 @@ public class GPLifeCycle {
         ICPersonalizationDate(2),
         ICPersonalizationEquipmentID(4);
 
+        /** Length of the field in bytes */
         public final int fieldLength;
 
+        /** Main constructor */
         Field(int length) {
             this.fieldLength = length;
         }
     }
 
+    /** HashMap containing field values */
     LinkedHashMap<Field, byte[]> mValues;
 
+    /** Get the value of a field in binary form */
     public byte[] getFieldValue(Field field) {
         if (mValues == null) {
             return null;
@@ -71,6 +77,7 @@ public class GPLifeCycle {
         }
     }
 
+    /** Get the value of a field in hexadecimal string form */
     public String getFieldHex(Field field) {
         byte[] value = getFieldValue(field);
         if(value == null) {
@@ -86,10 +93,20 @@ public class GPLifeCycle {
                 + "-s" + getFieldHex(GPLifeCycle.Field.ICSerialNumber);
     }
 
+    /**
+     * Deserialize the CPLC from the given data
+     * @param buf with data
+     */
     public void read(byte[] buf) {
         read(buf, 0, buf.length);
     }
 
+    /**
+     * Deserialize the CPLC from the given data
+     * @param buf containing data
+     * @param off of data
+     * @param len of data
+     */
     public void read(byte[] buf, int off, int len) {
         LinkedHashMap<Field, byte[]> values = new LinkedHashMap<>();
         int fieldOff = off + 3; // XXX: need to parse TLV with long tag
