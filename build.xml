@@ -27,6 +27,7 @@
         <mkdir dir="build"/>
         <mkdir dir="build/classes"/>
         <mkdir dir="build/jar"/>
+        <mkdir dir="build/javadoc"/>
     </target>
 
     <target name="build-depend"
@@ -91,6 +92,50 @@
                 <attribute name="Main-Class" value="org.openjavacard.tool.Main"/>
             </manifest>
         </jar>
+    </target>
+
+    <target name="build-javadoc"
+            depends="build-dirs">
+        <javadoc packagenames="org.openjavacard.*"
+                 sourcepath="src/main/java"
+                 defaultexcludes="yes"
+                 destdir="build/javadoc"
+                 author="true"
+                 version="true"
+                 use="true"
+                 windowtitle="Test API">
+            <doctitle><![CDATA[<h1>OpenJavaCard Development Tools</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2018 Ingo Albrecht. All Rights Reserved.</i>]]></bottom>
+
+            <group title="GlobalPlatform library">
+                <package name="org.openjavacard.gp"/>
+                <package name="org.openjavacard.gp.*"/>
+            </group>
+
+            <group title="CAP file library">
+                <package name="org.openjavacard.cap"/>
+                <package name="org.openjavacard.cap.*"/>
+            </group>
+
+            <group title="Command-line tool">
+                <package name="org.openjavacard.tool"/>
+                <package name="org.openjavacard.tool.*"/>
+            </group>
+
+            <group title="Utility functions">
+                <package name="org.openjavacard.generic"/>
+                <package name="org.openjavacard.iso"/>
+                <package name="org.openjavacard.tlv"/>
+                <package name="org.openjavacard.util"/>
+            </group>
+
+            <classpath>
+                <pathelement path="build/classes/commons-codec"/>
+                <pathelement path="build/classes/slf4j-api"/>
+                <pathelement path="build/classes/slf4j-simple"/>
+                <pathelement path="build/classes/jcommander"/>
+            </classpath>
+        </javadoc>
     </target>
 
 </project>
