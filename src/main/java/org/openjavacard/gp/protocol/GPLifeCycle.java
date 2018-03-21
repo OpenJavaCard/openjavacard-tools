@@ -86,11 +86,21 @@ public class GPLifeCycle {
         return HexUtil.bytesToHex(value);
     }
 
+    /**
+     * Get the lifetime identifier for the card
+     * <p/>
+     * The lifetime identifier tries to capture card identity
+     * based on CPLC information about the chip, including
+     * the fabricator, type, batch ID and serial number.
+     * <p/>
+     * @return the lifetime identifier
+     */
     public String getLifetimeIdentifier() {
         return "card"
-                + "-f" + getFieldHex(GPLifeCycle.Field.ICFabricator)
-                + "-t" + getFieldHex(GPLifeCycle.Field.ICType)
-                + "-s" + getFieldHex(GPLifeCycle.Field.ICSerialNumber);
+                + "-f" + getFieldHex(Field.ICFabricator)
+                + "-t" + getFieldHex(Field.ICType)
+                + "-b" + getFieldHex(Field.ICBatchIdentifier)
+                + "-s" + getFieldHex(Field.ICSerialNumber);
     }
 
     /**
