@@ -1,21 +1,11 @@
 ## Building openjavacard-tools
 
-The toolkit can be built using ant because it is much simpler than maven.
+### Gradle build
 
-A Maven build will be provided in the future.
-
-Dependencies are currently pulled in as submodules so that one can easily build this in a closed environment.
-
-Therefore you first need to pull in the dependencies:
+For convenient use the toolkit can be built using gradle:
 
 ```
-$ git submodule update --init
-```
-
-Then you can build the package:
-
-```
-$ ant
+$ ./gradlew fatJar
 ```
 
 You can then run the tool using the provided shell script:
@@ -40,13 +30,32 @@ $ ./run.sh
     script	Run commands from a script
 ```
 
+If you encounter problems or want verbose output you can use the "run-trace.sh" wrapper to run the tool with trace-level logging.
+
+### Standalone ant build
+
+The toolkit can also be built using ant because it is much simpler than maven
+and can be used on an offline system in a secure manner easily. 
+
+You need to download the dependencies using:
+
+```
+$ git submodule update --init
+```
+
+Then you can build the package:
+
+```
+$ ant
+```
+
 You can also run the tests (there are none yet, but soon there will be):
 
 ```
 $ ant test
 ```
 
-And also generate the reference JavaDoc:
+And generate the reference JavaDoc:
 
 ```
 $ ant javadoc
