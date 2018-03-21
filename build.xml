@@ -38,23 +38,23 @@
         <mkdir dir="build/classes/jcommander"/>
         <javac
                 debug="on"
-                includeantruntime="true"
+                includeantruntime="false"
                 destdir="build/classes/commons-codec"
                 srcdir="dep/commons-codec/src/main/java"/>
         <javac
                 debug="on"
-                includeantruntime="true"
+                includeantruntime="false"
                 destdir="build/classes/slf4j-api"
                 srcdir="dep/slf4j/slf4j-api/src/main/java"/>
         <javac
                 debug="on"
-                includeantruntime="true"
+                includeantruntime="false"
                 classpath="build/classes/slf4j-api"
                 destdir="build/classes/slf4j-simple"
                 srcdir="dep/slf4j/slf4j-simple/src/main/java"/>
         <javac
                 debug="on"
-                includeantruntime="true"
+                includeantruntime="false"
                 destdir="build/classes/jcommander"
                 srcdir="dep/jcommander/src/main/java"/>
     </target>
