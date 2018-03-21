@@ -7,7 +7,7 @@ repositories {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'org.openjavacard.tool.Main'
+                'Main-Class': 'org.openjavacard.tool.main.Main'
         )
     }
 }
@@ -38,4 +38,3 @@ task fatJar(type: Jar) {
     }
     with jar
 }
-

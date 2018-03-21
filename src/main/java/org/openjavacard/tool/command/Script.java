@@ -21,7 +21,7 @@
 package org.openjavacard.tool.command;
 
 import org.openjavacard.gp.GPContext;
-import org.openjavacard.tool.Main;
+import org.openjavacard.tool.main.Main;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;

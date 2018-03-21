@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.tool;
+package org.openjavacard.tool.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;

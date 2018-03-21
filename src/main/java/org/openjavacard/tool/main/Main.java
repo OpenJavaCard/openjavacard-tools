@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.tool;
+package org.openjavacard.tool.main;
 
 import org.openjavacard.tool.command.*;
 import org.openjavacard.gp.GPContext;

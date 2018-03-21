@@ -89,7 +89,7 @@
             <fileset dir="build/classes/jcommander"/>
             <fileset dir="build/classes/main"/>
             <manifest>
-                <attribute name="Main-Class" value="org.openjavacard.tool.Main"/>
+                <attribute name="Main-Class" value="org.openjavacard.tool.main.Main"/>
             </manifest>
         </jar>
     </target>
@@ -118,7 +118,6 @@
             </group>
 
             <group title="Command-line tool">
-                <package name="org.openjavacard.tool"/>
                 <package name="org.openjavacard.tool.*"/>
             </group>
 
