@@ -213,6 +213,13 @@ public class GPCard {
     }
 
     /** @return the active security protocol */
+    public SCPProtocol getProtocol() {
+        if (mSecure == null || !mSecure.isEstablished()) {
+            return null;
+        }
+        return mSecure.getActiveProtocol();
+    }
+
     /** @return the issuer identification number (IIN) of the card, null if not provided by card */
     public byte[]      getCardIIN() {
         return mCardIIN;
@@ -262,18 +269,6 @@ public class GPCard {
             return mCardLifeCycle.getLifetimeIdentifier();
         }
         return null;
-    }
-
-    /**
-     * Returns the negotiated security protocol
-     *
-     * @return description of the protocol
-     */
-    public SCPProtocol getProtocol() {
-        if (mSecure == null || !mSecure.isEstablished()) {
-            return null;
-        }
-        return mSecure.getActiveProtocol();
     }
 
     /**
