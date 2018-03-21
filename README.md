@@ -14,6 +14,7 @@ CAUTION: This is still in its beta stage, even for development use.
 ### Documentation
 
  * [Build instructions](doc/building.md)
+ * [Card compatibiliy](doc/cards.md)
 
 ### Features
 
