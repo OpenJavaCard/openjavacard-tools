@@ -1,42 +1,55 @@
 ## OpenJavaCard Development Tools
 
-This project is a toolkit for JavaCard development.
+This project is a toolkit for JavaCard development and provisioning.
 
-CAUTION: This is still in its beta stage.
+It contains library components as well as command-line tools for
+interacting with smartcards using the GlobalPlatform protocol,
+which allows upload and installation of packages and applets as
+well as various other management operations.
+
+CAUTION: This is still in its beta stage, even for development use.
 
 [![Build Status](https://travis-ci.org/OpenJavaCard/openjavacard-tools.svg?branch=master)](https://travis-ci.org/OpenJavaCard/openjavacard-tools)
 
-It currently contains:
+### Documentation
 
- * Implementation of GlobalPlatform as a clean-room library
- * Command-line tool for interacting with GlobalPlatform cards
- * Beginnings of a CAP processing library (load-file generation)
+ * [Build instructions](doc/building.md)
 
-Various bits are unfinished:
+### Features
 
- * Key handling commands have not been finished
- * Keystore support has not been finished
- * SCP03 is completely untested
- * SCP01 is mostly untested
- * Key diversification is not implemented
+ * Clean-room GlobalPlatform host library
+ * Partial CAP processing library
+ * Verbose command-line tools
+ * Provisioning tools
+   * GlobalPlatform commands
+ * Development tools
+   * Comfortable APDU command
+   * AID scanner
+   * CAP file info and sizing tool
+   * Klunky scripting
 
-The commandline tools have several advanced features:
+### Status
 
- * They can be used during development to install and
-   continuously reinstall a whole chain of dependent packages
- * They are verbose and have lots of logging so that
-   GlobalPlatform interaction can be debugged in detail
-
-The libraries has been developed with the following in mind:
-
- * Access to card information in an abstract manner so that
-   an automated provisioning system can use that information
-
-Features that the design does not support yet:
-
- * Offline generation of update command streams
- * Using DAP verification
-
-Goals that might take a while to achieve:
-
- * Implement a CAP converter and verifier so that one can go 100% opensource
+ * Experimental
+   * Not even a review
+   * Security considered but unverified
+   * May eat your homework and cyberize your cat
+ * Completeness
+   * Most GlobalPlatform commands implemented
+   * Key handling commands are incomplete but not missing much
+   * Card state and identity commands did not get much testing yet
+   * Works quite well for development on compatible cards
+ * Security protocols
+   * SCP02 seems to work okay
+   * SCP01 is mostly untested
+   * SCP03 is completely untested
+   * Key diversification is not implemented (some cards only)
+ * Plans
+   * Provide more documentation
+   * Establish testing and finish what is there
+   * Incrementally work on development usecase
+   * Offer a Maven build for more general applicability
+   * Planned: keystore support
+   * Planned: use for local provisioning and updates
+   * Not sure: offline command-stream generation
+   * Distant future: CAP conversion and verification
