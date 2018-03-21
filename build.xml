@@ -13,7 +13,7 @@
     </target>
 
     <target name="build"
-            depends="build-jar"
+            depends="build-test,build-jar"
             description="Build everything">
     </target>
 
