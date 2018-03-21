@@ -592,9 +592,12 @@ public class GPCard {
      */
     private GPLifeCycle readCPLC() throws CardException {
         LOG.debug("readCPLC()");
-        GPLifeCycle res = new GPLifeCycle();
+        GPLifeCycle res = null;
         byte[] data = readData(GP.GET_DATA_P12_CPLC);
-        res.read(data);
+        if(data != null) {
+            res = new GPLifeCycle();
+            res.read(data);
+        }
         return res;
     }
 
