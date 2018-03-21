@@ -136,11 +136,14 @@ public class GPRegistry {
         return null;
     }
 
-    public void update() {
+    /**
+     * Perform a full update of the registry
+     */
+    public void update() throws CardException {
         LOG.debug("updating registry");
 
         try {
-            ISDEntry isdEntry = null;
+            ISDEntry isdEntry;
             ArrayList<Entry> allEntries = new ArrayList<>();
             ArrayList<AppEntry> allApps = new ArrayList<>();
             ArrayList<AppEntry> allSSDs = new ArrayList<>();
@@ -169,7 +172,7 @@ public class GPRegistry {
             mAllELFs = allELFs;
             mAllSSDs = allSSDs;
         } catch (CardException e) {
-            throw new Error("Error updating registry", e);
+            throw new CardException("Error updating registry", e);
         }
     }
 
