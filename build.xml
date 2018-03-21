@@ -93,20 +93,4 @@
         </jar>
     </target>
 
-    <target name="build-proguard"
-            depends="ext-proguard,build-jar">
-        <proguard>
-            -verbose
-            -injars build/jar/openjavacard-tools-plain.jar
-            -outjars build/jar/openjavacard-tools-proguard.jar
-            -printmapping build/jar/javacard-tools-proguard.map
-            -libraryjars ${java.home}/lib/rt.jar
-            -libraryjars ${java.home}/lib/jce.jar
-            -keepattributes *Annotation*
-            -keep public class org.openjavacard.tool.Main {
-            public static void main(java.lang.String[]);
-            }
-        </proguard>
-    </target>
-
 </project>
