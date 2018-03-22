@@ -48,10 +48,17 @@ import javax.smartcardio.CardException;
  */
 public final class SCPProtocolPolicy {
 
-    /**
-     * Policy that allows any protocol to be used
-     */
+    /** Policy that allows any protocol to be used */
     public static final SCPProtocolPolicy PERMISSIVE = new SCPProtocolPolicy(0, 0);
+
+    /** Policy that allows only SCP01 to be used */
+    public static final SCPProtocolPolicy SCP01 = new SCPProtocolPolicy(0x01, 0);
+
+    /** Policy that allows only SCP02 to be used */
+    public static final SCPProtocolPolicy SCP02 = new SCPProtocolPolicy(0x02, 0);
+
+    /** Policy that allows only SCP03 to be used */
+    public static final SCPProtocolPolicy SCP03 = new SCPProtocolPolicy(0x03, 0);
 
     /**
      * SCP version to be used
@@ -98,6 +105,11 @@ public final class SCPProtocolPolicy {
     /** @return true if the given SCP protocol is allowed */
     public boolean isProtocolAllowed(int version, int parameters) {
         return isVersionAllowed(version) && isParametersAllowed(parameters);
+    }
+
+    /** @return true if the given SCP protocol is allowed */
+    public boolean isProtocolAllowed(SCPProtocol protocol) {
+        return isVersionAllowed(protocol.scpVersion) && isParametersAllowed(protocol.scpParameters);
     }
 
     /**
