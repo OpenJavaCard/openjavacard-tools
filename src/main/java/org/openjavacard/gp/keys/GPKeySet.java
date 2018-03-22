@@ -58,9 +58,9 @@ public class GPKeySet {
 
     GPKeyDiversification mDiversification;
 
-    ArrayList<GPKey> mKeys = new ArrayList<>();
-    Hashtable<GPKeyType, GPKey> mKeysByType = new Hashtable<>();
-    Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
+    final ArrayList<GPKey> mKeys = new ArrayList<>();
+    final Hashtable<GPKeyType, GPKey> mKeysByType = new Hashtable<>();
+    final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
 
     /**
      * Internal: base constructor for empty keysets

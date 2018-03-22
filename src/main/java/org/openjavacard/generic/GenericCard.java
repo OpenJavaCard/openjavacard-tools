@@ -37,10 +37,10 @@ public class GenericCard {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericCard.class);
 
-    GenericContext mContext;
-    CardTerminal mTerminal;
-    Card mCard;
-    CardChannel mBasic;
+    private GenericContext mContext;
+    private CardTerminal mTerminal;
+    private Card mCard;
+    private CardChannel mBasic;
 
     public GenericCard(GenericContext context, CardTerminal terminal) {
         mContext = context;

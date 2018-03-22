@@ -56,15 +56,15 @@ public class GPRegistry {
     private static final int TAG_GP_REGISTRY_PRIVILEGES = 0xC5;
     private static final int TAG_GP_REGISTRY_MODULE = 0x84;
 
-    GPCard mCard;
+    private final GPCard mCard;
 
-    ArrayList<Entry> mAllEntries = new ArrayList<>();
+    private ArrayList<Entry> mAllEntries = new ArrayList<>();
 
-    ISDEntry mISD = null;
+    private ISDEntry mISD = null;
 
-    ArrayList<AppEntry> mAllApps = new ArrayList<>();
-    ArrayList<AppEntry> mAllSSDs = new ArrayList<>();
-    ArrayList<ELFEntry> mAllELFs = new ArrayList<>();
+    private ArrayList<AppEntry> mAllApps = new ArrayList<>();
+    private ArrayList<AppEntry> mAllSSDs = new ArrayList<>();
+    private ArrayList<ELFEntry> mAllELFs = new ArrayList<>();
 
     GPRegistry(GPCard card) {
         mCard = card;
@@ -200,13 +200,13 @@ public class GPRegistry {
     }
 
     public static abstract class Entry implements VerboseString {
-        protected Type mType;
-        protected AID mAID;
-        protected byte mState;
-        protected byte[] mPrivileges;
-        protected List<AID> mModules;
+        final Type mType;
+        AID mAID;
+        byte mState;
+        byte[] mPrivileges;
+        List<AID> mModules;
 
-        protected Entry(Type type) {
+        Entry(Type type) {
             mType = type;
             mModules = new ArrayList<>();
         }
@@ -227,7 +227,7 @@ public class GPRegistry {
             return mModules;
         }
 
-        public void read(byte[] data) {
+        void read(byte[] data) {
             List<TLV> tlvs = TLVUtil.parseTags(data);
             List<AID> modules = new ArrayList<>();
             for (TLV tlv : tlvs) {
@@ -259,11 +259,11 @@ public class GPRegistry {
     }
 
     public static class AppEntry extends Entry {
-        public AppEntry() {
+        AppEntry() {
             super(Type.APP);
         }
 
-        protected AppEntry(Type type) {
+        AppEntry(Type type) {
             super(type);
         }
 
@@ -285,7 +285,7 @@ public class GPRegistry {
     }
 
     public static class ISDEntry extends AppEntry {
-        public ISDEntry() {
+        ISDEntry() {
             super(Type.ISD);
         }
 
@@ -303,7 +303,7 @@ public class GPRegistry {
     }
 
     public static class ELFEntry extends Entry {
-        public ELFEntry() {
+        ELFEntry() {
             super(Type.ELF);
         }
 

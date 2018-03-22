@@ -63,46 +63,46 @@ public class GPCard {
     private static final Logger LOG = LoggerFactory.getLogger(GPCard.class);
 
     /** AID for ISD specified in GlobalPlatform */
-    static final AID AID_GP = new AID("A000000003000000");
+    private static final AID AID_GP = new AID("A000000003000000");
     /** AID for ISD used by NXP cards */
-    static final AID AID_NXP = new AID("A000000151000000");
+    private static final AID AID_NXP = new AID("A000000151000000");
     /** AID for ISD used by Gemalto cards */
-    static final AID AID_GEMALTO = new AID("A000000018434D00");
+    private static final AID AID_GEMALTO = new AID("A000000018434D00");
 
     /** List of AIDs used to probe for the ISD of the card */
-    static final AID[] PROBE_AIDS = {
+    private static final AID[] PROBE_AIDS = {
             AID_GP, AID_NXP, AID_GEMALTO
     };
 
     /** Library context in use */
-    GPContext mContext;
+    private final GPContext mContext;
     /**
      * SmartcardIO terminal handle */
-    CardTerminal mTerminal;
+    private final CardTerminal mTerminal;
     /**
      * SmartcardIO card handle */
-    Card mCard;
+    private Card mCard;
     /**
      * SmartcardIO basic channel */
-    CardChannel mBasic;
+    private CardChannel mBasic;
     /**
      * AID of the ISD
      * <p/>
      * Provided by user or detected automatically by probing.
      */
-    AID mISD;
+    private AID mISD;
     /**
      * Keys to use for secure channel
      */
-    GPKeySet mKeys;
+    private GPKeySet mKeys;
     /**
      * Protocol policy for secure channel
      */
-    SCPProtocolPolicy mProtocolPolicy;
+    private SCPProtocolPolicy mProtocolPolicy;
     /**
      * Security policy for secure channel
      */
-    SCPSecurityPolicy mSecurityPolicy;
+    private SCPSecurityPolicy mSecurityPolicy;
     /**
      * Card issuer identification number
      * <p/>
@@ -110,7 +110,7 @@ public class GPCard {
      * <p/>
      * May be present when "unique identification" is supported.
      */
-    byte[] mCardIIN;
+    private byte[] mCardIIN;
     /**
      * Card image number
      * <p/>
@@ -118,7 +118,7 @@ public class GPCard {
      * <p/>
      * May be present when "unique identification" is supported.
      */
-    byte[] mCardCIN;
+    private byte[] mCardCIN;
     /**
      * Card life cycle data
      * <p/>
@@ -128,7 +128,7 @@ public class GPCard {
      * as well as ISO-specified identifiers for the manufacturers
      * involved in making the card.
      */
-    GPLifeCycle mCardLifeCycle;
+    private GPLifeCycle mCardLifeCycle;
     /**
      * Card data
      * <p/>
@@ -136,7 +136,7 @@ public class GPCard {
      * <p/>
      * Used to determine the security protocol.
      */
-    GPCardData mCardData;
+    private GPCardData mCardData;
     /**
      * Card key info
      * <p/>
@@ -144,13 +144,13 @@ public class GPCard {
      * <p/>
      * This indicates what keys the ISD wants to authenticate with.
      */
-    GPKeyInfo mCardKeyInfo;
+    private GPKeyInfo mCardKeyInfo;
     /**
      * Our SCP secure channel
      * <p/>
      * Created when secure session starts.
      */
-    GPSecureChannel mSecure;
+    private GPSecureChannel mSecure;
     /**
      * Registry instance
      * <p/>
@@ -158,7 +158,7 @@ public class GPCard {
      * objects such as installed applets and security
      * domains.
      */
-    GPRegistry mRegistry;
+    private final GPRegistry mRegistry;
     /**
      * Issuer domain access object
      * <p/>
@@ -166,7 +166,7 @@ public class GPCard {
      * with the ISD to perform the various operations
      * that it enables.
      */
-    GPIssuerDomain mIssuerDomain;
+    private final GPIssuerDomain mIssuerDomain;
     /**
      * True when we are connected to an ISD
      * <p/>
@@ -174,7 +174,7 @@ public class GPCard {
      * to a card with authentication completed as required
      * by the active security policy.
      */
-    boolean mIsConnected;
+    private boolean mIsConnected;
 
     /**
      * Main constructor

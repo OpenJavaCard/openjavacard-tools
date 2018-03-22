@@ -39,15 +39,15 @@ import java.util.List;
 public class GPLoadFile {
 
     /** AID of the package */
-    AID mPackageAID;
+    private final AID mPackageAID;
 
     /** Maximum size among all blocks */
-    int mBlockSize = 0;
+    private int mBlockSize = 0;
     /** Total size of the load file */
-    int mTotalSize = 0;
+    private int mTotalSize = 0;
 
     /** List of the actual blocks */
-    List<byte[]> mBlocks = new ArrayList<>();
+    private final List<byte[]> mBlocks = new ArrayList<>();
 
     /** Construct a new load file */
     public GPLoadFile(AID packageAID) {

@@ -26,9 +26,9 @@ import javax.smartcardio.CardException;
 
 public class SWException extends CardException {
 
-    int mSWCode;
+    final int mSWCode;
 
-    SWInfo mSWData;
+    final SWInfo mSWData;
 
     public SWException(String message, int sw) {
         super(message);
