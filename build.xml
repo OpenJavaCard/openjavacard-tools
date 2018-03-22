@@ -94,8 +94,8 @@
         </jar>
     </target>
 
-    <target name="build-javadoc"
-            depends="build-dirs">
+    <target name="javadoc"
+            depends="build-depend">
         <javadoc packagenames="org.openjavacard.*"
                  sourcepath="src/main/java"
                  defaultexcludes="yes"
