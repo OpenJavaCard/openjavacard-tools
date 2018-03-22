@@ -53,37 +53,26 @@ public class GPSecureChannel extends CardChannel {
 
     /** Random for generating the host challenge */
     private SecureRandom mRandom;
-
     /** Reference to the card for communication */
     private GPCard mCard;
-
     /** Underlying card channel for communication */
     private CardChannel mChannel;
-
     /** Initial static keys */
     private GPKeySet mStaticKeys;
-
     /** Protocol policy in effect */
     private SCPProtocolPolicy mProtocolPolicy;
-
     /** Security policy in effect */
     private SCPSecurityPolicy mSecurityPolicy;
-
     /** Expected SCP protocol - 0 means ANY */
     private int mExpectedProtocol = 0;
-
     /** Expected SCP parameters - 0 means ANY */
     private int mExpectedParameters = 0;
-
     /** SCP protocol and parameters in use */
     private SCPProtocol mActiveProtocol;
-
     /** Derived session keys */
     private GPKeySet mSessionKeys;
-
     /** Helper performing wrapping/unwrapping of APDUs */
     private SCPWrapper mWrapper;
-
     /** True when authentication has succeeded and is unbroken */
     private boolean mIsEstablished;
 
