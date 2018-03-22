@@ -70,8 +70,7 @@ public class CapInfo implements Runnable {
             os.println();
             try {
                 os.println("Reading CAP file " + file + "...");
-                CapReader reader = new CapReader(file);
-                CapFile capFile = reader.open();
+                CapFile capFile = CapReader.readFile(file);
                 os.println();
 
                 os.println("CAP file " + file.getName());

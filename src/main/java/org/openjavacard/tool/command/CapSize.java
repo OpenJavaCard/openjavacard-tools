@@ -54,8 +54,7 @@ public class CapSize implements Runnable {
             CapFile cap;
             try {
                 os.println("Reading CAP file " + file);
-                CapReader reader = new CapReader(file);
-                cap = reader.open();
+                cap = CapReader.readFile(file);
             } catch (Exception ex) {
                 throw new Error("Exception reading CAP file", ex);
             }

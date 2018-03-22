@@ -39,25 +39,19 @@ public class CapReader {
 
     private static final String FILE_MANIFEST = "META-INF/MANIFEST.MF";
 
-    File mFile;
-
-    Manifest mManifest;
-
-    Hashtable<String, byte[]> mFiles;
-
-    public CapReader(File file) {
-        mFile = file;
+    public static CapFile readFile(File file) throws IOException {
+        CapReader capReader = new CapReader();
+        return capReader.read(file);
     }
 
-    public Manifest getManifest() {
-        return mManifest;
+    public CapReader() {
     }
 
-    public CapFile open() throws IOException {
-        LOG.debug("opening CAP " + mFile);
+    public CapFile read(File file) throws IOException {
+        LOG.debug("opening CAP " + file);
 
         // create an input stream for the zip file
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(mFile));
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
 
         // zip entry during iteration
         ZipEntry ze;
@@ -70,7 +64,7 @@ public class CapReader {
         while ((ze = zis.getNextEntry()) != null) {
             String name = ze.getName();
             byte[] bytes = readZipEntry(zis, ze);
-            LOG.debug("file " + name + " (" + bytes.length + " bytes)");
+            LOG.debug("entry " + name + " (" + bytes.length + " bytes)");
             files.put(name, bytes);
             if (name.equals(FILE_MANIFEST)) {
                 manifest = new Manifest(new ByteArrayInputStream(bytes));
@@ -82,15 +76,12 @@ public class CapReader {
             throw new IOException("CAP file does not contain a manifest");
         }
 
-        // apply to members
-        mManifest = manifest;
-        mFiles = files;
-
         // parse the CAP contents
-        CapFile file = new CapFile();
-        file.read(manifest, files);
+        CapFile capFile = new CapFile();
+        capFile.read(manifest, files);
 
-        return file;
+        // return the result
+        return capFile;
     }
 
     private byte[] readZipEntry(ZipInputStream zis, ZipEntry entry) throws IOException {

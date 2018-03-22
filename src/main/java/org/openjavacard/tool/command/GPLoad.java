@@ -133,8 +133,7 @@ public class GPLoad extends GPCommand {
             CapFile capFile;
             try {
                 os.println("Reading file " + file);
-                CapReader capReader = new CapReader(file);
-                capFile = capReader.open();
+                capFile = CapReader.readFile(file);
                 CapPackage pkg = capFile.getPackage();
                 os.println("  aid " + pkg.getPackageAID());
                 os.println("  package " + pkg.getPackageName());
