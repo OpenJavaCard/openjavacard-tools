@@ -17,6 +17,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+/*
+ * This code has been developed on the basis of UtilTLV from IsoApplet.
+ */
+
 package org.openjavacard.tlv;
 
 import org.openjavacard.util.HexUtil;

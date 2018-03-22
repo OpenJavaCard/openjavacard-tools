@@ -54,3 +54,86 @@ CAUTION: This is still in its beta stage, even for development use.
    * Planned: use for local provisioning and updates
    * Not sure: offline command-stream generation
    * Distant future: CAP conversion and verification
+
+### Acknowledgements
+
+This project builds on the work of others. First and foremost it would have been
+impossible to develop without the prior research of countless others in the open
+community.
+
+Further, this project contains some routines from [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro)
+as well as [IsoApplet](https://github.com/philipWendland/IsoApplet/).
+While these will be replaced at some point they did allow me to concentrate on other aspects of the code and so they have my thanks.
+
+### Legal
+
+Vast majority of the code has been developed for this project:
+
+```
+OpenJavaCard Development Tools
+
+Copyright 2015-2018 Ingo Albrecht
+
+This software is licensed under the GNU GPL Version 3.
+See the file LICENSE in the source tree for further information.
+
+This software contains TLV parsing functions developed
+and published by Philip Wendland as part of IsoApplet, which
+are also licensed under the GNU GPL Version 3.
+
+Note that the GPL requires that you make the source code to
+your applet available to all your customers and that you
+inform your customers about this option by means of an
+explicit written offer. It is recommended to publish your
+modifications as open source software, just as this project
+is.
+```
+
+This project contains some crypto routines from [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro):
+
+```
+gpj - Global Platform for Java SmartCardIO
+
+Copyright (C) 2009 Wojciech Mostowski, woj@cs.ru.nl
+Copyright (C) 2009 Francois Kooman, F.Kooman@student.science.ru.nl
+Copyright (C) 2015-2017 Martin Paljak, martin@martinpaljak.net
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3.0 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+```
+
+As well as some TLV processing routines from [IsoApplet](https://github.com/philipWendland/IsoApplet/):
+
+```
+IsoApplet: A Java Card PKI applet aimiing for ISO 7816 compliance.
+
+Copyright (C) 2014 Philip Wendland, wendlandphilip@gmail.com
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+```
+
+At some point these license dependencies will be eliminated in the course of introducing keystore support and cleaning up TLV parsing, respectively.
