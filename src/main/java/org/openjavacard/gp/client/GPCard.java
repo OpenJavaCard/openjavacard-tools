@@ -391,7 +391,7 @@ public class GPCard {
             selectFileByName(mISD);
 
             // XXX
-            LOG.debug("static keys:\n" + mKeys.toString());
+            LOG.trace("static keys:\n" + mKeys.toString());
 
             // get the CPLC for reference
             try {
@@ -402,7 +402,7 @@ public class GPCard {
             if (mCardLifeCycle == null) {
                 LOG.warn("card did not return CPLC");
             } else {
-                LOG.debug("card production info:\n" + mCardLifeCycle.toString());
+                LOG.trace("card production info:\n" + mCardLifeCycle.toString());
             }
 
             // get card data, needed to determine SCP parameters
@@ -414,7 +414,7 @@ public class GPCard {
             if (mCardData == null) {
                 LOG.warn("card did not return GP card data");
             } else {
-                LOG.debug("card data:\n" + mCardData.toString());
+                LOG.trace("card data:\n" + mCardData.toString());
             }
 
             // get IIN and CIN if uniquely identifiable
@@ -438,7 +438,7 @@ public class GPCard {
             if (mCardKeyInfo == null) {
                 throw new CardException("Card did not return a GP key information template");
             } else {
-                LOG.debug("key information:\n" + mCardKeyInfo.toString());
+                LOG.trace("key information:\n" + mCardKeyInfo.toString());
                 if (mCardKeyInfo.matchesKeysetForUsage(mKeys)) {
                     LOG.debug("keys match key information");
                 } else {
