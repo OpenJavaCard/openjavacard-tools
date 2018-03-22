@@ -22,7 +22,6 @@ package org.openjavacard.cap;
 
 import org.openjavacard.gp.client.GPLoadFile;
 import org.openjavacard.iso.AID;
-import org.openjavacard.tlv.TLVUtil;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;

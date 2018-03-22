@@ -21,7 +21,6 @@
 package org.openjavacard.gp.protocol;
 
 import org.openjavacard.tlv.TLV;
-import org.openjavacard.tlv.TLVUtil;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;

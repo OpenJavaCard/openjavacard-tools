@@ -23,7 +23,6 @@ package org.openjavacard.gp.protocol;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.tlv.TLV;
-import org.openjavacard.tlv.TLVUtil;
 
 import java.util.ArrayList;
 import java.util.List;
