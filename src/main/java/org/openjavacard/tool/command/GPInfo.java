@@ -51,24 +51,23 @@ public class GPInfo extends GPCommand {
         os.println();
 
         CardTerminal terminal = card.getTerminal();
-        os.println("Host terminal information:");
+        os.println("Terminal information:");
         os.println("  Name \"" + terminal.getName() + "\"");
         os.println("  Class " + terminal.getClass().getName());
         os.println();
 
         Card scard = card.getCard();
-        os.println("Host card information:");
+        os.println("Card information:");
         os.println("  Protocol " + scard.getProtocol());
         os.println("  ATR " + ATRUtil.toString(scard.getATR()));
         os.println("  Class " + scard.getClass().getName());
         os.println();
 
-        os.println("Host GP information:");
+        os.println("Card identity:");
         String identifier = card.getLifetimeIdentifier();
         if(identifier != null) {
             os.println("  LID " + identifier);
         }
-        os.println("  ISD " + card.getISD());
         byte[] iin = card.getCardIIN();
         if(iin != null) {
             os.println("  IIN " + HexUtil.bytesToHex(iin));
@@ -77,11 +76,12 @@ public class GPInfo extends GPCommand {
         if(cin != null) {
             os.println("  CIN " + HexUtil.bytesToHex(cin));
         }
+        os.println("  ISD " + card.getISD());
         os.println();
 
         GPLifeCycle lifeCycle = card.getCardLifeCycle();
         if (lifeCycle == null) {
-            os.println("Card did not provide life cycle data");
+            os.println("Card has no lifecycle data");
         } else {
             os.println(lifeCycle.toString());
         }
@@ -89,7 +89,7 @@ public class GPInfo extends GPCommand {
 
         GPCardData cardData = card.getCardData();
         if (cardData == null) {
-            os.println("Card did not provide card data");
+            os.println("Card has no GlobalPlatform card data");
         } else {
             os.println(cardData.toString());
         }
@@ -105,7 +105,7 @@ public class GPInfo extends GPCommand {
 
         GPKeyInfo keyInfo = card.getCardKeyInfo();
         if (keyInfo == null) {
-            os.println("Card did not provide key info template");
+            os.println("Card has no GlobalPlatform key information");
         } else {
             os.println(keyInfo.toString());
         }

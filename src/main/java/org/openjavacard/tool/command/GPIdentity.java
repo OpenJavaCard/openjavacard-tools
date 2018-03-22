@@ -24,12 +24,16 @@ import org.openjavacard.gp.GPCard;
 import org.openjavacard.gp.GPContext;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.openjavacard.util.ATRUtil;
+import org.openjavacard.util.HexUtil;
 
+import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
+import java.io.PrintStream;
 
 @Parameters(
         commandNames = "gp-identity",
-        commandDescription = "GlobalPlatform: set card identity"
+        commandDescription = "GlobalPlatform: show or change card identity"
 )
 public class GPIdentity extends GPCommand {
 
@@ -57,7 +61,26 @@ public class GPIdentity extends GPCommand {
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
-        card.getIssuerDomain().changeIdentity(iin, cin, isd);
+        PrintStream os = System.out;
+        if(iin == null && cin == null && isd == null) {
+            os.println("Card identity:");
+            String identifier = card.getLifetimeIdentifier();
+            if(identifier != null) {
+                os.println("  LID " + identifier);
+            }
+            byte[] iin = card.getCardIIN();
+            if(iin != null) {
+                os.println("  IIN " + HexUtil.bytesToHex(iin));
+            }
+            byte[] cin = card.getCardCIN();
+            if(cin != null) {
+                os.println("  CIN " + HexUtil.bytesToHex(cin));
+            }
+            os.println("  ISD " + card.getISD());
+            os.println();
+        } else {
+            card.getIssuerDomain().changeIdentity(iin, cin, isd);
+        }
     }
 
 }
