@@ -65,15 +65,15 @@ public class GenericScanName extends GenericCommand {
 
     @Parameter(
             names = "--recurse",
-            description = "Recurse into found AIDs"
+            description = "Hierarchical depth to recurse into found AIDs"
     )
-    int aidRecurse;
+    int aidRecurse = 0;
 
     @Parameter(
             names = "--verbose",
             description = "Display each AID while scanning"
     )
-    boolean verbose;
+    boolean verbose = false;
 
     public GenericScanName(GenericContext context) {
         super(context);
