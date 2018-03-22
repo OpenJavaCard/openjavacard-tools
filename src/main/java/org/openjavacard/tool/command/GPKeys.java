@@ -20,6 +20,9 @@
 
 package org.openjavacard.tool.command;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
+import com.beust.jcommander.validators.PositiveInteger;
 import org.openjavacard.gp.GPCard;
 import org.openjavacard.gp.GPContext;
 import org.openjavacard.gp.keys.GPKey;
@@ -27,9 +30,6 @@ import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyType;
 import org.openjavacard.util.HexUtil;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
-import com.beust.jcommander.validators.PositiveInteger;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;

@@ -26,7 +26,12 @@ import org.openjavacard.util.APDUUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.smartcardio.*;
+import javax.smartcardio.Card;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
 
 public class GenericCard {
 

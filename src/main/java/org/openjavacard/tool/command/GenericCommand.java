@@ -20,11 +20,11 @@
 
 package org.openjavacard.tool.command;
 
+import com.beust.jcommander.Parameter;
 import org.openjavacard.generic.GenericCard;
 import org.openjavacard.generic.GenericContext;
 import org.openjavacard.iso.AID;
 import org.openjavacard.util.ATRUtil;
-import com.beust.jcommander.Parameter;
 
 import javax.smartcardio.Card;
 import javax.smartcardio.CardException;

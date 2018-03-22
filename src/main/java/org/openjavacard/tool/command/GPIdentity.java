@@ -20,14 +20,12 @@
 
 package org.openjavacard.tool.command;
 
-import org.openjavacard.gp.GPCard;
-import org.openjavacard.gp.GPContext;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.util.ATRUtil;
+import org.openjavacard.gp.GPCard;
+import org.openjavacard.gp.GPContext;
 import org.openjavacard.util.HexUtil;
 
-import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
 

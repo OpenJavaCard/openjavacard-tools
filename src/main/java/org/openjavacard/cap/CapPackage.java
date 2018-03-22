@@ -21,8 +21,8 @@
 package org.openjavacard.cap;
 
 import org.openjavacard.gp.GPLoadFile;
-import org.openjavacard.tlv.TLVUtil;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tlv.TLVUtil;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
@@ -30,7 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.jar.Attributes;
 
 public class CapPackage implements VerboseString {

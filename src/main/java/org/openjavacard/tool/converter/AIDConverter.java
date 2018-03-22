@@ -20,8 +20,8 @@
 
 package org.openjavacard.tool.converter;
 
-import org.openjavacard.iso.AID;
 import com.beust.jcommander.IStringConverter;
+import org.openjavacard.iso.AID;
 
 public class AIDConverter implements IStringConverter<AID> {
     @Override

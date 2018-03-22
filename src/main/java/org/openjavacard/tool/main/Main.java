@@ -20,11 +20,24 @@
 
 package org.openjavacard.tool.main;
 
-import org.openjavacard.tool.command.*;
-import org.openjavacard.gp.GPContext;
-import org.openjavacard.tool.converter.ConverterFactory;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import org.openjavacard.gp.GPContext;
+import org.openjavacard.tool.command.CapInfo;
+import org.openjavacard.tool.command.CapSize;
+import org.openjavacard.tool.command.GPDelete;
+import org.openjavacard.tool.command.GPExtradite;
+import org.openjavacard.tool.command.GPIdentity;
+import org.openjavacard.tool.command.GPInfo;
+import org.openjavacard.tool.command.GPInstall;
+import org.openjavacard.tool.command.GPKeys;
+import org.openjavacard.tool.command.GPList;
+import org.openjavacard.tool.command.GPLoad;
+import org.openjavacard.tool.command.GPState;
+import org.openjavacard.tool.command.GenericAPDU;
+import org.openjavacard.tool.command.GenericScanName;
+import org.openjavacard.tool.command.Script;
+import org.openjavacard.tool.converter.ConverterFactory;
 
 import java.util.Map;
 

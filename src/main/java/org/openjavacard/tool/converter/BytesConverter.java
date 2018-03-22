@@ -20,8 +20,8 @@
 
 package org.openjavacard.tool.converter;
 
-import org.openjavacard.util.HexUtil;
 import com.beust.jcommander.IStringConverter;
+import org.openjavacard.util.HexUtil;
 
 public class BytesConverter implements IStringConverter<byte[]> {
     @Override

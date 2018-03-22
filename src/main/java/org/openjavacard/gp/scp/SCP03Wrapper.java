@@ -20,10 +20,10 @@
 
 package org.openjavacard.gp.scp;
 
+import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyType;
-import org.openjavacard.gp.crypto.GPCrypto;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;

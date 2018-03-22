@@ -20,6 +20,7 @@
 
 package org.openjavacard.tool.command;
 
+import com.beust.jcommander.Parameter;
 import org.openjavacard.gp.GPCard;
 import org.openjavacard.gp.GPContext;
 import org.openjavacard.gp.keys.GPKeyDiversification;
@@ -27,10 +28,14 @@ import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;
 import org.openjavacard.iso.AID;
 import org.openjavacard.util.HexUtil;
-import com.beust.jcommander.Parameter;
 
 import javax.smartcardio.CardException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;

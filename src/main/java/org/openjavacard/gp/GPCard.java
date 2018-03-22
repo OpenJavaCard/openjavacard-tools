@@ -29,15 +29,20 @@ import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.gp.scp.SCPProtocol;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;
+import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
-import org.openjavacard.iso.AID;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.smartcardio.*;
+import javax.smartcardio.Card;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
 
 /**

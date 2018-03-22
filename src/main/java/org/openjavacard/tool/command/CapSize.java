@@ -20,10 +20,13 @@
 
 package org.openjavacard.tool.command;
 
-import org.openjavacard.cap.*;
-import org.openjavacard.gp.GPLoadFile;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.openjavacard.cap.CapComponent;
+import org.openjavacard.cap.CapFile;
+import org.openjavacard.cap.CapPackage;
+import org.openjavacard.cap.CapReader;
+import org.openjavacard.gp.GPLoadFile;
 
 import java.io.File;
 import java.io.PrintStream;

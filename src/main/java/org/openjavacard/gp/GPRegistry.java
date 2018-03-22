@@ -22,9 +22,9 @@ package org.openjavacard.gp;
 
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPPrivilege;
+import org.openjavacard.iso.AID;
 import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVUtil;
-import org.openjavacard.iso.AID;
 import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;

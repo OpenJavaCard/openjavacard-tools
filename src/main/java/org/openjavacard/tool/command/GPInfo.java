@@ -20,6 +20,7 @@
 
 package org.openjavacard.tool.command;
 
+import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.GPCard;
 import org.openjavacard.gp.GPContext;
 import org.openjavacard.gp.protocol.GPCardData;
@@ -28,7 +29,6 @@ import org.openjavacard.gp.protocol.GPLifeCycle;
 import org.openjavacard.gp.scp.SCPProtocol;
 import org.openjavacard.util.ATRUtil;
 import org.openjavacard.util.HexUtil;
-import com.beust.jcommander.Parameters;
 
 import javax.smartcardio.Card;
 import javax.smartcardio.CardTerminal;

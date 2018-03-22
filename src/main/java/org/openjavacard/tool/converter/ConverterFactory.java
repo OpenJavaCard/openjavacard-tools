@@ -20,9 +20,9 @@
 
 package org.openjavacard.tool.converter;
 
-import org.openjavacard.iso.AID;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.IStringConverterFactory;
+import org.openjavacard.iso.AID;
 
 public class ConverterFactory implements IStringConverterFactory {
     @Override

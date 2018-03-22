@@ -20,6 +20,8 @@
 
 package org.openjavacard.tool.command;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import org.openjavacard.generic.GenericCard;
 import org.openjavacard.generic.GenericContext;
 import org.openjavacard.iso.ISO7816;
@@ -27,8 +29,6 @@ import org.openjavacard.iso.SW;
 import org.openjavacard.tool.converter.BytesConverter;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.HexUtil;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;

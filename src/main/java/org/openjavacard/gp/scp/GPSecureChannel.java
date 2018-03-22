@@ -21,11 +21,11 @@
 package org.openjavacard.gp.scp;
 
 import org.openjavacard.gp.GPCard;
+import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyType;
 import org.openjavacard.gp.protocol.GP;
-import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SW;
 import org.openjavacard.iso.SWException;
@@ -35,7 +35,11 @@ import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.smartcardio.*;
+import javax.smartcardio.Card;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;
