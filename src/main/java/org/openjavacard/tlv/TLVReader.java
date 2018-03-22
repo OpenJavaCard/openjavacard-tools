@@ -48,7 +48,7 @@ public class TLVReader {
         return tlv;
     }
 
-    InputStream mStream;
+    private InputStream mStream;
 
     TLVReader(InputStream stream) {
         mStream = stream;
