@@ -28,7 +28,7 @@ import java.util.Arrays;
 /**
  * Representation for ISO7816 AIDs and RIDs
  */
-public class AID implements VerboseString {
+public class AID implements Comparable<AID>, VerboseString {
 
     /** Offset of a RID in an AID (0) */
     public static final int RID_OFFSET =  0;
@@ -163,6 +163,16 @@ public class AID implements VerboseString {
             res += HexUtil.bytesToHex(pix);
         }
         return res;
+    }
+
+    @Override
+    public int compareTo(AID o) {
+        if(equals(o)) {
+            return 0;
+        }
+        String tStr = toString();
+        String oStr = o.toString();
+        return tStr.compareTo(oStr);
     }
 
 }
