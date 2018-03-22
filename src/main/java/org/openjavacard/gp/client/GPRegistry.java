@@ -23,6 +23,7 @@ package org.openjavacard.gp.client;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPPrivilege;
 import org.openjavacard.iso.AID;
+import org.openjavacard.iso.AIDInfo;
 import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVUtil;
 import org.openjavacard.util.HexUtil;
@@ -280,6 +281,11 @@ public class GPRegistry {
             sb.append(mType.toString());
             sb.append(" ");
             sb.append(mAID.toString());
+            AIDInfo aidInfo = AIDInfo.get(mAID);
+            if(aidInfo != null) {
+                sb.append("\n  Label: ");
+                sb.append(aidInfo.label);
+            }
             sb.append("\n  State: ");
             sb.append(GP.appletStateString(mState));
             sb.append("\n  Privileges:");
@@ -298,6 +304,11 @@ public class GPRegistry {
             sb.append(mType.toString());
             sb.append(" ");
             sb.append(mAID.toString());
+            AIDInfo aidInfo = AIDInfo.get(mAID);
+            if(aidInfo != null) {
+                sb.append("\n  Label: ");
+                sb.append(aidInfo.label);
+            }
             sb.append("\n  State: ");
             sb.append(GP.cardStateString(mState));
             sb.append("\n  Privileges:");
@@ -316,6 +327,11 @@ public class GPRegistry {
             sb.append(mType.toString());
             sb.append(" ");
             sb.append(mAID.toString());
+            AIDInfo aidInfo = AIDInfo.get(mAID);
+            if(aidInfo != null) {
+                sb.append("\n  Label: ");
+                sb.append(aidInfo.label);
+            }
             sb.append("\n  State: ");
             sb.append(GP.elfStateString(mState));
             if (mModules != null && !mModules.isEmpty()) {
