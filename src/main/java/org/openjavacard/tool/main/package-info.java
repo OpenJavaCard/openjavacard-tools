@@ -1,4 +1,4 @@
 /**
- * Command-line interface
+ * Command-line tool
  */
 package org.openjavacard.tool.main;
