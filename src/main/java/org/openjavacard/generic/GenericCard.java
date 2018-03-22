@@ -79,6 +79,7 @@ public class GenericCard {
             mCard.disconnect(false);
             mCard = null;
         } catch (CardException e) {
+            // ignore
         }
     }
 
