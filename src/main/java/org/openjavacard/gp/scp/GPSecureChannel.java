@@ -20,7 +20,7 @@
 
 package org.openjavacard.gp.scp;
 
-import org.openjavacard.gp.GPCard;
+import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;

@@ -22,7 +22,7 @@ package org.openjavacard.tool.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.openjavacard.gp.GPContext;
+import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.tool.command.CapInfo;
 import org.openjavacard.tool.command.CapSize;
 import org.openjavacard.tool.command.GPDelete;

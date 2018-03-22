@@ -20,7 +20,7 @@
 
 package org.openjavacard.cap;
 
-import org.openjavacard.gp.GPLoadFile;
+import org.openjavacard.gp.client.GPLoadFile;
 import org.openjavacard.iso.AID;
 import org.openjavacard.tlv.TLVUtil;
 import org.openjavacard.util.ArrayUtil;

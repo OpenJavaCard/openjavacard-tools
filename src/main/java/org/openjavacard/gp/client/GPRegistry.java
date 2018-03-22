@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.gp;
+package org.openjavacard.gp.client;
 
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPPrivilege;

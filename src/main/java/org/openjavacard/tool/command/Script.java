@@ -23,7 +23,7 @@ package org.openjavacard.tool.command;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.gp.GPContext;
+import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.tool.main.Main;
 
 import java.io.BufferedReader;

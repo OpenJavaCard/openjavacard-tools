@@ -22,10 +22,10 @@ package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.gp.GPCard;
-import org.openjavacard.gp.GPContext;
-import org.openjavacard.gp.GPIssuerDomain;
-import org.openjavacard.gp.GPRegistry;
+import org.openjavacard.gp.client.GPCard;
+import org.openjavacard.gp.client.GPContext;
+import org.openjavacard.gp.client.GPIssuerDomain;
+import org.openjavacard.gp.client.GPRegistry;
 import org.openjavacard.gp.protocol.GPPrivilege;
 import org.openjavacard.iso.AID;
 import org.openjavacard.util.HexUtil;

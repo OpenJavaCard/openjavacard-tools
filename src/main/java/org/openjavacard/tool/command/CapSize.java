@@ -26,7 +26,7 @@ import org.openjavacard.cap.CapComponent;
 import org.openjavacard.cap.CapFile;
 import org.openjavacard.cap.CapPackage;
 import org.openjavacard.cap.CapReader;
-import org.openjavacard.gp.GPLoadFile;
+import org.openjavacard.gp.client.GPLoadFile;
 
 import java.io.File;
 import java.io.PrintStream;

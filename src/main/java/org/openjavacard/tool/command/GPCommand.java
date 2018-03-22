@@ -21,8 +21,8 @@
 package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
-import org.openjavacard.gp.GPCard;
-import org.openjavacard.gp.GPContext;
+import org.openjavacard.gp.client.GPCard;
+import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;

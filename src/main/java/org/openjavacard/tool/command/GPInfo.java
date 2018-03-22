@@ -21,8 +21,8 @@
 package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameters;
-import org.openjavacard.gp.GPCard;
-import org.openjavacard.gp.GPContext;
+import org.openjavacard.gp.client.GPCard;
+import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfo;
 import org.openjavacard.gp.protocol.GPLifeCycle;

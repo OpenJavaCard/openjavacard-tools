@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.gp;
+package org.openjavacard.gp.client;
 
 import org.openjavacard.generic.GenericContext;
 import org.openjavacard.iso.AID;

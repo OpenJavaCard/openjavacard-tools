@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.gp;
+package org.openjavacard.gp.client;
 
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;

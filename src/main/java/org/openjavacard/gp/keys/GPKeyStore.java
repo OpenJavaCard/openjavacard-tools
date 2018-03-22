@@ -20,7 +20,7 @@
 
 package org.openjavacard.gp.keys;
 
-import org.openjavacard.gp.GPCard;
+import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.protocol.GPKeyInfo;
 import org.openjavacard.gp.protocol.GPKeyInfoEntry;
 import org.slf4j.Logger;
