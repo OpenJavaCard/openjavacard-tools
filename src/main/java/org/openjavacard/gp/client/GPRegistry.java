@@ -74,6 +74,10 @@ public class GPRegistry {
         return mISD;
     }
 
+    public List<Entry> getAllEntries() {
+        return new ArrayList<>(mAllEntries);
+    }
+
     public List<AppEntry> getAllApps() {
         return new ArrayList<>(mAllApps);
     }
