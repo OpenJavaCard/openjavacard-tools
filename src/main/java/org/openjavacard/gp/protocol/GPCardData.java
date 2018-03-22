@@ -210,7 +210,7 @@ public class GPCardData {
             if (mSecurityProtocol != 0) {
                 sb.append("  Security protocol SCP"
                         + HexUtil.hex8(mSecurityProtocol)
-                        + "(" + HexUtil.hex8(mSecurityParameters) + ")");
+                        + "-" + HexUtil.hex8(mSecurityParameters));
             }
         } else {
             sb.append("  Not a GlobalPlatform card!?");

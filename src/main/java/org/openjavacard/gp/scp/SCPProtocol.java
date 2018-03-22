@@ -97,9 +97,9 @@ public abstract class SCPProtocol implements VerboseString {
      * Stringify the parameters
      */
     public String toString() {
-        String protocol = scpVersion == 0 ? "??" : HexUtil.hex8(scpVersion);
-        String parameters = scpParameters == 0 ? "??" : HexUtil.hex8(scpParameters);
-        return "SCP" + protocol + "(" + parameters + ")";
+        String protocol = scpVersion == 0 ? "?" : HexUtil.hex8(scpVersion);
+        String parameters = scpParameters == 0 ? "" : ("-" + HexUtil.hex8(scpParameters));
+        return "SCP" + protocol + parameters;
     }
 
     /**
