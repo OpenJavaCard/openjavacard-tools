@@ -318,7 +318,7 @@ public class GPSecureChannel extends CardChannel {
         }
 
         // XXX
-        LOG.debug("session keys:\n" + mSessionKeys.toString());
+        LOG.trace("session keys:\n" + mSessionKeys.toString());
 
         // verify the card cryptogram
         if (verifyCardCryptogram(hostChallenge, init.cardChallenge, init.cardCryptogram)) {
