@@ -31,7 +31,7 @@ public class SCP0102Protocol extends SCPProtocol {
     public final int numKeys;
     /** If true then C-MAC is computed on the unmodified CardAPDU (original CLA, INS, length) */
     public final boolean cmacUnmodified;
-    /** If true then initialization must be explicit*/
+    /** If true then initialization must be explicit */
     public final boolean initExplicit;
     /** If true then the ICV (initial IV) is computed as MAC(AID), else it is MAC(ZEROBLOCK) */
     public final boolean icvMACAID;
