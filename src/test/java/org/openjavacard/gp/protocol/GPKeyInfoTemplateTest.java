@@ -30,7 +30,10 @@ import java.util.List;
 
 public class GPKeyInfoTemplateTest extends TestCase {
 
-    static final GPKeyInfoTemplate KIT_SCP02_DEFAULT;
+    private static final byte[] KIT_SCP02_DEFAULT_BYTES =
+            HexUtil.hexToBytes("e012c00401ff8010c00402ff8010c00403ff8010");
+
+    private static final GPKeyInfoTemplate KIT_SCP02_DEFAULT;
     static {
         ArrayList<GPKeyInfo> infos = new ArrayList<>();
         infos.add(GPKeyInfoTest.KI_01_FF_DES_10);
@@ -39,10 +42,10 @@ public class GPKeyInfoTemplateTest extends TestCase {
         KIT_SCP02_DEFAULT = new GPKeyInfoTemplate(infos);
     }
 
-    static final byte[] KIT_SCP02_DEFAULT_BYTES = HexUtil.hexToBytes("e012c00401ff8010c00402ff8010c00403ff8010");
-
     public void testParse() throws IOException {
+        // parse reference bytes
         GPKeyInfoTemplate kit = GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_BYTES);
+        // all there is to check is the key infos
         List<GPKeyInfo> parsedKi = kit.getKeyInfos();
         // check number of key infos
         Assert.assertEquals(3, parsedKi.size());

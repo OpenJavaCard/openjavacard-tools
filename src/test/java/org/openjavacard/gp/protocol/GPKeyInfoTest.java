@@ -32,9 +32,9 @@ public class GPKeyInfoTest extends TestCase {
     static final GPKeyInfo KI_02_FF_DES_10 = new GPKeyInfo(2, 255, 0x80, 16);
     static final GPKeyInfo KI_03_FF_DES_10 = new GPKeyInfo(3, 255, 0x80, 16);
 
-    byte[] KI_01_FF_DES_10_BIN = HexUtil.hexToBytes("C00401ff8010");
-    byte[] KI_02_FF_DES_10_BIN = HexUtil.hexToBytes("C00402ff8010");
-    byte[] KI_03_FF_DES_10_BIN = HexUtil.hexToBytes("C00403ff8010");
+    private byte[] KI_01_FF_DES_10_BYTES = HexUtil.hexToBytes("C00401ff8010");
+    private byte[] KI_02_FF_DES_10_BYTES = HexUtil.hexToBytes("C00402ff8010");
+    private byte[] KI_03_FF_DES_10_BYTES = HexUtil.hexToBytes("C00403ff8010");
 
     static void assertKeyInfoEquals(GPKeyInfo expected, GPKeyInfo other) {
         Assert.assertEquals(expected.getKeyId(), other.getKeyId());
@@ -44,19 +44,19 @@ public class GPKeyInfoTest extends TestCase {
     }
 
     public void testParse() throws IOException {
-        GPKeyInfo ki1 = GPKeyInfo.fromBytes(KI_01_FF_DES_10_BIN);
+        GPKeyInfo ki1 = GPKeyInfo.fromBytes(KI_01_FF_DES_10_BYTES);
         assertKeyInfoEquals(KI_01_FF_DES_10, ki1);
         Assert.assertEquals(1, ki1.getKeyId());
         Assert.assertEquals(255, ki1.getKeyVersion());
         Assert.assertArrayEquals(new int[]{0x80}, ki1.getKeyTypes());
         Assert.assertArrayEquals(new int[]{0x10}, ki1.getKeySizes());
-        GPKeyInfo ki2 = GPKeyInfo.fromBytes(KI_02_FF_DES_10_BIN);
+        GPKeyInfo ki2 = GPKeyInfo.fromBytes(KI_02_FF_DES_10_BYTES);
         assertKeyInfoEquals(KI_02_FF_DES_10, ki2);
         Assert.assertEquals(2, ki2.getKeyId());
         Assert.assertEquals(255, ki2.getKeyVersion());
         Assert.assertArrayEquals(new int[]{0x80}, ki2.getKeyTypes());
         Assert.assertArrayEquals(new int[]{0x10}, ki2.getKeySizes());
-        GPKeyInfo ki3 = GPKeyInfo.fromBytes(KI_03_FF_DES_10_BIN);
+        GPKeyInfo ki3 = GPKeyInfo.fromBytes(KI_03_FF_DES_10_BYTES);
         assertKeyInfoEquals(KI_03_FF_DES_10, ki3);
         Assert.assertEquals(3, ki3.getKeyId());
         Assert.assertEquals(255, ki3.getKeyVersion());
