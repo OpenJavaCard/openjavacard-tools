@@ -20,8 +20,11 @@
 
 package org.openjavacard.tlv;
 
+import org.openjavacard.util.HexUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TLVPrimitive extends TLV {
@@ -41,11 +44,6 @@ public class TLVPrimitive extends TLV {
     @Override
     public byte[] getValueBytes() {
         return mData;
-    }
-
-    @Override
-    public String toVerboseString() {
-        return null;
     }
 
     public static TLVPrimitive readPrimitive(byte[] data) throws IOException {
@@ -72,6 +70,12 @@ public class TLVPrimitive extends TLV {
             res.add(reader.readPrimitive());
         }
         return res;
+    }
+
+    @Override
+    public String toString() {
+        return "TLV" + TLVTag.toString(mTag)
+                + ":" + HexUtil.bytesToHex(mData);
     }
 
 }

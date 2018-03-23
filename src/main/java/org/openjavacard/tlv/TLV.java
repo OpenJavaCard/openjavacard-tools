@@ -20,6 +20,7 @@
 
 package org.openjavacard.tlv;
 
+import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 
 import java.io.ByteArrayOutputStream;
@@ -27,9 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TLV implements VerboseString {
+public abstract class TLV {
 
-    private int mTag;
+    protected final int mTag;
 
     protected TLV(int tag) {
         mTag = tag;
@@ -37,18 +38,6 @@ public abstract class TLV implements VerboseString {
 
     public int getTag() {
         return mTag;
-    }
-
-    public int getChildCount() {
-        throw new UnsupportedOperationException();
-    }
-
-    public TLV getChild(int index) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<TLV> getChildren() {
-        throw new UnsupportedOperationException();
     }
 
     public int getValueLength() {
@@ -87,17 +76,43 @@ public abstract class TLV implements VerboseString {
         }
     }
 
+    public TLVPrimitive asPrimitive(int expectedTag) {
+        TLVPrimitive res = asPrimitive();
+        int tag = res.getTag();
+        if(tag != expectedTag) {
+            throw new IllegalArgumentException(
+                    "Wrong TLV tag: expected "
+                    + TLVTag.toString(expectedTag)
+                    + " got "
+                    + TLVTag.toString(tag));
+        }
+        return res;
+    }
+
     public TLVConstructed asConstructed() {
         if(this instanceof TLVConstructed) {
             return (TLVConstructed)this;
         } else {
             try {
-                List<TLV> children = readRecursives(getValueBytes());
+                List<TLV> children = new ArrayList<>(TLVPrimitive.readPrimitives(getValueBytes()));
                 return new TLVConstructed(mTag, children);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Error deconstructing TLV", e);
             }
         }
+    }
+
+    public TLVConstructed asConstructed(int expectedTag) {
+        TLVConstructed res = asConstructed();
+        int tag = res.getTag();
+        if(tag != expectedTag) {
+            throw new IllegalArgumentException(
+                    "Wrong TLV tag: expected "
+                            + TLVTag.toString(expectedTag)
+                            + " got "
+                            + TLVTag.toString(tag));
+        }
+        return res;
     }
 
     public static TLV readRecursive(byte[] data) throws IOException {

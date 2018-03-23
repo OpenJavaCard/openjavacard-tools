@@ -23,37 +23,68 @@ package org.openjavacard.tlv;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Stream-based parser for TLV structures
+ */
 public class TLVReader {
 
+    /** Input stream that we are parsing from */
     private InputStream mStream;
 
+    /** Construct reader for a stream */
     TLVReader(InputStream stream) {
         mStream = stream;
     }
 
+    /** Construct reader for a byte array */
     TLVReader(byte[] bytes) {
         this(new ByteArrayInputStream(bytes));
     }
 
+    /** Construct reader for a byte array */
     TLVReader(byte[] bytes, int offset, int length) {
         this(new ByteArrayInputStream(bytes, offset, length));
     }
 
+    /** Return true if there is more data */
     boolean hasMoreData() throws IOException {
         return mStream.available() > 0;
     }
 
+    /**
+     * Read one TLV structure recursively
+     * <p/>
+     * The structure must have consistent CONSTRUCTED flags.
+     * <p/>
+     * @return a TLV object
+     * @throws IOException
+     */
     TLV readRecursive() throws IOException {
         return readTLV(true);
     }
 
+    /**
+     * Read one TLV primitive structure
+     * <p/>
+     * This avoid parsing the contents recursively.
+     * <p/>
+     * @return a TLVPrimitive
+     * @throws IOException
+     */
     TLVPrimitive readPrimitive() throws IOException {
         return readTLV(false).asPrimitive();
     }
 
+    /**
+     * Read one TLV constructed structure
+     * <p/>
+     * Will fail when the structures contents are not valid TLV.
+     * <p/>
+     * @return a TLVConstructed
+     * @throws IOException
+     */
     TLVConstructed readConstructed() throws IOException {
         return readTLV(false).asConstructed();
     }
@@ -98,9 +129,9 @@ public class TLVReader {
     private int readTag() throws IOException {
         int first = readByte();
         int second = 0;
-        if (TLVTag.isLongForm(first)) {
+        if (TLVTag.byteIsLongForm(first)) {
             second = readByte();
-            if(!TLVTag.isLastByte(second)) {
+            if(!TLVTag.byteIsLast(second)) {
                 throw new IOException("TLV tag to long");
             }
         }

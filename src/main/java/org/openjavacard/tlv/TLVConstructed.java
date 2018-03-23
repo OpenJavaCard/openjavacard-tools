@@ -20,6 +20,8 @@
 
 package org.openjavacard.tlv;
 
+import org.openjavacard.util.HexUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,24 +35,16 @@ public class TLVConstructed extends TLV {
         mChildren = children;
     }
 
-    @Override
     public int getChildCount() {
         return mChildren.size();
     }
 
-    @Override
     public TLV getChild(int index) {
         return mChildren.get(index);
     }
 
-    @Override
     public List<TLV> getChildren() {
         return mChildren;
-    }
-
-    @Override
-    public String toVerboseString() {
-        return null;
     }
 
     public static TLVConstructed readConstructed(byte[] data) throws IOException {
@@ -77,6 +71,24 @@ public class TLVConstructed extends TLV {
             res.add(reader.readConstructed());
         }
         return res;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TLV");
+        sb.append(TLVTag.toString(mTag));
+        sb.append("{");
+        boolean first = true;
+        for(TLV tlv: mChildren) {
+            if(!first) {
+                sb.append(",");
+            }
+            sb.append(tlv.toString());
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
 }

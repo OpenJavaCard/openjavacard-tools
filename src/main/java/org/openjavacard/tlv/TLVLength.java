@@ -21,6 +21,7 @@
 package org.openjavacard.tlv;
 
 import org.openjavacard.util.BinUtil;
+import org.openjavacard.util.HexUtil;
 
 public class TLVLength {
 
@@ -56,6 +57,16 @@ public class TLVLength {
             return res;
         } else {
             return new byte[] { (byte)length };
+        }
+    }
+
+    public static final String toString(int length) {
+        if(length > 32767) {
+            throw new IllegalArgumentException("Length " + length + " is to large");
+        } if(length > 255) {
+            return HexUtil.hex16(length);
+        } else {
+            return HexUtil.hex8(length);
         }
     }
 

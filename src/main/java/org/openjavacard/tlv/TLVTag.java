@@ -20,9 +20,13 @@
 
 package org.openjavacard.tlv;
 
+import org.openjavacard.util.HexUtil;
+
 public class TLVTag {
 
-    public static final int TYPE_MASK = 0x1F00;
+    public static final int TYPE_MASK = 0x1F7F;
+    public static final int TYPE_MASK_FIRST = 0x1F00;
+
     public static final int TYPE_EOC = 0x0000;
     public static final int TYPE_BOOLEAN = 0x0100;
     public static final int TYPE_INTEGER = 0x0200;
@@ -66,33 +70,31 @@ public class TLVTag {
     private static final byte TAGBYTE_FIRST_TYPE_LONG = (byte)0x1F;
     private static final byte TAGBYTE_FLAG_CONTINUES = (byte)0x80;
 
-    public static final boolean isLongForm(int firstByte) {
+    public static final boolean byteIsLongForm(int firstByte) {
         return (firstByte & TAGBYTE_FIRST_TYPE_MASK) == TAGBYTE_FIRST_TYPE_LONG;
     }
 
-    public static final boolean isLastByte(int tagByte) {
+    public static final boolean byteIsLast(int tagByte) {
         return (tagByte & TAGBYTE_FLAG_CONTINUES) == 0;
     }
 
-    public static final int getClassValue(int tag) {
-        return (tag & CLASS_MASK);
-    }
 
     public static final boolean isUniversal(int tag) {
-        return getClassValue(tag) == CLASS_UNIVERSAL;
+        return tagClass(tag) == CLASS_UNIVERSAL;
     }
 
     public static final boolean isApplication(int tag) {
-        return getClassValue(tag) == CLASS_APPLICATION;
+        return tagClass(tag) == CLASS_APPLICATION;
     }
 
     public static final boolean isContext(int tag) {
-        return getClassValue(tag) == CLASS_CONTEXT;
+        return tagClass(tag) == CLASS_CONTEXT;
     }
 
     public static final boolean isPrivate(int tag) {
-        return getClassValue(tag) == CLASS_PRIVATE;
+        return tagClass(tag) == CLASS_PRIVATE;
     }
+
 
     public static final boolean isPrimitive(int tag) {
         return (tag & CONSTRUCTED_FLAG) == 0;
@@ -102,9 +104,31 @@ public class TLVTag {
         return (tag & CONSTRUCTED_FLAG) != 0;
     }
 
+
+    public static final int tagClass(int tag) {
+        return (tag & CLASS_MASK);
+    }
+
+    public static final int tagType(int tag) {
+        return (tag & TYPE_MASK);
+    }
+
+    public static final boolean tagIsLong(int tag) {
+        return (tag & TYPE_MASK_FIRST) == TYPE_LONG;
+    }
+
+
+    public static int tagFirstByte(int tag) {
+        return (tag >> 8) & 0xFF;
+    }
+
+    public static int tagSecondByte(int tag) {
+        return tag & 0xFF;
+    }
+
     public static final int tagSize(int tag) {
-        if(isLongForm(tag & 0xFF)) {
-            if(!isLastByte((tag >> 8) & 0xFF)) {
+        if(byteIsLongForm(tagFirstByte(tag))) {
+            if(!byteIsLast(tagSecondByte(tag))) {
                 throw new IllegalArgumentException("Tag is longer than two bytes");
             }
             return 2;
@@ -114,16 +138,24 @@ public class TLVTag {
     }
 
     public static final byte[] tagBytes(int tag) {
-        if(isLongForm(tag & 0xFF)) {
-            if(!isLastByte((tag >> 8) & 0xFF)) {
+        if(byteIsLongForm(tagFirstByte(tag))) {
+            if(!byteIsLast(tagSecondByte(tag))) {
                 throw new IllegalArgumentException("Tag is longer than two bytes");
             }
             byte[] res = new byte[2];
-            res[0] = (byte)(tag & 0xFF);
-            res[1] = (byte)((tag >> 8) & 0xFF);
+            res[0] = (byte)tagFirstByte(tag);
+            res[1] = (byte)tagSecondByte(tag);
             return res;
         } else {
             return new byte[] { (byte)(tag & 0xFF) };
+        }
+    }
+
+    public static final String toString(int tag) {
+        if(tagIsLong(tag)) {
+            return HexUtil.hex16(tag);
+        } else {
+            return HexUtil.hex8(tagFirstByte(tag));
         }
     }
 
