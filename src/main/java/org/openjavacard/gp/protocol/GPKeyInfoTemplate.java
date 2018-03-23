@@ -24,7 +24,6 @@ import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVConstructed;
-import org.openjavacard.tlv.TLVPrimitive;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,14 +41,21 @@ import java.util.List;
  */
 public class GPKeyInfoTemplate {
 
+    /** Tag of GP key information templates */
     private static final int TAG_KEY_INFO_TEMPLATE = 0xE000;
-    private static final int TAG_KEY_INFO = 0xC000;
 
-    List<GPKeyInfo> mKeyInfos = new ArrayList<>();
+    /** Key infos in this template */
+    private final ArrayList<GPKeyInfo> mKeyInfos;
 
-    public GPKeyInfoTemplate() {
+    /**
+     * Construct a Key Information Template
+     * @param keyInfos to include
+     */
+    public GPKeyInfoTemplate(List<GPKeyInfo> keyInfos) {
+        mKeyInfos = new ArrayList<>(keyInfos);
     }
 
+    /** Return the Key Information objects in this template */
     public List<GPKeyInfo> getKeyInfos() {
         return new ArrayList<>(mKeyInfos);
     }
@@ -84,25 +90,6 @@ public class GPKeyInfoTemplate {
         return true;
     }
 
-    public void read(byte[] buf) throws IOException {
-        // kit is a constructed TLV
-        TLVConstructed kitTlv = TLVConstructed.readConstructed(buf).asConstructed(TAG_KEY_INFO_TEMPLATE);
-        // collect key infos
-        ArrayList<GPKeyInfo> infos = new ArrayList<>();
-        // for each child
-        for (TLV kiTlv : kitTlv.getChildren()) {
-            // check its tag
-            TLVPrimitive ki = kiTlv.asPrimitive(TAG_KEY_INFO);
-            // parse
-            GPKeyInfo info = new GPKeyInfo();
-            info.read(ki.getValueBytes());
-            // add
-            infos.add(info);
-        }
-        // update fields
-        mKeyInfos = infos;
-    }
-
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("GP Key Information Template:");
@@ -111,6 +98,20 @@ public class GPKeyInfoTemplate {
             sb.append(info.toString());
         }
         return sb.toString();
+    }
+
+    /** Parse a Key Information Template from bytes */
+    public static GPKeyInfoTemplate fromBytes(byte[] buf) throws IOException {
+        ArrayList<GPKeyInfo> infos = new ArrayList<>();
+        // KIT is a constructed TLV
+        TLVConstructed kitTlv = TLVConstructed.readConstructed(buf).asConstructed(TAG_KEY_INFO_TEMPLATE);
+        // for each child
+        for (TLV kiTlv : kitTlv.getChildren()) {
+            // parse and add
+            infos.add(GPKeyInfo.fromTLV(kiTlv));
+        }
+        // construct and return instance
+        return new GPKeyInfoTemplate(infos);
     }
 
 }

@@ -664,10 +664,10 @@ public class GPCard {
      */
     private GPKeyInfoTemplate readKeyInfo() throws CardException {
         LOG.debug("readKeyInfo()");
-        GPKeyInfoTemplate res = new GPKeyInfoTemplate();
+        GPKeyInfoTemplate res;
         byte[] data = readData(GP.GET_DATA_P12_KEY_INFO_TEMPLATE);
         try {
-            res.read(data);
+            res = GPKeyInfoTemplate.fromBytes(data);
         } catch (IOException e) {
             throw new CardException("Error parsing key info", e);
         }
