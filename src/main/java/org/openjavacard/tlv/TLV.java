@@ -24,6 +24,7 @@ import org.openjavacard.util.VerboseString;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TLV implements VerboseString {
@@ -91,12 +92,38 @@ public abstract class TLV implements VerboseString {
             return (TLVConstructed)this;
         } else {
             try {
-                List<TLV> children = TLVReader.readMultiple(getValueBytes());
+                List<TLV> children = readRecursives(getValueBytes());
                 return new TLVConstructed(mTag, children);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Error deconstructing TLV", e);
             }
         }
+    }
+
+    public static TLV readRecursive(byte[] data) throws IOException {
+        return readRecursive(data, 0, data.length);
+    }
+
+    public static TLV readRecursive(byte[] data, int offset, int length) throws IOException {
+        TLVReader reader = new TLVReader(data, offset, length);
+        TLV result = reader.readRecursive();
+        if(reader.hasMoreData()) {
+            throw new IllegalArgumentException("More than one tag where only one was expected");
+        }
+        return result;
+    }
+
+    public static List<TLV> readRecursives(byte[] data) throws IOException {
+        return readRecursives(data, 0, data.length);
+    }
+
+    public static List<TLV> readRecursives(byte[] data, int offset, int length) throws IOException {
+        ArrayList<TLV> res = new ArrayList<>();
+        TLVReader reader = new TLVReader(data, offset, length);
+        while(reader.hasMoreData()) {
+            res.add(reader.readRecursive());
+        }
+        return res;
     }
 
 }

@@ -28,55 +28,6 @@ import java.util.List;
 
 public class TLVReader {
 
-    public static TLV readSinglePrimitive(byte[] data) throws IOException {
-        return readSingle(data, 0, data.length);
-    }
-
-    public static TLV readSinglePrimitive(byte[] data, int offset, int length) throws IOException {
-        InputStream stream = new ByteArrayInputStream(data, offset, length);
-        TLVReader reader = new TLVReader(stream);
-        TLVPrimitive result = reader.readTLVPrimitive();
-        if(reader.hasMoreData()) {
-            throw new IllegalArgumentException("More than one tag where only one was expected");
-        }
-        return result;
-    }
-
-    public static TLV readSingle(byte[] data) throws IOException {
-        return readSingle(data, 0, data.length);
-    }
-
-
-    public static TLV readSingle(byte[] data, int offset, int length) throws IOException {
-        InputStream stream = new ByteArrayInputStream(data, offset, length);
-        TLVReader reader = new TLVReader(stream);
-        TLV result = reader.readTLV();
-        if(reader.hasMoreData()) {
-            throw new IllegalArgumentException("More than one tag where only one was expected");
-        }
-        return result;
-    }
-
-    public static List<TLV> readMultiplePrimitive(byte[] data) throws IOException {
-        return readMultiplePrimitive(data, 0, data.length);
-    }
-
-    public static List<TLV> readMultiplePrimitive(byte[] data, int offset, int length) throws IOException {
-        InputStream stream = new ByteArrayInputStream(data);
-        TLVReader reader = new TLVReader(stream);
-        return reader.readTLVs(false);
-    }
-
-    public static List<TLV> readMultiple(byte[] data) throws IOException {
-        return readMultiple(data, 0, data.length);
-    }
-
-    public static List<TLV> readMultiple(byte[] data, int offset, int length) throws IOException {
-        InputStream stream = new ByteArrayInputStream(data);
-        TLVReader reader = new TLVReader(stream);
-        return reader.readTLVs(true);
-    }
-
     private InputStream mStream;
 
     TLVReader(InputStream stream) {
@@ -95,59 +46,27 @@ public class TLVReader {
         return mStream.available() > 0;
     }
 
-    TLV readTLV() throws IOException {
+    TLV readRecursive() throws IOException {
         return readTLV(true);
     }
 
-    TLVPrimitive readTLVPrimitive() throws IOException {
-        TLV res = readTLV(false);
-        if(res instanceof TLVPrimitive) {
-            return (TLVPrimitive)res;
-        } else {
-            throw new InternalError();
-        }
+    TLVPrimitive readPrimitive() throws IOException {
+        return readTLV(false).asPrimitive();
     }
 
-    private TLV readTLV(boolean allowConstructed) throws IOException {
+    TLVConstructed readConstructed() throws IOException {
+        return readTLV(false).asConstructed();
+    }
+
+    private TLV readTLV(boolean recurse) throws IOException {
         int tag = readTag();
         int length = readLength();
         byte[] value = readBytes(length);
-        if(allowConstructed && TLVTag.isConstructed(tag)) {
-            List<TLV> children = readMultiple(value);
+        if(recurse && TLVTag.isConstructed(tag)) {
+            List<TLV> children = TLV.readRecursives(value);
             return new TLVConstructed(tag, children);
         } else {
             return new TLVPrimitive(tag, value);
-        }
-    }
-
-    private List<TLV> readTLVs(boolean allowConstructed) throws IOException {
-        ArrayList<TLV> result = new ArrayList<>();
-        while(hasMoreData()) {
-            TLV tlv = readTLV(allowConstructed);
-            result.add(tlv);
-        }
-        return result;
-    }
-
-
-    void skipTLV() throws Exception {
-        int tag = readTag();
-        int length = readLength();
-        skipBytes(length);
-    }
-
-    void skipTLV(int tagExpected) throws Exception {
-        int tag = readTag();
-        int length = readLength();
-        skipBytes(length);
-        checkTag(tagExpected, tag);
-    }
-
-    private void checkTag(int tagExpected, int tagRead) throws IOException {
-        if (tagExpected != tagRead) {
-            throw new IOException(
-                    "TLV parse error: expected tag " + tagExpected
-                            + " but got " + tagRead);
         }
     }
 
@@ -174,10 +93,6 @@ public class TLVReader {
         if (read == -1 || read != length) {
             throw new IOException("TLV parse error: short read");
         }
-    }
-
-    private void skipBytes(int length) throws IOException {
-        mStream.skip(length);
     }
 
     private int readTag() throws IOException {

@@ -24,9 +24,9 @@ import org.openjavacard.util.BinUtil;
 
 public class TLVLength {
 
-    private static final int LENGTH_LONG_MASK = 0x80;
-    private static final int LENGTH_LONG_FLAG = 0x80;
-    private static final int LENGTH_SIZE_MASK = 0x7F;
+    private static final byte LENGTH_LONG_MASK = (byte)0x80;
+    private static final byte LENGTH_LONG_FLAG = (byte)0x80;
+    private static final byte LENGTH_SIZE_MASK = (byte)0x7F;
 
     public static final boolean isLongForm(int firstByte) {
         return (firstByte & LENGTH_LONG_MASK) == LENGTH_LONG_FLAG;

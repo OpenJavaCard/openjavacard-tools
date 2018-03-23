@@ -20,89 +20,86 @@
 
 package org.openjavacard.tlv;
 
-import org.openjavacard.util.BinUtil;
-import org.openjavacard.util.HexUtil;
-
 public class TLVTag {
 
-    public static final int TAG_EOC = 0x00;
-    public static final int TAG_BOOLEAN = 0x01;
-    public static final int TAG_INTEGER = 0x02;
-    public static final int TAG_BITSTRING = 0x03;
-    public static final int TAG_OCTETSTRING = 0x04;
-    public static final int TAG_NULL = 0x05;
-    public static final int TAG_OID = 0x06;
-    public static final int TAG_OBJECTDESCRIPTOR = 0x07;
-    public static final int TAG_EXTERNAL = 0x08;
-    public static final int TAG_REAL = 0x09;
-    public static final int TAG_ENUMERATED = 0x0A;
-    public static final int TAG_EMBEDDED_PDV = 0x0B;
-    public static final int TAG_UTF8STRING = 0x0C;
-    public static final int TAG_RELATIVE_OID = 0x0D;
-    public static final int TAG_SEQUENCE = 0x10;
-    public static final int TAG_SET = 0x11;
-    public static final int TAG_NUMERICSTRING = 0x12;
-    public static final int TAG_PRINTABLESTRING = 0x13;
-    public static final int TAG_T61STRING = 0x14;
-    public static final int TAG_VIDEOTEXSTRING = 0x15;
-    public static final int TAG_IA5STRING = 0x16;
-    public static final int TAG_UTCTIME = 0x17;
-    public static final int TAG_GENERALIZEDTIME = 0x18;
-    public static final int TAG_GRAPHICSTRING = 0x19;
-    public static final int TAG_VISIBLESTRING = 0x1A;
-    public static final int TAG_GENERALSTRING = 0x1B;
-    public static final int TAG_UNIVERSALSTRING = 0x1C;
-    public static final int TAG_CHARACTERSTRING = 0x1D;
-    public static final int TAG_BMPSTRING = 0x1E;
-    public static final int TAG_LONG = 0x1F;
+    public static final int TYPE_MASK = 0x1F00;
+    public static final int TYPE_EOC = 0x0000;
+    public static final int TYPE_BOOLEAN = 0x0100;
+    public static final int TYPE_INTEGER = 0x0200;
+    public static final int TYPE_BITSTRING = 0x0300;
+    public static final int TYPE_OCTETSTRING = 0x0400;
+    public static final int TYPE_NULL = 0x0500;
+    public static final int TYPE_OID = 0x0600;
+    public static final int TYPE_OBJECTDESCRIPTOR = 0x0700;
+    public static final int TYPE_EXTERNAL = 0x0800;
+    public static final int TYPE_REAL = 0x0900;
+    public static final int TYPE_ENUMERATED = 0x0A00;
+    public static final int TYPE_EMBEDDED_PDV = 0x0B00;
+    public static final int TYPE_UTF8STRING = 0x0C00;
+    public static final int TYPE_RELATIVE_OID = 0x0D00;
+    public static final int TYPE_SEQUENCE = 0x1000;
+    public static final int TYPE_SET = 0x1100;
+    public static final int TYPE_NUMERICSTRING = 0x1200;
+    public static final int TYPE_PRINTABLESTRING = 0x1300;
+    public static final int TYPE_T61STRING = 0x1400;
+    public static final int TYPE_VIDEOTEXSTRING = 0x1500;
+    public static final int TYPE_IA5STRING = 0x1600;
+    public static final int TYPE_UTCTIME = 0x1700;
+    public static final int TYPE_GENERALIZEDTIME = 0x1800;
+    public static final int TYPE_GRAPHICSTRING = 0x1900;
+    public static final int TYPE_VISIBLESTRING = 0x1A00;
+    public static final int TYPE_GENERALSTRING = 0x1B00;
+    public static final int TYPE_UNIVERSALSTRING = 0x1C00;
+    public static final int TYPE_CHARACTERSTRING = 0x1D00;
+    public static final int TYPE_BMPSTRING = 0x1E00;
+    public static final int TYPE_LONG = 0x1F00;
 
-    public static final int TAG_TYPE_MASK = 0x1F;
+    public static final int CLASS_MASK        = 0xC000;
+    public static final int CLASS_UNIVERSAL   = 0x0000;
+    public static final int CLASS_APPLICATION = 0x4000;
+    public static final int CLASS_CONTEXT     = 0x8000;
+    public static final int CLASS_PRIVATE     = 0xC000;
 
-    public static final int TAG_CONTINUES_MASK = 0x80;
-    public static final int TAG_CONTINUES = 0x80;
+    public static final int CONSTRUCTED_FLAG = 0x2000;
 
-    public static final int TAG_CLASS_MASK = 0xC0;
-    public static final int TAG_CLASS_UNIVERSAL = 0x00;
-    public static final int TAG_CLASS_APPLICATION = 0x40;
-    public static final int TAG_CLASS_CONTEXT = 0x80;
-    public static final int TAG_CLASS_PRIVATE = 0xC0;
-
-    public static final int TAG_PC = 0x20;
+    private static final byte TAGBYTE_FIRST_TYPE_MASK = (byte)0x1F;
+    private static final byte TAGBYTE_FIRST_TYPE_LONG = (byte)0x1F;
+    private static final byte TAGBYTE_FLAG_CONTINUES = (byte)0x80;
 
     public static final boolean isLongForm(int firstByte) {
-        return (firstByte & TAG_TYPE_MASK) == TAG_LONG;
+        return (firstByte & TAGBYTE_FIRST_TYPE_MASK) == TAGBYTE_FIRST_TYPE_LONG;
     }
 
     public static final boolean isLastByte(int tagByte) {
-        return (tagByte & TAG_CONTINUES_MASK) != TAG_CONTINUES;
+        return (tagByte & TAGBYTE_FLAG_CONTINUES) == 0;
     }
 
     public static final int getClassValue(int tag) {
-        return (tag & TAG_CLASS_MASK);
+        return (tag & CLASS_MASK);
     }
 
     public static final boolean isUniversal(int tag) {
-        return getClassValue(tag) == TAG_CLASS_UNIVERSAL;
+        return getClassValue(tag) == CLASS_UNIVERSAL;
     }
 
     public static final boolean isApplication(int tag) {
-        return getClassValue(tag) == TAG_CLASS_APPLICATION;
+        return getClassValue(tag) == CLASS_APPLICATION;
     }
 
     public static final boolean isContext(int tag) {
-        return getClassValue(tag) == TAG_CLASS_CONTEXT;
+        return getClassValue(tag) == CLASS_CONTEXT;
     }
 
     public static final boolean isPrivate(int tag) {
-        return getClassValue(tag) == TAG_CLASS_PRIVATE;
+        return getClassValue(tag) == CLASS_PRIVATE;
     }
 
     public static final boolean isPrimitive(int tag) {
-        return (tag & TAG_PC) == 0;
+        return (tag & CONSTRUCTED_FLAG) == 0;
     }
 
     public static final boolean isConstructed(int tag) {
-        return (tag & TAG_PC) != 0;
+        return (tag & CONSTRUCTED_FLAG) != 0;
     }
 
     public static final int tagSize(int tag) {
