@@ -107,6 +107,9 @@ public class GPKeyInfoEntry {
             mKeyTypes[i] = buf[off++] & 0xFF;
             mKeySizes[i] = buf[off++] & 0xFF;
         }
+        if(off != length) {
+            throw new IllegalArgumentException("Key info has unknown trailing data");
+        }
     }
 
     public String toString() {
