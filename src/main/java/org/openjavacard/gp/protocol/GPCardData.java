@@ -22,6 +22,7 @@ package org.openjavacard.gp.protocol;
 
 import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVConstructed;
+import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
@@ -105,20 +106,10 @@ public class GPCardData {
     }
 
     public void read(byte[] buf) throws IOException {
-        read(buf, 0, buf.length);
-    }
-
-    public void read(byte[] buf, int off, int len) throws IOException {
-        TLVConstructed cd = TLV.readRecursive(buf, off, len).asConstructed();
-        if(cd.getTag() != TAG_CARD_DATA) {
-            throw new IllegalArgumentException("Invalid card data tag " + HexUtil.hex16(cd.getTag()));
-        }
-
-        TLVConstructed crd = cd.getChild(0).asConstructed();
-        if(crd.getTag() != TAG_CARD_RECOGNITION_DATA) {
-            throw new IllegalArgumentException("Invalid card recognition data");
-        }
-
+        // outer layer is the card data
+        TLVConstructed cd = TLV.readRecursive(buf).asConstructed(TAG_CARD_DATA);
+        // which contains card recognition data
+        TLVConstructed crd = cd.getChild(0).asConstructed(TAG_CARD_RECOGNITION_DATA);
         // parse the contents
         parseCRD(crd.getChildren());
     }
@@ -130,7 +121,7 @@ public class GPCardData {
             //        + HexUtil.bytesToHex(data));
             switch (tag) {
                 case TAG_OID:
-                    byte[] data = tlv.asPrimitive().getValueBytes();
+                    byte[] data = tlv.asPrimitive(TAG_OID).getValueBytes();
                     if (Arrays.equals(data, OID_GP_CARD_RECOGNITION_DATA)) {
                         mIsGlobalPlatform = true;
                     } else {
@@ -163,11 +154,8 @@ public class GPCardData {
     }
 
     private byte[] parseOID(TLV tlv, byte[] prefix) {
-        TLV oid = tlv.asConstructed().getChild(0);
+        TLVPrimitive oid = tlv.asConstructed().getChild(0).asPrimitive(TAG_OID);
         int tag = oid.getTag();
-        if (tag != TAG_OID) {
-            throw new IllegalArgumentException("Non-OID in CRD tag " + HexUtil.hex16(tag));
-        }
         byte[] data = oid.getValueBytes();
         if (!ArrayUtil.startsWith(data, prefix)) {
             throw new IllegalArgumentException("Wrong OID in CRD tag " + HexUtil.hex16(tag));

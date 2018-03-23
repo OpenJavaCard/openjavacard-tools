@@ -23,6 +23,8 @@ package org.openjavacard.gp.protocol;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.tlv.TLV;
+import org.openjavacard.tlv.TLVConstructed;
+import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.tlv.TLVReader;
 import org.openjavacard.util.HexUtil;
 
@@ -85,23 +87,21 @@ public class GPKeyInfo {
     }
 
     public void read(byte[] buf) throws IOException {
-        TLV kitTlv = TLV.readRecursive(buf).asConstructed();
-        if(kitTlv.getTag() != TAG_KEY_INFO_TEMPLATE) {
-            throw new Error("Invalid foo");
-        }
-        List<TLV> kiTlvs = kitTlv.getChildren();
+        // kit is a constructed TLV
+        TLVConstructed kitTlv = TLVConstructed.readConstructed(buf).asConstructed(TAG_KEY_INFO_TEMPLATE);
+        // collect key infos
         ArrayList<GPKeyInfoEntry> infos = new ArrayList<>();
-        for (TLV kiTlv : kiTlvs) {
-            int tag = kiTlv.getTag();
-            if (tag != TAG_KEY_INFO) {
-                throw new Error("Invalid key info template - unknown tag "
-                        + HexUtil.hex16(tag) + ", expected " + HexUtil.hex16(TAG_KEY_INFO));
-            } else {
-                GPKeyInfoEntry info = new GPKeyInfoEntry();
-                info.read(kiTlv.getValueBytes());
-                infos.add(info);
-            }
+        // for each child
+        for (TLV kiTlv : kitTlv.getChildren()) {
+            // check its tag
+            TLVPrimitive ki = kiTlv.asPrimitive(TAG_KEY_INFO);
+            // parse
+            GPKeyInfoEntry info = new GPKeyInfoEntry();
+            info.read(ki.getValueBytes());
+            // add
+            infos.add(info);
         }
+        // update fields
         mKeyInfos = infos;
     }
 
