@@ -20,6 +20,8 @@
 
 package org.openjavacard.tlv;
 
+import org.openjavacard.util.BinUtil;
+
 public class TLVLength {
 
     private static final int LENGTH_LONG_MASK = 0x80;
@@ -32,6 +34,29 @@ public class TLVLength {
 
     public static final int longLength(int firstByte) {
         return (firstByte & ~LENGTH_SIZE_MASK);
+    }
+
+    public static final int lengthSize(int length) {
+        if(length > 32767) {
+            throw new IllegalArgumentException("Length " + length + " is to large");
+        } if(length > 127) {
+            return 3;
+        } else {
+            return 1;
+        }
+    }
+
+    public static final byte[] lengthBytes(int length) {
+        if(length > 32767) {
+            throw new IllegalArgumentException("Length " + length + " is to large");
+        } if(length > 127) {
+            byte[] res = new byte[3];
+            res[0] = 2;
+            BinUtil.setShort(res, 1, (short)length);
+            return res;
+        } else {
+            return new byte[] { (byte)length };
+        }
     }
 
 }

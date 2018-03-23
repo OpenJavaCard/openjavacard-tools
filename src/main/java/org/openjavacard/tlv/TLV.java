@@ -20,59 +20,83 @@
 
 package org.openjavacard.tlv;
 
-import org.openjavacard.util.HexUtil;
+import org.openjavacard.util.VerboseString;
 
-public class TLV {
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 
-    public static final byte[] encode(int tag, byte[] data) {
-        return new TLV(tag, data).getEncoded();
-    }
+public abstract class TLV implements VerboseString {
 
-    int mTag;
+    private int mTag;
 
-    byte[] mData;
-
-    public TLV(int tag, byte[] data) {
+    protected TLV(int tag) {
         mTag = tag;
-        mData = data;
     }
 
     public int getTag() {
         return mTag;
     }
 
-    public int getLength() {
-        return mData.length;
+    public int getChildCount() {
+        throw new UnsupportedOperationException();
     }
 
-    public byte[] getData() {
-        return mData.clone();
+    public TLV getChild(int index) {
+        throw new UnsupportedOperationException();
     }
 
-    public void setData(byte[] data) {
-        mData = data.clone();
+    public List<TLV> getChildren() {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getValueLength() {
+        throw new UnsupportedOperationException();
+    }
+
+    public byte[] getValueBytes() {
+        throw new UnsupportedOperationException();
     }
 
     public int getEncodedLength() {
-        return TLVUtil.sizeTag(mTag)
-                + TLVUtil.sizeLength(mData.length)
-                + mData.length;
+        int dataLength = getValueLength();
+        return TLVTag.tagSize(mTag)
+                + TLVLength.lengthSize(dataLength)
+                + dataLength;
     }
 
-    public byte[] getEncoded() {
-        int length = getEncodedLength();
-        byte[] encoded = new byte[length];
-        int off = 0;
-        int tagSize = TLVUtil.putTag(encoded, off, mTag);
-        off += tagSize;
-        int lenSize = TLVUtil.putLength(encoded, off, mData.length);
-        off += lenSize;
-        System.arraycopy(mData, 0, encoded, off, mData.length);
-        return encoded;
+    public byte[] getEncoded() throws IOException {
+        int valueLength = getValueLength();
+        byte[] valueBytes = getValueBytes();
+        if(valueBytes.length != valueLength) {
+            throw new InternalError("Value length inconsistent");
+        }
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bos.write(TLVTag.tagBytes(mTag));
+        bos.write(TLVLength.lengthBytes(valueLength));
+        bos.write(valueBytes);
+        return bos.toByteArray();
     }
 
-    public String toString() {
-        return "TLV(T=" + Integer.toHexString(mTag) + ",L=" + mData.length + ",V=" + HexUtil.bytesToHex(mData) + ")";
+    public TLVPrimitive asPrimitive() {
+        if(this instanceof TLVPrimitive) {
+            return (TLVPrimitive)this;
+        } else {
+            return new TLVPrimitive(mTag, getValueBytes());
+        }
+    }
+
+    public TLVConstructed asConstructed() {
+        if(this instanceof TLVConstructed) {
+            return (TLVConstructed)this;
+        } else {
+            try {
+                List<TLV> children = TLVReader.readMultiple(getValueBytes());
+                return new TLVConstructed(mTag, children);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Error deconstructing TLV", e);
+            }
+        }
     }
 
 }

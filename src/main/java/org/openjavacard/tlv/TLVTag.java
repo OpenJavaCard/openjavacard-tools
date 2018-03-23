@@ -20,6 +20,7 @@
 
 package org.openjavacard.tlv;
 
+import org.openjavacard.util.BinUtil;
 import org.openjavacard.util.HexUtil;
 
 public class TLVTag {
@@ -75,10 +76,6 @@ public class TLVTag {
     public static final boolean isLastByte(int tagByte) {
         return (tagByte & TAG_CONTINUES_MASK) != TAG_CONTINUES;
     }
-    
-    public static final TLVTagClass getClass(int tag) {
-        return TLVTagClass.forValue(getClassValue(tag));
-    }
 
     public static final int getClassValue(int tag) {
         return (tag & TAG_CLASS_MASK);
@@ -108,13 +105,28 @@ public class TLVTag {
         return (tag & TAG_PC) != 0;
     }
 
-    public static String toString(int tag) {
-        if (tag > Short.MAX_VALUE) {
-            return HexUtil.hex24(tag);
-        } else if (tag > 255) {
-            return HexUtil.hex16(tag);
+    public static final int tagSize(int tag) {
+        if(isLongForm(tag & 0xFF)) {
+            if(!isLastByte((tag >> 8) & 0xFF)) {
+                throw new IllegalArgumentException("Tag is longer than two bytes");
+            }
+            return 2;
         } else {
-            return HexUtil.hex8(tag);
+            return 1;
+        }
+    }
+
+    public static final byte[] tagBytes(int tag) {
+        if(isLongForm(tag & 0xFF)) {
+            if(!isLastByte((tag >> 8) & 0xFF)) {
+                throw new IllegalArgumentException("Tag is longer than two bytes");
+            }
+            byte[] res = new byte[2];
+            res[0] = (byte)(tag & 0xFF);
+            res[1] = (byte)((tag >> 8) & 0xFF);
+            return res;
+        } else {
+            return new byte[] { (byte)(tag & 0xFF) };
         }
     }
 
