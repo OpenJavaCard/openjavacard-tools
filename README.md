@@ -57,13 +57,9 @@ CAUTION: This is still in its beta stage, even for development use.
 
 ### Acknowledgements
 
-This project builds on the work of others. First and foremost it would have been
-impossible to develop without the prior research of countless others in the open
-community.
+Contains some crypto routines from [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro).
 
-Further, this project contains some routines from [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro)
-as well as [IsoApplet](https://github.com/philipWendland/IsoApplet/).
-While these will be replaced at some point they did allow me to concentrate on other aspects of the code and so they have my thanks.
+Built with the help of some of code from [IsoApplet](https://github.com/philipWendland/IsoApplet/).
 
 ### Legal
 
