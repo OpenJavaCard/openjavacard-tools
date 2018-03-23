@@ -23,7 +23,7 @@ package org.openjavacard.gp.client;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPCardData;
-import org.openjavacard.gp.protocol.GPKeyInfo;
+import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.protocol.GPLifeCycle;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.gp.scp.SCPProtocol;
@@ -145,7 +145,7 @@ public class GPCard {
      * <p/>
      * This indicates what keys the ISD wants to authenticate with.
      */
-    private GPKeyInfo mCardKeyInfo;
+    private GPKeyInfoTemplate mCardKeyInfo;
     /**
      * Our SCP secure channel
      * <p/>
@@ -244,7 +244,7 @@ public class GPCard {
         return mCardData;
     }
     /** @return GlobalPlatform key information of the card, null if not provided by card */
-    public GPKeyInfo getCardKeyInfo() {
+    public GPKeyInfoTemplate getCardKeyInfo() {
         return mCardKeyInfo;
     }
 
@@ -662,9 +662,9 @@ public class GPCard {
      * @return the object
      * @throws CardException
      */
-    private GPKeyInfo readKeyInfo() throws CardException {
+    private GPKeyInfoTemplate readKeyInfo() throws CardException {
         LOG.debug("readKeyInfo()");
-        GPKeyInfo res = new GPKeyInfo();
+        GPKeyInfoTemplate res = new GPKeyInfoTemplate();
         byte[] data = readData(GP.GET_DATA_P12_KEY_INFO_TEMPLATE);
         try {
             res.read(data);

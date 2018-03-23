@@ -21,8 +21,8 @@
 package org.openjavacard.gp.keys;
 
 import org.openjavacard.gp.client.GPCard;
+import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.protocol.GPKeyInfo;
-import org.openjavacard.gp.protocol.GPKeyInfoEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +36,8 @@ public class GPKeyStore {
     GPKeySet selectKeys(GPCard card) {
         String cardId = card.getLifetimeIdentifier();
         LOG.info("selecting keys for " + cardId);
-        GPKeyInfo ki = card.getCardKeyInfo();
-        for(GPKeyInfoEntry ke: ki.getKeyInfos()) {
+        GPKeyInfoTemplate ki = card.getCardKeyInfo();
+        for(GPKeyInfo ke: ki.getKeyInfos()) {
             int keyId = ke.getKeyId();
             int keyVersion = ke.getKeyVersion();
             LOG.info("need key id " + keyId + " version " + keyVersion);

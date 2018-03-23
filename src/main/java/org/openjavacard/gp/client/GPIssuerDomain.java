@@ -23,10 +23,9 @@ package org.openjavacard.gp.client;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;
-import org.openjavacard.gp.protocol.GPKeyInfo;
+import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.iso.AID;
-import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.ArrayUtil;
@@ -213,7 +212,7 @@ public class GPIssuerDomain {
      * <p/>
      * This can and should be used to check keys before uploading
      * them to the card. It verifies if the given keys comply with
-     * the GPKeyInfo supplied by the card.
+     * the GPKeyInfoTemplate supplied by the card.
      * <p/>
      * Service methods in this library will perform this check
      * automatically. This method is provided for use in client
@@ -223,7 +222,7 @@ public class GPIssuerDomain {
      * @throws CardException
      */
     public void checkKeys(GPKeySet newKeys) throws CardException {
-        GPKeyInfo keyInfo = mCard.getCardKeyInfo();
+        GPKeyInfoTemplate keyInfo = mCard.getCardKeyInfo();
         if(!keyInfo.matchesKeysetForReplacement(newKeys)) {
             throw new CardException("Keys inappropriate for card");
         }

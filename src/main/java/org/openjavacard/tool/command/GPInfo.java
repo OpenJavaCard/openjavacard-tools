@@ -24,7 +24,7 @@ import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.protocol.GPCardData;
-import org.openjavacard.gp.protocol.GPKeyInfo;
+import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.protocol.GPLifeCycle;
 import org.openjavacard.gp.scp.SCPProtocol;
 import org.openjavacard.util.ATRUtil;
@@ -103,7 +103,7 @@ public class GPInfo extends GPCommand {
         }
         os.println();
 
-        GPKeyInfo keyInfo = card.getCardKeyInfo();
+        GPKeyInfoTemplate keyInfo = card.getCardKeyInfo();
         if (keyInfo == null) {
             os.println("Card has no GlobalPlatform key information");
         } else {
