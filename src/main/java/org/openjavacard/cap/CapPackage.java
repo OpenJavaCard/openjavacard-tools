@@ -22,6 +22,8 @@ package org.openjavacard.cap;
 
 import org.openjavacard.gp.client.GPLoadFile;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tlv.TLVLength;
+import org.openjavacard.tlv.TLVTag;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
@@ -240,8 +242,8 @@ public class CapPackage implements VerboseString {
 
             // emit one tag with all the components
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(TLVUtil.convertTag(0xC4));
-            bos.write(TLVUtil.convertLength(totalSize));
+            bos.write(TLVTag.tagBytes(0xC400));
+            bos.write(TLVLength.lengthBytes(totalSize));
             for(CapComponent component : components) {
                 byte[] data = component.getData();
                 bos.write(data);

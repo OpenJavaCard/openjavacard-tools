@@ -21,11 +21,13 @@
 package org.openjavacard.gp.protocol;
 
 import org.openjavacard.tlv.TLV;
+import org.openjavacard.tlv.TLVConstructed;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,16 +52,16 @@ public class GPCardData {
     public static final byte[] OID_GP_CARD_IDENTIFICATION_DATA = HexUtil.hexToBytes("2A864886FC6B03");
     public static final byte[] OID_GP_CARD_SECURITY_DATA = HexUtil.hexToBytes("2A864886FC6B04");
 
-    public static final int TAG_OID = 0x06;
+    public static final int TAG_OID = 0x0600;
 
-    public static final int TAG_CARD_DATA = 0x66;
-    public static final int TAG_CARD_RECOGNITION_DATA = 0x73;
+    public static final int TAG_CARD_DATA = 0x6600;
+    public static final int TAG_CARD_RECOGNITION_DATA = 0x7300;
 
-    public static final int TAG_APPLICATION_TAG0 = 0x60;
-    public static final int TAG_APPLICATION_TAG3 = 0x63;
-    public static final int TAG_APPLICATION_TAG4 = 0x64;
-    public static final int TAG_APPLICATION_TAG5 = 0x65;
-    public static final int TAG_APPLICATION_TAG6 = 0x66;
+    public static final int TAG_APPLICATION_TAG0 = 0x6000;
+    public static final int TAG_APPLICATION_TAG3 = 0x6300;
+    public static final int TAG_APPLICATION_TAG4 = 0x6400;
+    public static final int TAG_APPLICATION_TAG5 = 0x6500;
+    public static final int TAG_APPLICATION_TAG6 = 0x6600;
 
     private boolean mIsGlobalPlatform = false;
 
@@ -102,54 +104,33 @@ public class GPCardData {
         return sb.toString();
     }
 
-    public void read(byte[] buf) {
+    public void read(byte[] buf) throws IOException {
         read(buf, 0, buf.length);
     }
 
-    public void read(byte[] buf, int off, int len) {
-        // check consistency of first level
-        if (!TLVUtil.checkTags(buf, off, len)) {
-            throw new IllegalArgumentException("Invalid card data - inconsistent toplevel");
+    public void read(byte[] buf, int off, int len) throws IOException {
+        TLVConstructed cd = TLV.readRecursive(buf, off, len).asConstructed();
+        if(cd.getTag() != TAG_CARD_DATA) {
+            throw new IllegalArgumentException("Invalid card data tag " + HexUtil.hex16(cd.getTag()));
         }
 
-        // unwrap first level
-        off = TLVUtil.findTag(buf, off, len, TAG_CARD_DATA);
-        if (off != 0) {
-            throw new IllegalArgumentException("Invalid card data - must start with CD");
+        TLVConstructed crd = cd.getChild(0).asConstructed();
+        if(crd.getTag() != TAG_CARD_RECOGNITION_DATA) {
+            throw new IllegalArgumentException("Invalid card recognition data");
         }
-        int lenCD = TLVUtil.readLength(buf, off + 1, 3);
-        int offCD = off + 1 + TLVUtil.sizeLength(len);
-
-        // check consistency of second level
-        if (!TLVUtil.checkTags(buf, offCD, lenCD)) {
-            throw new IllegalArgumentException("Invalid card data - inconsistent CD");
-        }
-
-        // unwrap second level
-        off = TLVUtil.findTag(buf, offCD, lenCD, TAG_CARD_RECOGNITION_DATA);
-        if (off == -1) {
-            throw new IllegalArgumentException("Invalid card data - CD must contain CRD");
-        }
-        int lenCRD = TLVUtil.readLength(buf, off + 1, 3);
-        int offCRD = off + 1 + TLVUtil.sizeLength(lenCRD);
 
         // parse the contents
-        parseCRD(buf, offCRD, lenCRD);
+        parseCRD(crd.getChildren());
     }
 
-    private void parseCRD(byte[] buf, int off, int len) {
-        if (!TLVUtil.checkTags(buf, off, len)) {
-            throw new IllegalArgumentException("CRD TLV inconsistent");
-        }
-
-        List<TLV> tlvs = TLVUtil.parseTags(buf, off, len);
+    private void parseCRD(List<TLV> tlvs) throws IOException {
         for (TLV tlv : tlvs) {
             int tag = tlv.getTag();
-            byte[] data = tlv.getData();
             //LOG.debug("CRD tag " + HexUtil.hex8(tag) + ": "
             //        + HexUtil.bytesToHex(data));
             switch (tag) {
                 case TAG_OID:
+                    byte[] data = tlv.asPrimitive().getValueBytes();
                     if (Arrays.equals(data, OID_GP_CARD_RECOGNITION_DATA)) {
                         mIsGlobalPlatform = true;
                     } else {
@@ -157,39 +138,39 @@ public class GPCardData {
                     }
                     break;
                 case TAG_APPLICATION_TAG0:
-                    byte[] cmd = parseOID(tag, data, OID_GP_CARD_MANAGEMENT_DATA);
+                    byte[] cmd = parseOID(tlv, OID_GP_CARD_MANAGEMENT_DATA);
                     mGlobalPlatformVersion = cmd;
                     break;
                 case TAG_APPLICATION_TAG3:
-                    parseOID(tag, data, OID_GP_CARD_IDENTIFICATION_DATA);
+                    parseOID(tlv, OID_GP_CARD_IDENTIFICATION_DATA);
                     mGlobalPlatformUnique = true;
                     break;
                 case TAG_APPLICATION_TAG4:
-                    byte[] csd = parseOID(tag, data, OID_GP_CARD_SECURITY_DATA);
+                    byte[] csd = parseOID(tlv, OID_GP_CARD_SECURITY_DATA);
                     mSecurityProtocol = csd[0];
                     mSecurityParameters = csd[1];
                     break;
                 case TAG_APPLICATION_TAG5:
-                    LOG.debug("CardData: card details: " + HexUtil.bytesToHex(data));
+                    LOG.debug("CardData: card details: " + tlv);
                     break;
                 case TAG_APPLICATION_TAG6:
-                    LOG.debug("CardData: chip details: " + HexUtil.bytesToHex(data));
+                    LOG.debug("CardData: chip details: " + tlv);
                     break;
                 default:
-                    LOG.warn("Unknown card data tag " + HexUtil.hex8(tag)
-                            + " data " + HexUtil.bytesToHex(data));
+                    LOG.warn("Unknown card data tag " + tlv);
             }
         }
     }
 
-    private byte[] parseOID(int tag, byte[] buf, byte[] prefix) {
-        TLV oid = TLVUtil.parseTag(buf);
-        if (oid.getTag() != TAG_OID) {
-            throw new IllegalArgumentException("Non-OID in CRD tag " + HexUtil.hex8(tag));
+    private byte[] parseOID(TLV tlv, byte[] prefix) {
+        TLV oid = tlv.asConstructed().getChild(0);
+        int tag = oid.getTag();
+        if (tag != TAG_OID) {
+            throw new IllegalArgumentException("Non-OID in CRD tag " + HexUtil.hex16(tag));
         }
-        byte[] data = oid.getData();
+        byte[] data = oid.getValueBytes();
         if (!ArrayUtil.startsWith(data, prefix)) {
-            throw new IllegalArgumentException("Wrong OID in CRD tag " + HexUtil.hex8(tag));
+            throw new IllegalArgumentException("Wrong OID in CRD tag " + HexUtil.hex16(tag));
         }
         return Arrays.copyOfRange(data, prefix.length, data.length);
     }

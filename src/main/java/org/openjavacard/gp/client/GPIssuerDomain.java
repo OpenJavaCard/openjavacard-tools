@@ -27,6 +27,7 @@ import org.openjavacard.gp.protocol.GPKeyInfo;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.iso.AID;
 import org.openjavacard.tlv.TLV;
+import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
@@ -443,13 +444,13 @@ public class GPIssuerDomain {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             try {
                 if(cardIIN != null) {
-                    bos.write(TLV.encode(TAG_ISSUER_IDENTIFICATION_NUMBER, cardIIN));
+                    bos.write(new TLVPrimitive(TAG_ISSUER_IDENTIFICATION_NUMBER, cardIIN).getEncoded());
                 }
                 if(cardCIN != null) {
-                    bos.write(TLV.encode(TAG_CARD_IMAGE_NUMBER, cardCIN));
+                    bos.write(new TLVPrimitive(TAG_CARD_IMAGE_NUMBER, cardCIN).getEncoded());
                 }
                 if(cardISD != null) {
-                    bos.write(TLV.encode(TAG_ISD_AID, cardISD));
+                    bos.write(new TLVPrimitive(TAG_ISD_AID, cardISD).getEncoded());
                 }
             } catch (IOException e) {
                 throw new Error("Error serializing INSTALL [for  LOAD] request", e);

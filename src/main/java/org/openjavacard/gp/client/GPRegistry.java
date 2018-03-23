@@ -25,12 +25,15 @@ import org.openjavacard.gp.protocol.GPPrivilege;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.AIDInfo;
 import org.openjavacard.tlv.TLV;
+import org.openjavacard.tlv.TLVPrimitive;
+import org.openjavacard.tlv.TLVReader;
 import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,12 +52,12 @@ public class GPRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPRegistry.class);
 
-    private static final int TAG_GP_REGISTRY = 0xE3;
+    private static final int TAG_GP_REGISTRY = 0xE300;
 
-    private static final int TAG_GP_REGISTRY_AID = 0x4F;
+    private static final int TAG_GP_REGISTRY_AID = 0x4F00;
     private static final int TAG_GP_REGISTRY_STATE = 0x9F70;
-    private static final int TAG_GP_REGISTRY_PRIVILEGES = 0xC5;
-    private static final int TAG_GP_REGISTRY_MODULE = 0x84;
+    private static final int TAG_GP_REGISTRY_PRIVILEGES = 0xC500;
+    private static final int TAG_GP_REGISTRY_MODULE = 0x8400;
 
     private final GPCard mCard;
 
@@ -177,18 +180,19 @@ public class GPRegistry {
             mAllSSDs = allSSDs;
         } catch (CardException e) {
             throw new CardException("Error updating registry", e);
+        } catch (IOException e) {
+            throw new CardException("Error updating registry", e);
         }
     }
 
     private <E extends Entry>
-    List<E> readEntries(byte[] data, Class<E> clazz) {
+    List<E> readEntries(byte[] data, Class<E> clazz) throws IOException {
         List<E> res = new ArrayList<>();
-        List<TLV> tlvs = TLVUtil.parseTags(data);
-        for (TLV tlv : tlvs) {
-            byte[] entryData = tlv.getData();
+        List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(data);
+        for (TLVPrimitive tlv : tlvs) {
             try {
                 E entry = clazz.newInstance();
-                entry.read(entryData);
+                entry.read(tlv.getValueBytes());
                 res.add(entry);
             } catch (InstantiationException e) {
                 throw new Error("Error instantiating registry entry", e);
@@ -231,23 +235,23 @@ public class GPRegistry {
             return mModules;
         }
 
-        void read(byte[] data) {
-            List<TLV> tlvs = TLVUtil.parseTags(data);
+        void read(byte[] data) throws IOException {
+            List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(data);
             List<AID> modules = new ArrayList<>();
-            for (TLV tlv : tlvs) {
+            for (TLVPrimitive tlv : tlvs) {
                 int tag = tlv.getTag();
                 switch (tag) {
                     case TAG_GP_REGISTRY_AID:
-                        mAID = new AID(tlv.getData());
+                        mAID = new AID(tlv.getValueBytes());
                         break;
                     case TAG_GP_REGISTRY_STATE:
-                        mState = tlv.getData()[0];
+                        mState = tlv.getValueBytes()[0];
                         break;
                     case TAG_GP_REGISTRY_PRIVILEGES:
-                        mPrivileges = tlv.getData();
+                        mPrivileges = tlv.getValueBytes();
                         break;
                     case TAG_GP_REGISTRY_MODULE:
-                        modules.add(new AID(tlv.getData()));
+                        modules.add(new AID(tlv.getValueBytes()));
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown tag " + HexUtil.hex16(tag) + "in registry entry");

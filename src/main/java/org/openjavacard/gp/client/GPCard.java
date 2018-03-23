@@ -44,6 +44,7 @@ import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Service object for a GlobalPlatform card
@@ -613,7 +614,11 @@ public class GPCard {
         byte[] data = readData(GP.GET_DATA_P12_CARD_DATA);
         if (data != null) {
             res = new GPCardData();
-            res.read(data);
+            try {
+                res.read(data);
+            } catch (IOException e) {
+                throw new CardException("Error parsign card data", e);
+            }
         }
         return res;
     }
@@ -661,7 +666,11 @@ public class GPCard {
         LOG.debug("readKeyInfo()");
         GPKeyInfo res = new GPKeyInfo();
         byte[] data = readData(GP.GET_DATA_P12_KEY_INFO_TEMPLATE);
-        res.read(data);
+        try {
+            res.read(data);
+        } catch (IOException e) {
+            throw new CardException("Error parsing key info", e);
+        }
         return res;
     }
 
