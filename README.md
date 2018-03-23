@@ -66,23 +66,22 @@ Built with the help of some of code from [IsoApplet](https://github.com/philipWe
 Vast majority of the code has been developed for this project:
 
 ```
-OpenJavaCard Development Tools
+openjavacard-tools: OpenJavaCard Development Tools
+Copyright (C) 2015-2018 Ingo Albrecht, prom@berlin.ccc.de
 
-Copyright 2015-2018 Ingo Albrecht
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3.0 of the License, or (at your option) any later version.
 
-This software is licensed under the GNU GPL Version 3.
-See the file LICENSE in the source tree for further information.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
 
-This software contains TLV parsing functions developed
-and published by Philip Wendland as part of IsoApplet, which
-are also licensed under the GNU GPL Version 3.
-
-Note that the GPL requires that you make the source code to
-your applet available to all your customers and that you
-inform your customers about this option by means of an
-explicit written offer. It is recommended to publish your
-modifications as open source software, just as this project
-is.
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ```
 
 This project contains some crypto routines from [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro):
