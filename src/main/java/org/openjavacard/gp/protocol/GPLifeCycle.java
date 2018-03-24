@@ -21,8 +21,10 @@
 package org.openjavacard.gp.protocol;
 
 import org.openjavacard.util.HexUtil;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -66,15 +68,15 @@ public class GPLifeCycle {
     }
 
     /** HashMap containing field values */
-    LinkedHashMap<Field, byte[]> mValues;
+    private final LinkedHashMap<Field, byte[]> mValues;
+
+    private GPLifeCycle(HashMap<Field, byte[]> values) {
+        mValues = new LinkedHashMap<>(values);
+    }
 
     /** Get the value of a field in binary form */
     public byte[] getFieldValue(Field field) {
-        if (mValues == null) {
-            return null;
-        } else {
-            return mValues.get(field).clone();
-        }
+        return mValues.get(field).clone();
     }
 
     /** Get the value of a field in hexadecimal string form */
@@ -103,21 +105,33 @@ public class GPLifeCycle {
                 + "-s" + getFieldHex(Field.ICSerialNumber);
     }
 
-    /**
-     * Deserialize the CPLC from the given data
-     * @param buf with data
-     */
-    public void read(byte[] buf) {
-        read(buf, 0, buf.length);
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("GP Card Production Lifecycle:");
+        for (Field field : Field.values()) {
+            byte[] value = mValues.get(field);
+            if (value != null) {
+                sb.append("\n  " + field + ": " + HexUtil.bytesToHex(value));
+            }
+        }
+        return sb.toString();
     }
 
     /**
-     * Deserialize the CPLC from the given data
+     * Parse a CPLC from bytes
+     * @param buf with data
+     */
+    public static GPLifeCycle read(byte[] buf) {
+        return read(buf, 0, buf.length);
+    }
+
+    /**
+     * Parse a CPLC from bytes
      * @param buf containing data
      * @param off of data
      * @param len of data
      */
-    public void read(byte[] buf, int off, int len) {
+    public static GPLifeCycle read(byte[] buf, int off, int len) {
         LinkedHashMap<Field, byte[]> values = new LinkedHashMap<>();
         int fieldOff = off + 3; // XXX: need to parse TLV with long tag
         // XXX length check before looping?
@@ -125,30 +139,15 @@ public class GPLifeCycle {
             int fieldLen = field.fieldLength;
 
             if (fieldOff >= len) {
-                throw new IllegalArgumentException("CPLC too short");
+                throw new IllegalArgumentException("CPLC to short");
             }
 
             values.put(field, Arrays.copyOfRange(buf, fieldOff, fieldOff + fieldLen));
 
             fieldOff += fieldLen;
         }
-        mValues = values;
-    }
-
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("GP Card Production Lifecycle:");
-        if (mValues == null) {
-            sb.append("  EMPTY");
-        } else {
-            for (Field field : Field.values()) {
-                byte[] value = mValues.get(field);
-                if (value != null) {
-                    sb.append("\n  " + field + ": " + HexUtil.bytesToHex(value));
-                }
-            }
-        }
-        return sb.toString();
+        // construct and return instance
+        return new GPLifeCycle(values);
     }
 
 }
