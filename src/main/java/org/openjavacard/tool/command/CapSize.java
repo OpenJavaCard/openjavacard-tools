@@ -22,10 +22,10 @@ package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.cap.CapComponent;
-import org.openjavacard.cap.CapFile;
-import org.openjavacard.cap.CapPackage;
-import org.openjavacard.cap.CapReader;
+import org.openjavacard.cap.file.CapFileComponent;
+import org.openjavacard.cap.file.CapFile;
+import org.openjavacard.cap.file.CapFilePackage;
+import org.openjavacard.cap.file.CapFileReader;
 import org.openjavacard.gp.client.GPLoadFile;
 
 import java.io.File;
@@ -54,12 +54,12 @@ public class CapSize implements Runnable {
             CapFile cap;
             try {
                 os.println("Reading CAP file " + file);
-                cap = CapReader.readFile(file);
+                cap = CapFileReader.readFile(file);
             } catch (Exception ex) {
                 throw new Error("Exception reading CAP file", ex);
             }
 
-            CapPackage pkg;
+            CapFilePackage pkg;
             GPLoadFile loadFile;
             try {
                 pkg = cap.getPackages().get(0);
@@ -69,8 +69,8 @@ public class CapSize implements Runnable {
             }
 
             os.println();
-            List<CapComponent> components = pkg.getLoadComponents();
-            for(CapComponent com : components) {
+            List<CapFileComponent> components = pkg.getLoadComponents();
+            for(CapFileComponent com : components) {
                 os.println("  Component " + com.getFilename());
                 os.println("    Type: " + com.getName());
                 os.println("    Size: " + com.getSize());

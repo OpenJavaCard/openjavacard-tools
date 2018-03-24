@@ -112,8 +112,7 @@
                 <package name="org.openjavacard.gp.*"/>
             </group>
 
-            <group title="CAP file library">
-                <package name="org.openjavacard.cap"/>
+            <group title="CAP library">
                 <package name="org.openjavacard.cap.*"/>
             </group>
 

@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.cap;
+package org.openjavacard.cap.file;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,22 +29,28 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+/**
+ * In-memory representation of a CAP file
+ * <p/>
+ * This containts the raw binary components of all packages in the
+ * CAP file as well as the relevant metadata from the manifest.
+ */
 public class CapFile {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapFile.class);
 
-    private String ATTR_MANIFEST_VERSION = "Manifest-Version";
-    private String ATTR_CREATED_BY = "Created-By";
+    private static final String ATTR_MANIFEST_VERSION = "Manifest-Version";
+    private static final String ATTR_CREATED_BY = "Created-By";
 
     private Manifest mManifest;
 
-    String mManifestVersion;
+    private String mManifestVersion;
 
-    String mCreatedBy;
+    private String mCreatedBy;
 
-    private ArrayList<CapPackage> mPackages = new ArrayList<>();
+    private ArrayList<CapFilePackage> mPackages = new ArrayList<>();
 
-    public CapFile() {
+    CapFile() {
     }
 
     public Manifest getManifest() {
@@ -59,18 +65,23 @@ public class CapFile {
         return mCreatedBy;
     }
 
-    public CapPackage getPackage() {
+    public CapFilePackage getPackage() {
         if(mPackages.size() > 1) {
             throw new Error("CAP file has more than one package");
         }
         return mPackages.get(0);
     }
 
-    public List<CapPackage> getPackages() {
+    public List<CapFilePackage> getPackages() {
         return mPackages;
     }
 
-    public void read(Manifest manifest, Map<String, byte[]> files) {
+    /**
+     * Internal: parse a CAP file
+     * @param manifest
+     * @param files
+     */
+    void read(Manifest manifest, Map<String, byte[]> files) {
         // remember manifest
         mManifest = manifest;
         // read main attributes
@@ -91,7 +102,7 @@ public class CapFile {
             String pkgName = entry.getKey();
             LOG.debug("package " + pkgName);
             Attributes pkgAttributes = entry.getValue();
-            CapPackage pkg = new CapPackage();
+            CapFilePackage pkg = new CapFilePackage();
             pkg.read(pkgName, pkgAttributes, files);
             mPackages.add(pkg);
         }

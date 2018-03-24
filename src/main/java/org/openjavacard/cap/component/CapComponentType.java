@@ -18,11 +18,14 @@
  *
  */
 
-package org.openjavacard.cap;
+package org.openjavacard.cap.component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enumeration of CAP component types
+ */
 public enum CapComponentType {
 
     Header(1, "Header.cap"),

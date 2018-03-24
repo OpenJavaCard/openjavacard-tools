@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.cap;
+package org.openjavacard.cap.file;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,21 +33,30 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class CapReader {
+/**
+ * Reader class for CAP files
+ */
+public class CapFileReader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CapReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CapFileReader.class);
 
     private static final String FILE_MANIFEST = "META-INF/MANIFEST.MF";
 
+    /**
+     * Read a single CAP file
+     * @param file to read
+     * @return CAPFile loaded from the file
+     * @throws IOException on error
+     */
     public static CapFile readFile(File file) throws IOException {
-        CapReader capReader = new CapReader();
-        return capReader.read(file);
+        CapFileReader reader = new CapFileReader();
+        return reader.read(file);
     }
 
-    public CapReader() {
+    private CapFileReader() {
     }
 
-    public CapFile read(File file) throws IOException {
+    private CapFile read(File file) throws IOException {
         LOG.debug("opening CAP " + file);
 
         // create an input stream for the zip file

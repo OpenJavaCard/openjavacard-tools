@@ -18,37 +18,41 @@
  *
  */
 
-package org.openjavacard.cap;
+package org.openjavacard.cap.component;
 
-public class CapComponent {
+import org.openjavacard.iso.AID;
+import org.openjavacard.util.HexUtil;
 
-    CapComponentType mType;
+public class CapHeader {
 
-    byte[] mData;
+    private static final byte[] MAGIC_HEADER = HexUtil.hexToBytes("DECAFFED");
 
-    CapComponent(CapComponentType type, byte[] data) {
-        mType = type;
-        mData = data;
+    private static final int FLAG_ACC_INT = 0x01;
+    private static final int FLAG_ACC_EXPORT = 0x02;
+    private static final int FLAG_ACC_APPLET = 0x04;
+
+    int mMajorVersion;
+    int mMinorVersion;
+
+    int mFlags;
+
+    int mPackageMajorVersion;
+    int mPackageMinorVersion;
+
+    AID mPackageAID;
+
+    String mPackageName;
+
+    boolean isIntRequired() {
+        return (mFlags & FLAG_ACC_INT) != 0;
     }
 
-    public String getName() {
-        return mType.name();
+    boolean isExportPresent() {
+        return (mFlags & FLAG_ACC_EXPORT) != 0;
     }
 
-    public String getFilename() {
-        return mType.filename();
-    }
-
-    public CapComponentType getType() {
-        return mType;
-    }
-
-    public byte[] getData() {
-        return mData;
-    }
-
-    public int getSize() {
-        return mData.length;
+    boolean isAppletPresent() {
+        return (mFlags & FLAG_ACC_APPLET) != 0;
     }
 
 }

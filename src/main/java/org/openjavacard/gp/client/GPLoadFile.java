@@ -20,6 +20,7 @@
 
 package org.openjavacard.gp.client;
 
+import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.iso.AID;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.List;
  * Once loaded each of these will become an ELF on the card.
  * <p/>
  * These objects can be produced using methods in
- * {@link org.openjavacard.cap.CapPackage}.
+ * {@link CapFilePackage}.
  */
 public class GPLoadFile {
 

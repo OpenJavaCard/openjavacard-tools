@@ -18,22 +18,25 @@
  *
  */
 
-package org.openjavacard.cap;
+package org.openjavacard.cap.file;
 
 import org.openjavacard.iso.AID;
 
-public class CapApplet {
+/**
+ * Applet declaration in a CAP file
+ */
+public class CapFileApplet {
 
     private static final String ATTR_NAME = "Name";
     private static final String ATTR_VERSION = "Version";
     private static final String ATTR_AID = "AID";
 
-    String mName;
-    String mVersion;
+    private String mName;
+    private String mVersion;
 
-    AID mAID;
+    private AID mAID;
 
-    CapApplet() {
+    CapFileApplet() {
     }
 
     public String getName() {
@@ -48,6 +51,15 @@ public class CapApplet {
         return mAID;
     }
 
+    public String toString() {
+        return "CapFileApplet " + mAID + " " + mVersion + "(" + mName + ")";
+    }
+
+    /**
+     * Internal: parse a manifest attribute of the applet
+     * @param name
+     * @param value
+     */
     void readAttribute(String name, String value) {
         if (name.equals(ATTR_NAME)) {
             mName = value;

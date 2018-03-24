@@ -18,7 +18,46 @@
  *
  */
 
+package org.openjavacard.cap.file;
+
+import org.openjavacard.cap.component.CapComponentType;
+
 /**
- * CAP processing library
+ * Component in a CAP file
  */
-package org.openjavacard.cap;
+public class CapFileComponent {
+
+    private final CapComponentType mType;
+
+    private final byte[] mData;
+
+    CapFileComponent(CapComponentType type, byte[] data) {
+        mType = type;
+        mData = data;
+    }
+
+    public String getName() {
+        return mType.name();
+    }
+
+    public String getFilename() {
+        return mType.filename();
+    }
+
+    public CapComponentType getType() {
+        return mType;
+    }
+
+    public byte[] getData() {
+        return mData;
+    }
+
+    public int getSize() {
+        return mData.length;
+    }
+
+    public String toString() {
+        return "CapFileComponent " + mType;
+    }
+
+}

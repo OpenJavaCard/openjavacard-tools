@@ -22,9 +22,9 @@ package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.cap.CapFile;
-import org.openjavacard.cap.CapPackage;
-import org.openjavacard.cap.CapReader;
+import org.openjavacard.cap.file.CapFile;
+import org.openjavacard.cap.file.CapFilePackage;
+import org.openjavacard.cap.file.CapFileReader;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.client.GPIssuerDomain;
@@ -107,7 +107,7 @@ public class GPLoad extends GPCommand {
         // prepare each package and check if it needs loading
         List<CapFile> capFilesToLoad = new ArrayList<>();
         for(CapFile capFile: capFilesToPrepare) {
-            CapPackage pkg = capFile.getPackage();
+            CapFilePackage pkg = capFile.getPackage();
             if(prepareOne(card, pkg.getPackageAID())) {
                 capFilesToLoad.add(capFile);
             }
@@ -121,7 +121,7 @@ public class GPLoad extends GPCommand {
 
         // load the packages that we have decided to load
         for(CapFile capFile: capFilesToLoad) {
-            CapPackage pkg = capFile.getPackage();
+            CapFilePackage pkg = capFile.getPackage();
             loadOne(card, pkg);
         }
     }
@@ -133,8 +133,8 @@ public class GPLoad extends GPCommand {
             CapFile capFile;
             try {
                 os.println("Reading file " + file);
-                capFile = CapReader.readFile(file);
-                CapPackage pkg = capFile.getPackage();
+                capFile = CapFileReader.readFile(file);
+                CapFilePackage pkg = capFile.getPackage();
                 os.println("  aid " + pkg.getPackageAID());
                 os.println("  package " + pkg.getPackageName());
                 os.println("  version " + pkg.getPackageVersion());
@@ -168,7 +168,7 @@ public class GPLoad extends GPCommand {
         return shouldLoad;
     }
 
-    private void loadOne(GPCard card, CapPackage pkg) throws CardException {
+    private void loadOne(GPCard card, CapFilePackage pkg) throws CardException {
         PrintStream os = System.out;
         GPIssuerDomain issuer = card.getIssuerDomain();
 

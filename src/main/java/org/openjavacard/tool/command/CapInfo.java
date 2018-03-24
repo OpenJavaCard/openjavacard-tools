@@ -22,13 +22,13 @@ package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.cap.CapApplet;
-import org.openjavacard.cap.CapComponent;
-import org.openjavacard.cap.CapComponentType;
-import org.openjavacard.cap.CapFile;
-import org.openjavacard.cap.CapImport;
-import org.openjavacard.cap.CapPackage;
-import org.openjavacard.cap.CapReader;
+import org.openjavacard.cap.file.CapFileApplet;
+import org.openjavacard.cap.file.CapFileComponent;
+import org.openjavacard.cap.component.CapComponentType;
+import org.openjavacard.cap.file.CapFile;
+import org.openjavacard.cap.file.CapFileImport;
+import org.openjavacard.cap.file.CapFilePackage;
+import org.openjavacard.cap.file.CapFileReader;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -70,7 +70,7 @@ public class CapInfo implements Runnable {
             os.println();
             try {
                 os.println("Reading CAP file " + file + "...");
-                CapFile capFile = CapReader.readFile(file);
+                CapFile capFile = CapFileReader.readFile(file);
                 os.println();
 
                 os.println("CAP file " + file.getName());
@@ -78,7 +78,7 @@ public class CapInfo implements Runnable {
                 os.println("  Created by: " + capFile.getCreatedBy());
                 os.println();
 
-                for (CapPackage capPkg : capFile.getPackages()) {
+                for (CapFilePackage capPkg : capFile.getPackages()) {
                     os.println("CAP package " + capPkg.getPackageAID());
                     os.println("  Creation time: " + capPkg.getCapCreationTime());
                     os.println("  Converter provider: " + capPkg.getConverterProvider());
@@ -89,13 +89,13 @@ public class CapInfo implements Runnable {
                     os.println("  Package version: " + capPkg.getPackageVersion());
                     os.println();
 
-                    for (CapImport capImp : capPkg.getImports()) {
+                    for (CapFileImport capImp : capPkg.getImports()) {
                         os.println("  Import " + capImp.getAID());
                         os.println("    Version: " + capImp.getVersion());
                     }
                     os.println();
 
-                    for (CapApplet capApp : capPkg.getApplets()) {
+                    for (CapFileApplet capApp : capPkg.getApplets()) {
                         String appName = capApp.getName();
                         String appVersion = capApp.getVersion();
                         os.println("  Applet " + capApp.getAID());
@@ -108,7 +108,7 @@ public class CapInfo implements Runnable {
 
                     if(showComponents) {
                         for(CapComponentType type : CapComponentType.values()) {
-                            CapComponent capCom = capPkg.getComponentByType(type);
+                            CapFileComponent capCom = capPkg.getComponentByType(type);
                             if(capCom != null) {
                                 os.println("  Component " + capCom.getFilename());
                                 os.println("    Type: " + capCom.getName());

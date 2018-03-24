@@ -18,19 +18,22 @@
  *
  */
 
-package org.openjavacard.cap;
+package org.openjavacard.cap.file;
 
 import org.openjavacard.iso.AID;
 
-public class CapImport {
+/**
+ * Import declaration in a CAP file
+ */
+public class CapFileImport {
 
     private static final String ATTR_VERSION = "Version";
     private static final String ATTR_AID = "AID";
 
-    AID mAID;
-    String mVersion;
+    private AID mAID;
+    private String mVersion;
 
-    CapImport() {
+    CapFileImport() {
     }
 
     public AID getAID() {
@@ -41,6 +44,15 @@ public class CapImport {
         return mVersion;
     }
 
+    public String toString() {
+        return "CapFileImport " + mAID + " " + mVersion;
+    }
+
+    /**
+     * Internal: parse a manifest attribute of the import
+     * @param name
+     * @param value
+     */
     void readAttribute(String name, String value) {
         if (name.equals(ATTR_VERSION)) {
             mVersion = value;
@@ -50,8 +62,4 @@ public class CapImport {
         }
     }
 
-    @Override
-    public String toString() {
-        return "CapImport " + mAID;
-    }
 }
