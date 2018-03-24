@@ -30,28 +30,32 @@ import java.util.Arrays;
  */
 public class AID implements Comparable<AID>, VerboseString {
 
+    /** Maximum length of an AID (16) */
+    private static final int AID_MAX_LENGTH =  16;
     /** Offset of a RID in an AID (0) */
-    public static final int RID_OFFSET =  0;
+    private static final int RID_OFFSET =  0;
     /** Length of a RID in an AID (5) */
-    public static final int RID_LENGTH =  5;
-
+    private static final int RID_LENGTH =  5;
     /** Offset of a PIX in an AID (5) */
-    public static final int PIX_OFFSET =  5;
-    /** Maximum length of a PIX in an AID (11) */
-    public static final int PIX_LENGTH = 11;
+    private static final int PIX_OFFSET =  5;
 
     /** Binary value of the AID */
     private final byte[] mBytes;
+
+    /**
+     * Construct an AID from a hex string
+     * @param hex string indicating the AID
+     */
+    public AID(String hex) {
+        this(HexUtil.hexToBytes(hex));
+    }
 
     /**
      * Construct an AID from a byte array
      * @param bytes indicating the AID
      */
     public AID(byte[] bytes) {
-        if(bytes.length < RID_LENGTH) {
-            throw new IllegalArgumentException("AID must be 5 bytes long");
-        }
-        mBytes = bytes.clone();
+        this(bytes, 0, bytes.length);
     }
 
     /**
@@ -64,15 +68,10 @@ public class AID implements Comparable<AID>, VerboseString {
         if(length < RID_LENGTH) {
             throw new IllegalArgumentException("AID must be 5 bytes long");
         }
+        if(length > AID_MAX_LENGTH) {
+            throw new IllegalArgumentException("AID must be at most 16 bytes long");
+        }
         mBytes = Arrays.copyOfRange(bytes, offset, offset + length);
-    }
-
-    /**
-     * Construct an AID from a hex string
-     * @param hex string indicating the AID
-     */
-    public AID(String hex) {
-        mBytes = HexUtil.hexToBytes(hex);
     }
 
     /** @return length of the AID */
@@ -94,6 +93,11 @@ public class AID implements Comparable<AID>, VerboseString {
         return RID_LENGTH;
     }
 
+    /** @return the RID part of the AID as a hex string */
+    public String getRIDString() {
+        return HexUtil.bytesToHex(getRIDBytes());
+    }
+
     /** @return the RID part of the AID as a byte array */
     public byte[] getRIDBytes() {
         byte[] res = new byte[RID_LENGTH];
@@ -109,19 +113,20 @@ public class AID implements Comparable<AID>, VerboseString {
     /** @return bytes comprising the PIX part of this AID */
     public byte[] getPIXBytes() {
         int len = getPIXLength();
-        byte[] res = new byte[PIX_LENGTH];
+        byte[] res = new byte[len];
         System.arraycopy(mBytes, PIX_OFFSET, res, 0, len);
         return res;
     }
 
-    /** @return the RID part of the AID as a hex string */
-    public String getRIDString() {
-        return HexUtil.bytesToHex(getRIDBytes());
+    /** @return the PIX part of the AID as a hex string */
+    public String getPIXString() {
+        return HexUtil.bytesToHex(getPIXBytes());
     }
 
-    /** Stringify the AID */
-    public String toString() {
-        return HexUtil.bytesToHex(mBytes);
+    /** Hash of value */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(mBytes);
     }
 
     /** Equality by value */
@@ -133,23 +138,20 @@ public class AID implements Comparable<AID>, VerboseString {
         return Arrays.equals(mBytes, aid.mBytes);
     }
 
-    /** Hash of value */
+    /** Compare by magnitude */
     @Override
-    public int hashCode() {
-        return Arrays.hashCode(mBytes);
+    public int compareTo(AID o) {
+        if(equals(o)) {
+            return 0;
+        }
+        String tStr = toString();
+        String oStr = o.toString();
+        return tStr.compareTo(oStr);
     }
 
-    /**
-     * Construct an AID from a string-serialized byte array
-     *
-     * This format is used in CAP manifests.
-     *
-     * @param string indicating the AID
-     * @return an appropriate instance
-     */
-    public static AID fromArrayString(String string) {
-        String hex = string.replace("0x", "").replace(":", "");
-        return new AID(hex);
+    /** Stringify the AID */
+    public String toString() {
+        return HexUtil.bytesToHex(mBytes);
     }
 
     /** Stringify the AID verbosely */
@@ -165,14 +167,17 @@ public class AID implements Comparable<AID>, VerboseString {
         return res;
     }
 
-    @Override
-    public int compareTo(AID o) {
-        if(equals(o)) {
-            return 0;
-        }
-        String tStr = toString();
-        String oStr = o.toString();
-        return tStr.compareTo(oStr);
+    /**
+     * Construct an AID from a string-serialized byte array
+     *
+     * This format is used in CAP manifests.
+     *
+     * @param string indicating the AID
+     * @return an appropriate instance
+     */
+    public static AID fromArrayString(String string) {
+        String hex = string.replace("0x", "").replace(":", "");
+        return new AID(hex);
     }
 
 }
