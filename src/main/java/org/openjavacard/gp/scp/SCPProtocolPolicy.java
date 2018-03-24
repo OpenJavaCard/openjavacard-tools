@@ -133,7 +133,7 @@ public final class SCPProtocolPolicy {
     public void checkProtocol(int scpProtocol, int scpParameters) throws CardException {
         if (!isProtocolAllowed(scpProtocol, scpParameters)) {
             throw new CardException("Protocol SCP" + HexUtil.hex8(scpProtocol)
-                    + "(" + HexUtil.hex8(scpParameters) + ")"
+                    + "-" + HexUtil.hex8(scpParameters)
                     + " denied by policy");
         }
     }
