@@ -20,9 +20,6 @@
 
 package org.openjavacard.tlv;
 
-import org.openjavacard.util.HexUtil;
-import org.openjavacard.util.VerboseString;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;

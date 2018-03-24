@@ -21,8 +21,8 @@
 package org.openjavacard.gp.keys;
 
 import org.openjavacard.gp.client.GPCard;
-import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.protocol.GPKeyInfo;
+import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -28,7 +28,6 @@ import org.openjavacard.util.HexUtil;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
-import java.io.PrintStream;
 
 public class SCP02WrapperTest extends TestCase {
 
