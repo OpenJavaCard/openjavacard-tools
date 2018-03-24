@@ -613,11 +613,10 @@ public class GPCard {
         GPCardData res = null;
         byte[] data = readData(GP.GET_DATA_P12_CARD_DATA);
         if (data != null) {
-            res = new GPCardData();
             try {
-                res.read(data);
+                res = GPCardData.fromBytes(data);
             } catch (IOException e) {
-                throw new CardException("Error parsign card data", e);
+                throw new CardException("Error parsing card data", e);
             }
         }
         return res;
