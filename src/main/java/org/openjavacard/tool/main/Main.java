@@ -24,6 +24,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.tool.command.CapInfo;
+import org.openjavacard.tool.command.CapRead;
 import org.openjavacard.tool.command.CapSize;
 import org.openjavacard.tool.command.GPDelete;
 import org.openjavacard.tool.command.GPExtradite;
@@ -83,6 +84,7 @@ public class Main {
 
         jc.addCommand(new CapInfo());
         jc.addCommand(new CapSize());
+        jc.addCommand(new CapRead());
 
         jc.addCommand(new GenericAPDU(gpContext));
         jc.addCommand(new GenericScanName(gpContext));
