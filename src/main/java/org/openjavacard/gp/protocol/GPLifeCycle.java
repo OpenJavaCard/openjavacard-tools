@@ -21,7 +21,6 @@
 package org.openjavacard.gp.protocol;
 
 import org.openjavacard.util.HexUtil;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;

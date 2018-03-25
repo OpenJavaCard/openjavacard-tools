@@ -73,9 +73,7 @@ public class GPCardData {
     /** GlobalPlatform: security protocol parameters */
     private int mSecurityParameters = 0;
 
-    /**
-     * Internal constructor
-     */
+    /** Internal constructor */
     private GPCardData() {
     }
 
@@ -208,7 +206,6 @@ public class GPCardData {
      */
     private static byte[] parseOID(TLV tlv, byte[] prefix) {
         TLVPrimitive oid = tlv.asConstructed().getChild(0).asPrimitive(TAG_OID);
-        int tag = oid.getTag();
         byte[] data = oid.getValueBytes();
         if (!ArrayUtil.startsWith(data, prefix)) {
             throw new IllegalArgumentException("Wrong OID in card recognition TLV " + tlv);

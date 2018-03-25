@@ -438,7 +438,7 @@ public class GPSecureChannel extends CardChannel {
         }
 
         // we now know the protocol to be used
-        SCPProtocol selected = SCP0102Protocol.decode(scpProto, scpParams);
+        SCPProtocol selected = SCPProtocol.decode(scpProto, scpParams);
 
         // check against the protocol policy
         mProtocolPolicy.checkProtocol(selected);
