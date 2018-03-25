@@ -29,6 +29,17 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
+sourceSets {
+    main {
+        java.srcDirs = [ 'src/main/java' ]
+        resources.srcDirs = [ 'src/main/resource' ]
+    }
+    test {
+        java.srcDirs = [ 'src/test/java' ]
+        resources.srcDirs = [ 'src/test/resource' ]
+    }
+}
+
 test {
     onOutput { descriptor, event ->
         logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
