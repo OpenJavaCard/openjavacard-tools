@@ -20,8 +20,6 @@
 
 package org.openjavacard.cap.file;
 
-import org.openjavacard.cap.component.CapComponentType;
-
 /**
  * Component in a CAP file
  */

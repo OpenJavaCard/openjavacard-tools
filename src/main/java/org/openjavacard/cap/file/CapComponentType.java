@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.cap.component;
+package org.openjavacard.cap.file;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,12 +58,19 @@ public enum CapComponentType {
             Descriptor
     };
 
+    /**
+     * Get the CAP component type for the given filename
+     * @param name of the component file
+     * @return component type or null
+     */
     public static CapComponentType forFilename(String name) {
         return BY_FILENAME.get(name);
     }
 
+    /** Map of all component types by filename */
     private static final Map<String, CapComponentType> BY_FILENAME;
 
+    /** Initialize the by-filename map */
     static {
         HashMap<String, CapComponentType> table = new HashMap<>();
         for(CapComponentType type: CapComponentType.values()) {

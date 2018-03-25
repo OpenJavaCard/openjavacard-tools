@@ -89,7 +89,7 @@ public class CapFile {
         for (Map.Entry<Object, Object> entry : attributes.entrySet()) {
             String name = entry.getKey().toString();
             String value = (String) entry.getValue();
-            LOG.debug("attribute " + name + " = " + value);
+            LOG.trace("attribute " + name + " = " + value);
             if (name == ATTR_MANIFEST_VERSION) {
                 mManifestVersion = value;
             }
@@ -100,7 +100,7 @@ public class CapFile {
         // read entries
         for (Map.Entry<String, Attributes> entry : manifest.getEntries().entrySet()) {
             String pkgName = entry.getKey();
-            LOG.debug("package " + pkgName);
+            LOG.debug("reading package " + pkgName);
             Attributes pkgAttributes = entry.getValue();
             CapFilePackage pkg = new CapFilePackage();
             pkg.read(pkgName, pkgAttributes, files);

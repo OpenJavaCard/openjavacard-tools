@@ -19,6 +19,6 @@
  */
 
 /**
- * CAP file processing
+ * CAP file loader
  */
 package org.openjavacard.cap.file;

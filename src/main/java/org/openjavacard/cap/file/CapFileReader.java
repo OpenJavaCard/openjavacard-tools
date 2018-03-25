@@ -57,7 +57,7 @@ public class CapFileReader {
     }
 
     private CapFile read(File file) throws IOException {
-        LOG.debug("opening CAP " + file);
+        LOG.debug("reading file " + file);
 
         // create an input stream for the zip file
         ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
@@ -73,7 +73,7 @@ public class CapFileReader {
         while ((ze = zis.getNextEntry()) != null) {
             String name = ze.getName();
             byte[] bytes = readZipEntry(zis, ze);
-            LOG.debug("entry " + name + " (" + bytes.length + " bytes)");
+            LOG.trace("entry " + name + " (" + bytes.length + " bytes)");
             files.put(name, bytes);
             if (name.equals(FILE_MANIFEST)) {
                 manifest = new Manifest(new ByteArrayInputStream(bytes));

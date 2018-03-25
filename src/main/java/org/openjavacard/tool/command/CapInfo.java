@@ -22,10 +22,10 @@ package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.openjavacard.cap.file.CapComponentType;
+import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFileApplet;
 import org.openjavacard.cap.file.CapFileComponent;
-import org.openjavacard.cap.component.CapComponentType;
-import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFileImport;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;

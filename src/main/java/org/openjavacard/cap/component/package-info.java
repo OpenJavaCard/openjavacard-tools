@@ -19,6 +19,6 @@
  */
 
 /**
- * CAP component representation
+ * CAP file components
  */
 package org.openjavacard.cap.component;
