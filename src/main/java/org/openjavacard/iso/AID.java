@@ -84,6 +84,11 @@ public class AID implements Comparable<AID>, VerboseString {
         return mBytes.clone();
     }
 
+    /** @return true if this AID is a bare RID */
+    public boolean isRID() {
+        return mBytes.length == RID_LENGTH;
+    }
+
     /** @return the RID part of the AID as an object */
     public AID getRID() {
         return new AID(getRIDBytes());

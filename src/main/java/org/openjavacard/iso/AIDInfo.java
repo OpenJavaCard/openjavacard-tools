@@ -42,13 +42,15 @@ public class AIDInfo {
     }
 
     static {
-        addKnown("a000000003000000", "GlobalPlatform ISD");
-        addKnown("a0000000035350",   "GlobalPlatform SSD Package");
-        addKnown("a000000151000000", "NXP ISD");
-        addKnown("a0000001515350",   "NXP SSD Package");
+        addKnown("a000000003000000", "Visa ISD");
+        addKnown("a0000000035350",   "Visa SSD Package");
+        addKnown("a000000151000000", "GlobalPlatform ISD");
+        addKnown("a0000001515350",   "GlobalPlatform SSD Package");
         addKnown("D2760000850101",   "NDEF Type 4 Tag");
-        addKnown("D27600012401",     "FSFE OpenPGP");
-        addKnown("D27600012402",     "FSFE SmartChess");
+        addKnown("D27600012401",     "fsfEurope OpenPGP");
+        addKnown("D2760001240101",   "fsfEurope OpenPGP V1");
+        addKnown("D2760001240102",   "fsfEurope OpenPGP V2");
+        addKnown("D27600012402",     "fsfEurope SmartChess");
     }
 
     public final AID aid;
