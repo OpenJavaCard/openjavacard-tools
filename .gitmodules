@@ -1,0 +1,6 @@
+[submodule "dep/jcommander"]
+	path = dep/jcommander
+	url = https://github.com/cbeust/jcommander.git
+[submodule "dep/slf4j"]
+	path = dep/slf4j
+	url = https://github.com/qos-ch/slf4j.git
