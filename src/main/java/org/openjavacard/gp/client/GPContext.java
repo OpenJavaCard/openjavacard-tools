@@ -30,7 +30,6 @@ import javax.smartcardio.CardTerminal;
 public class GPContext extends GenericContext {
 
     public GPContext() {
-        LOG = LoggerFactory.getLogger(GPContext.class);
     }
 
     public GPCard findSingleGPCard(String prefix) {

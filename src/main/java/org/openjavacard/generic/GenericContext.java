@@ -33,10 +33,10 @@ import java.util.List;
 
 public class GenericContext {
 
-    protected Logger LOG;
+    protected final Logger LOG;
 
     public GenericContext() {
-        LOG = LoggerFactory.getLogger(GenericContext.class);
+        LOG = LoggerFactory.getLogger(getClass());
     }
 
     public GenericCard findSingleCard(String prefix) {
