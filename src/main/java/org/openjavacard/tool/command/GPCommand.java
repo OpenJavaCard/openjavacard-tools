@@ -72,7 +72,7 @@ public abstract class GPCommand implements Runnable {
             names = "--isd",
             description = "Use specified ISD"
     )
-    protected String sd;
+    protected AID isd;
 
     @Parameter(
             names = "--scp-diversify",
@@ -127,15 +127,11 @@ public abstract class GPCommand implements Runnable {
                 throw new Error("Could not load keystore aliases", e);
             }
         }
-        AID sdAID = null;
-        if(sd != null) {
-            sdAID = new AID(sd);
-        }
-        GPCard card = mContext.findSingleGPCard(reader, sdAID);
+        GPCard card = mContext.findSingleGPCard(reader, isd);
         try {
-            AID isdAID = card.getISD();
+            AID isdConf = card.getISD();
             os.println("Host GP configuration:");
-            os.println("  ISD " + ((isdAID==null)?"auto":isdAID));
+            os.println("  ISD " + ((isdConf==null)?"auto":isdConf));
             int protocol = HexUtil.unsigned8(scpProtocol);
             int parameters = HexUtil.unsigned8(scpParameters);
             SCPProtocolPolicy protocolPolicy = new SCPProtocolPolicy(protocol, parameters);
