@@ -337,24 +337,25 @@ public class GPCard {
      * @throws CardException
      */
     public boolean detect() throws CardException {
-        // connect to the card
-        mCard = mTerminal.connect("*");
+        return detect(false);
+    }
 
-        // log connection parameters
-        LOG.debug("connected " + mCard.getProtocol() + " ATR="
-                + HexUtil.bytesToHex(mCard.getATR().getBytes()));
+    private boolean detect(boolean stayConnected) throws CardException {
+        // return if no need
+        if(mISD != null) {
+            return true;
+        }
+
+        // log about it
+        LOG.debug("detecting ISD");
 
         // work exclusively
         try {
-            mCard.beginExclusive();
-
-            // get the basic channel
-            mBasic = mCard.getBasicChannel();
+            // make sure we are connected
+            ensureConnectedToCard();
 
             // find the issuer applet
-            if (mISD == null) {
-                mISD = findISD();
-            }
+            mISD = findISD();
 
             // log about it
             if (mISD != null) {
@@ -362,11 +363,14 @@ public class GPCard {
             } else {
                 LOG.debug("could not find an ISD");
             }
-
         } finally {
-            mCard.endExclusive();
+            if(!stayConnected) {
+                // disconnect everything
+                disconnect();
+            }
         }
 
+        // return true if we found an ISD
         return mISD != null;
     }
 
@@ -383,14 +387,15 @@ public class GPCard {
             return true;
         }
 
-        // determine and check ISD
-        if (!detect()) {
-            throw new CardException("Could not determine ISD");
-        }
-
-        // we want to do this exclusively
+        // disconnect on exception
         try {
-            mCard.beginExclusive();
+            // connect to the card
+            ensureConnectedToCard();
+
+            // check for ISD and detect if needed
+            if (mISD == null && !detect(true)) {
+                throw new CardException("Could not determine ISD");
+            }
 
             // select the ISD
             selectFileByName(mISD);
@@ -486,7 +491,7 @@ public class GPCard {
             mIsConnected = true;
         } finally {
             if (!mIsConnected) {
-                mCard.endExclusive();
+                disconnect();
             }
         }
 
@@ -504,12 +509,14 @@ public class GPCard {
             mSecure.close();
             mSecure = null;
         }
-        // end exclusive if connected
-        if (mIsConnected) {
-            mCard.endExclusive();
+        // tear down the basic channel
+        if(mBasic != null) {
+            //mBasic.close();
+            mBasic = null;
         }
         // disconnect and reset the card
         if (mCard != null) {
+            mCard.endExclusive();
             mCard.disconnect(true);
             mCard = null;
         }
@@ -517,6 +524,23 @@ public class GPCard {
         mIsConnected = false;
         // log about it
         LOG.debug("disconnected");
+    }
+
+    private void ensureConnectedToCard() throws CardException {
+        if(mCard == null) {
+            // connect to the card
+            mCard = mTerminal.connect("*");
+
+            // log connection parameters
+            LOG.debug("connected " + mCard.getProtocol() + " ATR="
+                    + HexUtil.bytesToHex(mCard.getATR().getBytes()));
+
+            // always work exclusive
+            mCard.beginExclusive();
+
+            // get the basic channel
+            mBasic = mCard.getBasicChannel();
+        }
     }
 
     /**
