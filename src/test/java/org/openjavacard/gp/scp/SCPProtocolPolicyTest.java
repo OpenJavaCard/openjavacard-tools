@@ -31,9 +31,10 @@ import javax.smartcardio.CardException;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class SCPProtocolPolicyTest extends TestCase {
 
+    // all variants of SCP01
     private SCPProtocol SCP01_05 = SCPProtocol.decode(0x01, 0x05);
     private SCPProtocol SCP01_15 = SCPProtocol.decode(0x01, 0x15);
-
+    // common variants of SCP02
     private SCPProtocol SCP02_15  = SCPProtocol.decode(0x02, 0x15);
     private SCPProtocol SCP02_55  = SCPProtocol.decode(0x02, 0x55);
 
@@ -111,6 +112,8 @@ public class SCPProtocolPolicyTest extends TestCase {
         Assert.assertFalse(pol.isVersionAllowed(0x01));
         Assert.assertFalse(pol.isVersionAllowed(0x02));
         Assert.assertTrue(pol.isVersionAllowed(0x03));
+        Assert.assertFalse(pol.isProtocolAllowed(0x01, 0x05));
+        Assert.assertFalse(pol.isProtocolAllowed(0x01, 0x15));
         Assert.assertFalse(pol.isProtocolAllowed(0x02, 0x15));
         Assert.assertFalse(pol.isProtocolAllowed(0x02, 0x55));
     }
