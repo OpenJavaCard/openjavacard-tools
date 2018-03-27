@@ -75,10 +75,10 @@ public abstract class GPCommand implements Runnable {
     protected AID isd;
 
     @Parameter(
-            names = "--scp-diversify",
+            names = "--scp-diversification",
             description = "Use specified key diversification"
     )
-    protected GPKeyDiversification scpDiversify = GPKeyDiversification.NONE;
+    protected GPKeyDiversification scpDiversification = GPKeyDiversification.NONE;
 
     @Parameter(
             names = "--scp-protocol",
@@ -110,7 +110,7 @@ public abstract class GPCommand implements Runnable {
 
     @Override
     public void run() {
-        if(scpDiversify != GPKeyDiversification.NONE) {
+        if(scpDiversification != GPKeyDiversification.NONE) {
             throw new Error("Key diversification is not supported yet");
         }
         PrintStream os = System.out;
