@@ -454,11 +454,13 @@ public class GPCard {
                 throw new CardException("Card returned no key information template");
             } else {
                 LOG.trace("key information:\n" + mCardKeyInfo.toString());
-                if (mCardKeyInfo.matchesKeysetForUsage(mKeys)) {
-                    LOG.debug("keys match key information");
-                } else {
-                    throw new CardException("Keys do not match key information from card");
-                }
+            }
+
+            // check key against key information
+            if (mCardKeyInfo.matchesKeysetForUsage(mKeys)) {
+                LOG.debug("keys match key information");
+            } else {
+                throw new CardException("Keys do not match key information");
             }
 
             // create a secure channel object
