@@ -27,12 +27,12 @@ import javax.smartcardio.CardException;
 
 /**
  * Represents a specific variant of an SCP protocol
- *
+ * <p/>
  * This is a base class, SCP implementations should subclass it.
- *
+ * <p/>
  * These objects are informed about the specific features of
  * their respective SCP protocol with its negotiated parameters.
- *
+ * <p/>
  * Contrary to protocol policies these actually know what level
  * of security the protocol supports.
  */
@@ -62,13 +62,9 @@ public abstract class SCPProtocol implements VerboseString {
         }
     }
 
-    /**
-     * SCP protocol version
-     */
+    /** SCP protocol version */
     public final int scpVersion;
-    /**
-     * SCP parameter specification
-     */
+    /** SCP parameter specification */
     public final int scpParameters;
 
     /**
@@ -84,11 +80,11 @@ public abstract class SCPProtocol implements VerboseString {
 
     /**
      * Determine if the given security policy is supported
-     *
+     * <p/>
      * This is version-specific because protocols express
      * support in version-dependent parameter bits and
      * have varying support for advanced features.
-     *
+     * <p/>
      * @param securityPolicy to check
      */
     public abstract boolean isSecuritySupported(SCPSecurityPolicy securityPolicy) throws CardException;

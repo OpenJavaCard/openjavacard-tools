@@ -26,25 +26,24 @@ import javax.smartcardio.CardException;
 
 /**
  * SCP protocol selection policy
- *
+ * <p/>
  * This has been introduced because card provisioning systems
  * may be confronted with several protocol versions on different
  * cards and should want to prevent downgrade attacks.
- *
+ * <p/>
  * One such attack would be for an impostor card to indicate SCP01
  * even though the corresponding original card is supposed to
  * support SCP02. In that case the SCP02 keys would be used with
  * SCP01 and consequently with less cryptographic protection,
  * creating a possibility of malicious key derivation.
- *
+ * <p/>
  * Note that these objects can not say what level of security
  * the protocol supports because that cannot be determined
  * before knowing the protocol parameters, which this class
- * polices but does not understand.
- *
+ * potentially polices but does not understand.
+ * <p/>
  * There are no version-specific subclasses of this class
- * because policing the version does not require any
- * version-specific details about the parameters.
+ * because we police protocols in a general manner.
  */
 public final class SCPProtocolPolicy {
 
