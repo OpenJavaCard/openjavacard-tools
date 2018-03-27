@@ -98,6 +98,12 @@ public abstract class GPCommand implements Runnable {
     )
     protected SCPSecurityPolicy scpSecurity = SCPSecurityPolicy.CMAC;
 
+    @Parameter(
+            names = "--log-keys",
+            description = "Allow writing keys into the debug log"
+    )
+    protected boolean logKeys = false;
+
     protected GPContext mContext;
 
     public GPCommand(GPContext context) {
@@ -110,9 +116,14 @@ public abstract class GPCommand implements Runnable {
 
     @Override
     public void run() {
+        if(logKeys) {
+            mContext.enableKeyLogging();
+        }
+
         if(scpDiversification != GPKeyDiversification.NONE) {
             throw new Error("Key diversification is not supported yet");
         }
+
         PrintStream os = System.out;
         if(keystoreFile != null) {
             os.println("Opening keystore " + keystoreFile);
