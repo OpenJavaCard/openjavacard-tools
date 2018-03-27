@@ -438,12 +438,15 @@ public class GPCard {
                 } else {
                     LOG.debug("card CIN: " + HexUtil.bytesToHex(mCardCIN));
                 }
+            } else {
+                // unique identification is an optional feature
+                LOG.debug("card is not uniquely identifiable");
             }
 
-            // get key information and check it against keys
+            // get key information, which must be present
             mCardKeyInfo = readKeyInfo();
             if (mCardKeyInfo == null) {
-                throw new CardException("Card did not return a GP key information template");
+                throw new CardException("Card returned no key information template");
             } else {
                 LOG.trace("key information:\n" + mCardKeyInfo.toString());
                 if (mCardKeyInfo.matchesKeysetForUsage(mKeys)) {
