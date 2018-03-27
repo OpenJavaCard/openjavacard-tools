@@ -406,13 +406,10 @@ public class GPCard {
             }
 
             // get card data, needed to determine SCP parameters
-            try {
-                mCardData = readCardData();
-            } catch (SWException ex) {
-                LOG.warn("error trying to read card data", ex);
-            }
+            mCardData = readCardData();
             if (mCardData == null) {
-                LOG.warn("card did not return GP card data");
+                // this is normal for SCP01
+                LOG.debug("card has no card data");
             } else {
                 LOG.trace("card data:\n" + mCardData.toString());
             }
