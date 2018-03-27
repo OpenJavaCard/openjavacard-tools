@@ -22,37 +22,69 @@ package org.openjavacard.gp.scp;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
 import javax.smartcardio.CardException;
 
+@RunWith(BlockJUnit4ClassRunner.class)
 public class SCPProtocolPolicyTest extends TestCase {
 
-    SCPProtocol SCP02_15 = SCPProtocol.decode(0x02, 0x15);
-    SCPProtocol SCP02_55 = SCPProtocol.decode(0x02, 0x55);
+    private SCPProtocol SCP01_05 = SCPProtocol.decode(0x01, 0x05);
+    private SCPProtocol SCP01_15 = SCPProtocol.decode(0x01, 0x15);
 
-    public void testPermissive() throws CardException {
+    private SCPProtocol SCP02_15  = SCPProtocol.decode(0x02, 0x15);
+    private SCPProtocol SCP02_55  = SCPProtocol.decode(0x02, 0x55);
+
+    @Test
+    public void testPermissiveAccept() throws CardException {
         SCPProtocolPolicy pol = SCPProtocolPolicy.PERMISSIVE;
         Assert.assertTrue(pol.isVersionAllowed(0x01));
         Assert.assertTrue(pol.isVersionAllowed(0x02));
         Assert.assertTrue(pol.isVersionAllowed(0x03));
+        Assert.assertTrue(pol.isProtocolAllowed(0x01, 0x05));
+        Assert.assertTrue(pol.isProtocolAllowed(0x01, 0x15));
         Assert.assertTrue(pol.isProtocolAllowed(0x02, 0x15));
         Assert.assertTrue(pol.isProtocolAllowed(0x02, 0x55));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP01_05));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP01_15));
         Assert.assertTrue(pol.isProtocolAllowed(SCP02_15));
         Assert.assertTrue(pol.isProtocolAllowed(SCP02_55));
+        pol.checkProtocol(SCP01_05);
+        pol.checkProtocol(SCP01_15);
         pol.checkProtocol(SCP02_15);
         pol.checkProtocol(SCP02_55);
     }
 
-    public void testSCP01() {
+    @Test
+    public void testSCP01Accept() throws CardException {
         SCPProtocolPolicy pol = SCPProtocolPolicy.SCP01;
         Assert.assertTrue(pol.isVersionAllowed(0x01));
         Assert.assertFalse(pol.isVersionAllowed(0x02));
         Assert.assertFalse(pol.isVersionAllowed(0x03));
         Assert.assertFalse(pol.isProtocolAllowed(0x02, 0x15));
         Assert.assertFalse(pol.isProtocolAllowed(0x02, 0x55));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP01_05));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP01_15));
+        Assert.assertFalse(pol.isProtocolAllowed(SCP02_15));
+        Assert.assertFalse(pol.isProtocolAllowed(SCP02_55));
+        pol.checkProtocol(SCP01_05);
+        pol.checkProtocol(SCP01_15);
+    }
+    @Test(expected = CardException.class)
+    public void testSCP01RejectSCP02_15() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP01;
+        pol.checkProtocol(SCP02_15);
+    }
+    @Test(expected = CardException.class)
+    public void testSCP01RejectSCP02_55() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP01;
+        pol.checkProtocol(SCP02_55);
     }
 
-    public void testSCP02() throws CardException {
+    @Test
+    public void testSCP02Accept() throws CardException {
         SCPProtocolPolicy pol = SCPProtocolPolicy.SCP02;
         Assert.assertFalse(pol.isVersionAllowed(0x01));
         Assert.assertTrue(pol.isVersionAllowed(0x02));
@@ -62,8 +94,19 @@ public class SCPProtocolPolicyTest extends TestCase {
         pol.checkProtocol(SCP02_15);
         pol.checkProtocol(SCP02_55);
     }
+    @Test(expected = CardException.class)
+    public void testSCP02RejectSCP01_05() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP02;
+        pol.checkProtocol(SCP01_05);
+    }
+    @Test(expected = CardException.class)
+    public void testSCP02RejectSCP01_15() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP02;
+        pol.checkProtocol(SCP01_15);
+    }
 
-    public void testSCP03() {
+    @Test
+    public void testSCP03Accept() {
         SCPProtocolPolicy pol = SCPProtocolPolicy.SCP03;
         Assert.assertFalse(pol.isVersionAllowed(0x01));
         Assert.assertFalse(pol.isVersionAllowed(0x02));

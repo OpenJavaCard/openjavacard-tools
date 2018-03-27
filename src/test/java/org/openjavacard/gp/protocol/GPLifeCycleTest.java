@@ -34,7 +34,7 @@ public class GPLifeCycleTest extends TestCase {
                      "B1C2D3ABCD4812333900000000060f20"+
                      "32A0B1C2D30000000000000000");
 
-    public void testParse() throws IOException {
+    public void testParse() {
         GPLifeCycle lc = GPLifeCycle.read(CPLC_BYTES);
         Assert.assertEquals("4790", lc.getFieldHex(GPLifeCycle.Field.ICFabricator));
         Assert.assertEquals("5038", lc.getFieldHex(GPLifeCycle.Field.ICType));
