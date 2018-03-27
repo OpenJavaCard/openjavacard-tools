@@ -21,6 +21,7 @@
 package org.openjavacard.gp.scp;
 
 import org.openjavacard.gp.client.GPCard;
+import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
@@ -53,6 +54,8 @@ public class GPSecureChannel extends CardChannel {
 
     /** Random for generating the host challenge */
     private SecureRandom mRandom;
+    /** Context for checks */
+    private GPContext mContext;
     /** Reference to the card for communication */
     private GPCard mCard;
     /** Underlying card channel for communication */
@@ -92,6 +95,7 @@ public class GPSecureChannel extends CardChannel {
                            SCPProtocolPolicy protocolPolicy,
                            SCPSecurityPolicy securityPolicy) {
         mRandom = new SecureRandom();
+        mContext = card.getContext();
         mCard = card;
         mChannel = channel;
         mStaticKeys = keys;
@@ -306,8 +310,9 @@ public class GPSecureChannel extends CardChannel {
                 throw new CardException("Unsupported SCP version " + mActiveProtocol);
         }
 
-        // XXX
-        LOG.trace("session keys:\n" + mSessionKeys.toString());
+        if(mContext.isKeyLoggingEnabled()) {
+            LOG.trace("session keys:\n" + mSessionKeys.toString());
+        }
 
         // verify the card cryptogram
         if (verifyCardCryptogram(hostChallenge, init.cardChallenge, init.cardCryptogram)) {

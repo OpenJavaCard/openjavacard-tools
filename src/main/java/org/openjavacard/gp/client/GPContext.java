@@ -29,7 +29,18 @@ import javax.smartcardio.CardTerminal;
 
 public class GPContext extends GenericContext {
 
+    private boolean mKeyLoggingEnabled = false;
+
     public GPContext() {
+    }
+
+    public boolean isKeyLoggingEnabled() {
+        return mKeyLoggingEnabled;
+    }
+
+    public void enableKeyLogging() {
+        LOG.warn("key logging enabled");
+        mKeyLoggingEnabled = true;
     }
 
     public GPCard findSingleGPCard(String prefix) {

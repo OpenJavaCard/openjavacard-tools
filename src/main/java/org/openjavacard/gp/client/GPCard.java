@@ -193,6 +193,10 @@ public class GPCard {
         mIssuerDomain = new GPIssuerDomain(this);
     }
 
+    /** @return the context of this client */
+    public GPContext getContext() {
+        return mContext;
+    }
     /** @return the terminal in use */
     public CardTerminal getTerminal() {
         return mTerminal;
@@ -391,8 +395,10 @@ public class GPCard {
             // select the ISD
             selectFileByName(mISD);
 
-            // XXX
-            LOG.trace("static keys:\n" + mKeys.toString());
+            // log static keys
+            if(mContext.isKeyLoggingEnabled()) {
+                LOG.trace("static keys:\n" + mKeys.toString());
+            }
 
             // get the CPLC for reference
             try {
