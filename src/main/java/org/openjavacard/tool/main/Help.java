@@ -53,7 +53,6 @@ public class Help implements Runnable {
             Map<String, JCommander> commands = mCommander.getCommands();
             for (Map.Entry<String, JCommander> entry : commands.entrySet()) {
                 String name = entry.getKey();
-                JCommander command = entry.getValue();
                 sb.append("    ");
                 sb.append(name);
                 sb.append("\t");

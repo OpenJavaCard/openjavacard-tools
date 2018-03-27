@@ -18,19 +18,16 @@
  *
  */
 
-package org.openjavacard.tool.command;
+package org.openjavacard.tool.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.gp.client.GPContext;
-import org.openjavacard.tool.main.Main;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 
 @Parameters(
@@ -45,40 +42,40 @@ public class Script implements Runnable {
     )
     List<File> scripts;
 
-    GPContext mContext;
+    private final Tool mTool;
 
-    public Script(GPContext context) {
-        mContext = context;
+    public Script(Tool tool) {
+        mTool = tool;
     }
 
     @Override
     public void run() {
-        PrintStream os = System.out;
         try {
             for(File script: scripts) {
                 FileReader fr = new FileReader(script);
                 BufferedReader br = new BufferedReader(fr);
                 for (String line; (line = br.readLine()) != null; ) {
-                    if(!line.startsWith("#")) {
-                        String[] toks = line.split("\\s+");
-                        if (toks.length > 0) {
-                            JCommander jc = Main.makeCommander(mContext);
-                            jc.parse(toks);
-                            String scmd = jc.getParsedCommand();
-                            if (scmd != null) {
-                                JCommander jcmd = jc.getCommands().get(scmd);
-                                for (Object o : jcmd.getObjects()) {
-                                    if (o instanceof Runnable) {
-                                        ((Runnable) o).run();
-                                    }
-                                }
-                            }
+                    // ignore comments
+                    if(line.startsWith("#")) {
+                        continue;
+                    }
+                    // tokenize the line
+                    String[] tokens = line.split("\\s+");
+                    // process command if there is one
+                    if (tokens.length > 0) {
+                        // build a fresh commander
+                        JCommander jc = mTool.makeCommander();
+                        jc.parse(tokens);
+                        String command = jc.getParsedCommand();
+                        if (command != null) {
+                            JCommander commandJc = jc.getCommands().get(command);
+                            mTool.runCommand(command, commandJc);
                         }
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new Error(e);
         }
     }
 }
