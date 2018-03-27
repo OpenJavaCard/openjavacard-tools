@@ -26,17 +26,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CapTypeDescriptorInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapTypeDescriptorInfo.class);
 
+    private ArrayList<CapTypeDescriptor> mTypeDescriptors;
+
+    public List<CapTypeDescriptor> getTypeDescriptors() {
+        return mTypeDescriptors;
+    }
+
     public void read(CapStructureReader reader) throws IOException {
         int constantPoolCount = reader.readU2();
         int[] constantPoolTypes = reader.readU2Array(constantPoolCount);
+        LOG.trace("read " + constantPoolCount + " constant pool types");
+        ArrayList<CapTypeDescriptor> typeDescriptors = new ArrayList<>();
         while(reader.hasMore()) {
-            reader.readStructure(CapTypeDescriptor.class);
+            typeDescriptors.add(reader.readStructure(CapTypeDescriptor.class));
         }
+        mTypeDescriptors = typeDescriptors;
+        LOG.trace("read " + typeDescriptors.size() + " type descriptors");
     }
 
 }

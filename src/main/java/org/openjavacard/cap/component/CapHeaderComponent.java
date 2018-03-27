@@ -23,7 +23,8 @@ package org.openjavacard.cap.component;
 import org.openjavacard.cap.file.CapComponentType;
 import org.openjavacard.cap.io.CapComponent;
 import org.openjavacard.cap.io.CapStructureReader;
-import org.openjavacard.iso.AID;
+import org.openjavacard.cap.structure.CapPackageInfo;
+import org.openjavacard.cap.structure.CapVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,24 +40,17 @@ public class CapHeaderComponent extends CapComponent {
     private static final int FLAG_ACC_EXPORT = 0x02;
     private static final int FLAG_ACC_APPLET = 0x04;
 
-    private int mMinorVersion;
-    private int mMajorVersion;
+    private CapVersion mCapVersion;
     private int mFlags;
-    private int mPackageMinorVersion;
-    private int mPackageMajorVersion;
-    private AID mPackageAID;
-    private String mPackageName;
+    private CapPackageInfo mInfo;
+    private String mName;
 
     public CapHeaderComponent() {
         super(CapComponentType.Header);
     }
 
-    public int getMinorVersion() {
-        return mMinorVersion;
-    }
-
-    public int getMajorVersion() {
-        return mMajorVersion;
+    public CapVersion getCapVersion() {
+        return mCapVersion;
     }
 
     public int getFlags() {
@@ -75,42 +69,33 @@ public class CapHeaderComponent extends CapComponent {
         return (mFlags & FLAG_ACC_APPLET) != 0;
     }
 
-    public int getPackageMinorVersion() {
-        return mPackageMinorVersion;
+    public CapPackageInfo getInfo() {
+        return mInfo;
     }
 
-    public int getPackageMajorVersion() {
-        return mPackageMajorVersion;
-    }
-
-    public AID getPackageAID() {
-        return mPackageAID;
-    }
-
-    public String getPackageName() {
-        return mPackageName;
+    public String getName() {
+        return mName;
     }
 
     public void read(CapStructureReader reader) throws IOException {
+        // check header magic
         long magic = reader.readU4();
         if(magic != MAGIC) {
             reader.error("Missing magic");
         }
-        mMinorVersion = reader.readU1();
-        mMajorVersion = reader.readU1();
+        // check and remember CAP version
+        int minorVersion = reader.readU1();
+        int majorVersion = reader.readU1();
+        mCapVersion = new CapVersion(majorVersion, minorVersion);
+        // package flags
         mFlags = reader.readU1();
-        LOG.trace("cap maj " + mMajorVersion + " min " + mMinorVersion + " flag " + mFlags);
         // package info
-        mPackageMinorVersion = reader.readU1();
-        mPackageMajorVersion = reader.readU1();
-        LOG.trace("pkg maj " + mPackageMajorVersion + " min " + mPackageMinorVersion);
-        mPackageAID = reader.readAID();
-        LOG.trace("pkg aid " + mPackageAID);
+        mInfo = reader.readStructure(CapPackageInfo.class);
         if(!reader.hasMore()) {
             return;
         }
         // package name
-        mPackageName = reader.readString();
+        mName = reader.readString();
     }
 
 }

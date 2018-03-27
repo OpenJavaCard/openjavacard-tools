@@ -45,26 +45,27 @@ public class CapClassDescriptorInfo extends CapStructure {
         int fieldCount = reader.readU2();
         int methodCount = reader.readU2();
         LOG.trace("class interfaceCount " + interfaceCount + " fieldCount " + fieldCount + " methodCount " + methodCount);
+
         ArrayList<CapClassRef> ifcs = new ArrayList<>();
         for(int j = 0; j < interfaceCount; j++) {
             ifcs.add(reader.readClassRef());
-            LOG.trace("interface " + j);
         }
         mInterfaces = ifcs;
+        LOG.trace("read " + ifcs.size() + " interface references");
+
         ArrayList<CapFieldDescriptorInfo> fdis = new ArrayList<>();
         for(int j = 0; j < fieldCount; j++) {
-            CapFieldDescriptorInfo fdi = reader.readStructure(CapFieldDescriptorInfo.class);
-            fdis.add(fdi);
-            LOG.trace("field " + j);
+            fdis.add(reader.readStructure(CapFieldDescriptorInfo.class));
         }
         mFields = fdis;
+        LOG.trace("read " + fdis.size() + " field descriptors");
+
         ArrayList<CapMethodDescriptorInfo> mdis = new ArrayList<>();
         for(int j = 0; j < methodCount; j++) {
-            CapMethodDescriptorInfo mdi = reader.readStructure(CapMethodDescriptorInfo.class);
-            mdis.add(mdi);
-            LOG.trace("method " + j);
+            mdis.add(reader.readStructure(CapMethodDescriptorInfo.class));
         }
         mMethods = mdis;
+        LOG.trace("read " + mdis.size() + " method descriptors");
     }
 
 }

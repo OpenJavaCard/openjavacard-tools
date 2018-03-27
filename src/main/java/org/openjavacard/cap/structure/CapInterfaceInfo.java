@@ -22,7 +22,6 @@ package org.openjavacard.cap.structure;
 
 import org.openjavacard.cap.io.CapStructure;
 import org.openjavacard.cap.io.CapStructureReader;
-import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,25 +32,42 @@ public class CapInterfaceInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapInterfaceInfo.class);
 
-    private boolean mIsShareable;
-    private boolean mIsRemote;
+    private boolean mShareable;
+    private boolean mRemote;
 
     private ArrayList<CapClassRef> mSupers;
     private String mRemoteName;
+
+    public boolean isShareable() {
+        return mShareable;
+    }
+
+    public boolean isRemote() {
+        return mRemote;
+    }
+
+    public ArrayList<CapClassRef> getSupers() {
+        return mSupers;
+    }
+
+    public String getRemoteName() {
+        return mRemoteName;
+    }
 
     public void read(CapStructureReader reader) throws IOException {
         int bitfield = reader.readU1();
         int flags = (bitfield >> 4) & 0xF;
         int interfaceCount = bitfield & 0xF;
-        mIsShareable = (flags & CapFlag.ACC_SHAREABLE) != 0;
-        mIsRemote = (flags & CapFlag.ACC_REMOTE) != 0;
+        mShareable = (flags & CapFlag.ACC_SHAREABLE) != 0;
+        mRemote = (flags & CapFlag.ACC_REMOTE) != 0;
         ArrayList<CapClassRef> supers = new ArrayList<>();
         for(int i = 0; i < interfaceCount; i++) {
             supers.add(reader.readClassRef());
         }
-        if(mIsRemote) {
+        if(mRemote) {
             mRemoteName = reader.readString();
         }
+        LOG.trace("interface " + (mShareable?"shareable ":"") + (mRemote?"remoteName " + mRemoteName:""));
     }
 
 }

@@ -29,21 +29,4 @@ public class CapFlag {
     public static final int ACC_EXTENDED = 8;
     public static final int ACC_ABSTRACT = 4;
     public static final int ACC_REMOTE = 2;
-    public static final int CF_ACC_PUBLIC = 1;
-    public static final int CF_ACC_FINAL = 16;
-    public static final int CF_ACC_INTERFACE = 64;
-    public static final int CF_ACC_ABSTRACT = 128;
-    public static final int CF_ACC_REMOTE = 32;
-    public static final int FF_ACC_PUBLIC = 1;
-    public static final int FF_ACC_PRIVATE = 2;
-    public static final int FF_ACC_PROTECTED = 4;
-    public static final int FF_ACC_STATIC = 8;
-    public static final int FF_ACC_FINAL = 16;
-    public static final int MF_ACC_PUBLIC = 1;
-    public static final int MF_ACC_PRIVATE = 2;
-    public static final int MF_ACC_PROTECTED = 4;
-    public static final int MF_ACC_STATIC = 8;
-    public static final int MF_ACC_FINAL = 16;
-    public static final int MF_ACC_ABSTRACT = 64;
-    public static final int MF_ACC_INIT = 128;
 }

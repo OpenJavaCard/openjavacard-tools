@@ -33,7 +33,7 @@ public class CapClassRef extends CapStructure {
 
     public void read(CapStructureReader reader) throws IOException {
         long clsRef = reader.readU2();
-        LOG.trace("classref " + clsRef);
+        LOG.trace("class reference " + clsRef);
     }
 
 }

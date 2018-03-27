@@ -22,7 +22,6 @@ package org.openjavacard.cap.structure;
 
 import org.openjavacard.cap.io.CapStructure;
 import org.openjavacard.cap.io.CapStructureReader;
-import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

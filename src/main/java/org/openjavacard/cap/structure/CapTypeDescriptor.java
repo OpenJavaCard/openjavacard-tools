@@ -22,14 +22,14 @@ package org.openjavacard.cap.structure;
 
 import org.openjavacard.cap.io.CapStructure;
 import org.openjavacard.cap.io.CapStructureReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class CapTypeDescriptor extends CapStructure {
 
-    public CapTypeDescriptor() {
-
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(CapTypeDescriptor.class);
 
     @Override
     public void read(CapStructureReader reader) throws IOException {
