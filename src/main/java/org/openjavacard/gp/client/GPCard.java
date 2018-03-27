@@ -405,18 +405,6 @@ public class GPCard {
                 LOG.trace("static keys:\n" + mKeys.toString());
             }
 
-            // get the CPLC for reference
-            try {
-                mCardLifeCycle = readCPLC();
-            } catch (SWException ex) {
-                LOG.warn("error trying to read CPLC", ex);
-            }
-            if (mCardLifeCycle == null) {
-                LOG.warn("card did not return CPLC");
-            } else {
-                LOG.trace("card production info:\n" + mCardLifeCycle.toString());
-            }
-
             // get card data, needed to determine SCP parameters
             try {
                 mCardData = readCardData();
@@ -427,6 +415,15 @@ public class GPCard {
                 LOG.warn("card did not return GP card data");
             } else {
                 LOG.trace("card data:\n" + mCardData.toString());
+            }
+
+            // get lifecycle data, can be used for identification if present
+            mCardLifeCycle = readCPLC();
+            if (mCardLifeCycle == null) {
+                // this is completely normal
+                LOG.debug("card has no lifecycle data");
+            } else {
+                LOG.trace("card lifecycle:\n" + mCardLifeCycle.toString());
             }
 
             // get IIN and CIN if uniquely identifiable
