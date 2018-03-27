@@ -46,6 +46,11 @@ test {
     }
 }
 
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+}
+
 task fatJar(type: Jar) {
     manifest.from jar.manifest
     classifier = 'plain'
