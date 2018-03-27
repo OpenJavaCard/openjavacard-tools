@@ -477,9 +477,7 @@ public class GPCard {
                 if(version == 0 || parameters == 0) {
                     throw new CardException("Card has sent no card data. Must specify SCP protocol and parameters.");
                 } else {
-                    mSecure.expectProtocol(
-                            mProtocolPolicy.mScpVersion,
-                            mProtocolPolicy.mScpParameters);
+                    mSecure.expectProtocol(version, parameters);
                 }
             }
 
