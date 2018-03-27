@@ -1,110 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="openjavacard-tools"
-         default="build">
+<project name="openjavacard-tools" default="build">
 
-    <target name="ext-proguard">
-        <taskdef resource="proguard/ant/task.properties"
-                 classpath="/opt/proguard/lib/proguard.jar"/>
-    </target>
+    <!-- Path with dependencies -->
+    <property name="dep"               value="/usr/share/java"/>
+    <!-- Main dependencies -->
+    <property name="dep.commons-codec" value="${dep}/commons-codec.jar"/>
+    <property name="dep.slf4j-api"     value="${dep}/slf4j-api.jar"/>
+    <property name="dep.slf4j-simple"  value="${dep}/slf4j-simple.jar"/>
+    <property name="dep.jcommander"    value="${dep}/jcommander.jar"/>
+    <!-- Test dependencies -->
+    <property name="dep.hamcrest-core" value="${dep}/hamcrest-core.jar"/>
+    <property name="dep.junit4"        value="${dep}/junit4.jar"/>
 
     <target name="clean"
             description="Delete build output">
         <delete dir="build"/>
     </target>
 
-    <target name="build"
-            depends="build-test,build-jar"
+    <target name="all" depends="build,test,javadoc"
             description="Build everything">
     </target>
 
-    <target name="test"
-            depends="build-test"
-            description="Run tests">
+    <target name="build" depends="build-code,build-jar"
+            description="Build code">
     </target>
 
-    <target name="build-dirs"
-            description="Build directories">
-        <mkdir dir="build"/>
-        <mkdir dir="build/classes"/>
-        <mkdir dir="build/jar"/>
-        <mkdir dir="build/javadoc"/>
+    <target name="build-dirs">
+        <mkdir dir="ant"/>
+        <mkdir dir="ant/classes"/>
+        <mkdir dir="ant/jar"/>
+        <mkdir dir="ant/javadoc"/>
     </target>
 
-    <target name="build-depend"
-            depends="build-dirs"
-            description="Build dependencies">
-        <mkdir dir="build/classes/commons-codec"/>
-        <mkdir dir="build/classes/slf4j-api"/>
-        <mkdir dir="build/classes/slf4j-simple"/>
-        <mkdir dir="build/classes/jcommander"/>
-        <javac
-                debug="on"
-                includeantruntime="false"
-                destdir="build/classes/commons-codec"
-                srcdir="dep/commons-codec/src/main/java"/>
-        <javac
-                debug="on"
-                includeantruntime="false"
-                destdir="build/classes/slf4j-api"
-                srcdir="dep/slf4j/slf4j-api/src/main/java"/>
-        <javac
-                debug="on"
-                includeantruntime="false"
-                classpath="build/classes/slf4j-api"
-                destdir="build/classes/slf4j-simple"
-                srcdir="dep/slf4j/slf4j-simple/src/main/java"/>
-        <javac
-                debug="on"
-                includeantruntime="false"
-                destdir="build/classes/jcommander"
-                srcdir="dep/jcommander/src/main/java"/>
-    </target>
-
-    <target name="build-code"
-            depends="build-depend">
-        <mkdir dir="build/classes/main"/>
+    <target name="build-code" depends="build-dirs">
+        <mkdir dir="ant/classes/main"/>
         <javac includeantruntime="false"
-               destdir="build/classes/main"
-               srcdir="src/main/java">
+               destdir="ant/classes/main"
+               srcdir="src/main/java"
+               excludes="**/package-info.java">
             <classpath>
-                <pathelement path="build/classes/commons-codec"/>
-                <pathelement path="build/classes/slf4j-api"/>
-                <pathelement path="build/classes/slf4j-simple"/>
-                <pathelement path="build/classes/jcommander"/>
+                <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.slf4j-api}"/>
+                <pathelement path="${dep.slf4j-simple}"/>
+                <pathelement path="${dep.jcommander}"/>
             </classpath>
         </javac>
     </target>
 
-    <target name="build-test"
-            depends="build-code">
+    <target name="build-test" depends="build-code">
+        <mkdir dir="ant/classes/test"/>
+        <javac includeantruntime="false"
+               destdir="ant/classes/test"
+               srcdir="src/test/java">
+            <classpath>
+                <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.slf4j-api}"/>
+                <pathelement path="${dep.slf4j-simple}"/>
+                <pathelement path="${dep.jcommander}"/>
+                <pathelement path="${dep.hamcrest-core}"/>
+                <pathelement path="${dep.junit4}"/>
+                <pathelement path="ant/classes/main"/>
+            </classpath>
+        </javac>
     </target>
 
-    <target name="build-jar"
-            depends="build-code">
-        <jar destfile="build/jar/openjavacard-tools-plain.jar">
-            <fileset dir="build/classes/commons-codec"/>
-            <fileset dir="build/classes/slf4j-api"
-                     excludes="org/slf4j/impl/Static*.class"/>
-            <fileset dir="build/classes/slf4j-simple"/>
-            <fileset dir="build/classes/jcommander"/>
-            <fileset dir="build/classes/main"/>
+    <target name="build-jar" depends="build-code">
+        <jar destfile="ant/jar/openjavacard-tools.jar">
+            <fileset dir="ant/classes/main"/>
+            <zipfileset src="${dep.commons-codec}"/>
+            <zipfileset src="${dep.slf4j-api}"/>
+            <zipfileset src="${dep.slf4j-simple}"/>
+            <zipfileset src="${dep.jcommander}"/>
             <manifest>
                 <attribute name="Main-Class" value="org.openjavacard.tool.main.Main"/>
             </manifest>
         </jar>
     </target>
 
-    <target name="javadoc"
-            depends="build-depend">
+    <target name="test" depends="build-test">
+        <junit printsummary="true" haltonfailure="false" fork="true">
+            <jvmarg line="-Dorg.slf4j.simpleLogger.defaultLogLevel=INFO"/>
+            <formatter type="brief" usefile="false"/>
+            <classpath>
+                <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.slf4j-api}"/>
+                <pathelement path="${dep.slf4j-simple}"/>
+                <pathelement path="${dep.jcommander}"/>
+                <pathelement path="${dep.hamcrest-core}"/>
+                <pathelement path="${dep.junit4}"/>
+                <pathelement path="ant/classes/main"/>
+                <pathelement path="ant/classes/test"/>
+                <pathelement path="src/test/resource"/>
+            </classpath>
+            <batchtest>
+                <fileset dir="src/test/java" includes="**/*Test.java"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="javadoc">
         <javadoc packagenames="org.openjavacard.*"
                  sourcepath="src/main/java"
                  defaultexcludes="yes"
-                 destdir="build/javadoc"
+                 destdir="ant/javadoc"
                  author="true"
                  version="true"
                  use="true"
-                 windowtitle="Test API">
-            <doctitle><![CDATA[<h1>OpenJavaCard Development Tools</h1>]]></doctitle>
+                 windowtitle="OpenJavaCard Tools API">
+            <doctitle><![CDATA[<h1>OpenJavaCard Development Tools API</h1>]]></doctitle>
             <bottom><![CDATA[<i>Copyright &#169; 2018 Ingo Albrecht. All Rights Reserved.</i>]]></bottom>
 
             <group title="GlobalPlatform library">
@@ -128,10 +131,10 @@
             </group>
 
             <classpath>
-                <pathelement path="build/classes/commons-codec"/>
-                <pathelement path="build/classes/slf4j-api"/>
-                <pathelement path="build/classes/slf4j-simple"/>
-                <pathelement path="build/classes/jcommander"/>
+                <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.slf4j-api}"/>
+                <pathelement path="${dep.slf4j-simple}"/>
+                <pathelement path="${dep.jcommander}"/>
             </classpath>
         </javadoc>
     </target>

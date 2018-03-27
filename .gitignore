@@ -1,4 +1,5 @@
 out/**
+ant/**
 build/**
 gradle/**
 .gradle/**
