@@ -25,6 +25,7 @@ import org.openjavacard.util.HexUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * GlobalPlatform Card Production Life Cycle data
@@ -69,8 +70,15 @@ public class GPLifeCycle {
     /** HashMap containing field values */
     private final LinkedHashMap<Field, byte[]> mValues;
 
-    private GPLifeCycle(HashMap<Field, byte[]> values) {
-        mValues = new LinkedHashMap<>(values);
+    public GPLifeCycle(Map<Field, byte[]> values) {
+        LinkedHashMap<Field,byte[]> valueMap = new LinkedHashMap<>();
+        for(Field field: Field.values()) {
+            if(!values.containsKey(field)) {
+                throw new IllegalArgumentException("Missing field " + field + " in CPLC");
+            }
+            valueMap.put(field, values.get(field));
+        }
+        mValues = valueMap;
     }
 
     /** Get the value of a field in binary form */
