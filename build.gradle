@@ -43,6 +43,7 @@ test {
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
+    options.addBooleanOption('Xdoclint:none', true)
 }
 
 jar {
