@@ -4,11 +4,11 @@
 
 The following trade-name cards work:
 
- * J2A080 (Contact-only, SCP02-15)
- * J3A080 (Dual-interface, SCP02-15)
- * J2A081 (Contact-only, SCP02-15)
+ * J2A080 (Contact-only, SCP02-15, 80k)
+ * J3A080 (Dual-interface, SCP02-15, 80k)
+ * J2A081 (Contact-only, SCP02-15, 80k)
  * J2E145 (Contact-only, SCP02-55)
- * J3D081 (Dual-interface, SCP02-55)
+ * J3D081 (Dual-interface, SCP02-55, 80k)
 
 All of these cards are available in OP_READY state with default keys.
 
