@@ -35,6 +35,10 @@ public class SCPSecurityPolicyTest extends TestCase {
     private SCPProtocol SCP02_15 = SCPProtocol.decode(0x02, 0x15);
     private SCPProtocol SCP02_55 = SCPProtocol.decode(0x02, 0x55);
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(SCPProtocolPolicyTest.class);
+    }
+
     @Test
     public void testCMACAccept() throws CardException {
         SCPSecurityPolicy pol = SCPSecurityPolicy.CMAC;
