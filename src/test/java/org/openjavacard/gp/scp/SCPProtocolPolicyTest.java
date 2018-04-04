@@ -37,6 +37,17 @@ public class SCPProtocolPolicyTest extends TestCase {
     // common variants of SCP02
     private SCPProtocol SCP02_15  = SCPProtocol.decode(0x02, 0x15);
     private SCPProtocol SCP02_55  = SCPProtocol.decode(0x02, 0x55);
+    // realistic variants of SCP03
+    private SCPProtocol SCP03_00  = SCPProtocol.decode(0x03, 0x00);
+    private SCPProtocol SCP03_10  = SCPProtocol.decode(0x03, 0x10);
+    private SCPProtocol SCP03_20  = SCPProtocol.decode(0x03, 0x20);
+    private SCPProtocol SCP03_30  = SCPProtocol.decode(0x03, 0x30);
+    private SCPProtocol SCP03_60  = SCPProtocol.decode(0x03, 0x60);
+    private SCPProtocol SCP03_70  = SCPProtocol.decode(0x03, 0x70);
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(SCPProtocolPolicyTest.class);
+    }
 
     @Test
     public void testPermissiveAccept() throws CardException {
@@ -107,7 +118,7 @@ public class SCPProtocolPolicyTest extends TestCase {
     }
 
     @Test
-    public void testSCP03Accept() {
+    public void testSCP03Accept() throws CardException {
         SCPProtocolPolicy pol = SCPProtocolPolicy.SCP03;
         Assert.assertFalse(pol.isVersionAllowed(0x01));
         Assert.assertFalse(pol.isVersionAllowed(0x02));
@@ -116,6 +127,49 @@ public class SCPProtocolPolicyTest extends TestCase {
         Assert.assertFalse(pol.isProtocolAllowed(0x01, 0x15));
         Assert.assertFalse(pol.isProtocolAllowed(0x02, 0x15));
         Assert.assertFalse(pol.isProtocolAllowed(0x02, 0x55));
+        Assert.assertTrue(pol.isProtocolAllowed(0x03, 0x00));
+        Assert.assertTrue(pol.isProtocolAllowed(0x03, 0x10));
+        Assert.assertTrue(pol.isProtocolAllowed(0x03, 0x20));
+        Assert.assertTrue(pol.isProtocolAllowed(0x03, 0x30));
+        Assert.assertTrue(pol.isProtocolAllowed(0x03, 0x60));
+        Assert.assertTrue(pol.isProtocolAllowed(0x03, 0x70));
+        Assert.assertFalse(pol.isProtocolAllowed(SCP01_05));
+        Assert.assertFalse(pol.isProtocolAllowed(SCP01_15));
+        Assert.assertFalse(pol.isProtocolAllowed(SCP02_15));
+        Assert.assertFalse(pol.isProtocolAllowed(SCP02_55));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP03_00));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP03_10));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP03_20));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP03_30));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP03_60));
+        Assert.assertTrue(pol.isProtocolAllowed(SCP03_70));
+        pol.checkProtocol(SCP03_00);
+        pol.checkProtocol(SCP03_10);
+        pol.checkProtocol(SCP03_20);
+        pol.checkProtocol(SCP03_30);
+        pol.checkProtocol(SCP03_60);
+        pol.checkProtocol(SCP03_70);
+    }
+
+    @Test(expected = CardException.class)
+    public void testSCP03RejectSCP01_05() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP03;
+        pol.checkProtocol(SCP01_05);
+    }
+    @Test(expected = CardException.class)
+    public void testSCP03RejectSCP01_15() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP03;
+        pol.checkProtocol(SCP01_15);
+    }
+    @Test(expected = CardException.class)
+    public void testSCP03RejectSCP02_15() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP03;
+        pol.checkProtocol(SCP02_15);
+    }
+    @Test(expected = CardException.class)
+    public void testSCP03RejectSCP02_55() throws CardException {
+        SCPProtocolPolicy pol = SCPProtocolPolicy.SCP03;
+        pol.checkProtocol(SCP02_55);
     }
 
 }
