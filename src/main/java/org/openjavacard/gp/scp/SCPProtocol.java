@@ -38,6 +38,9 @@ import javax.smartcardio.CardException;
  */
 public abstract class SCPProtocol implements VerboseString {
 
+    public static final SCPProtocol SCP02_15 = decode(0x02, 0x15);
+    public static final SCPProtocol SCP02_55 = decode(0x02, 0x15);
+
     /**
      * Decode SCP parameters
      *
@@ -46,10 +49,6 @@ public abstract class SCPProtocol implements VerboseString {
      * @return an object describing the parameters
      */
     public static SCPProtocol decode(int scpVersion, int scpParameters) {
-        // check that we actually got a specific protocol
-        if(scpVersion == 0 || scpParameters == 0) {
-            throw new IllegalArgumentException("SCP protocol is not specific");
-        }
         // create version-dependent variants
         switch(scpVersion) {
             case 1:
@@ -58,8 +57,23 @@ public abstract class SCPProtocol implements VerboseString {
             case 3:
                 return new SCP03Protocol(scpParameters);
             default:
-                throw new UnsupportedOperationException("Unknown protocol SCP" + HexUtil.hex8(scpVersion));
+                throw new IllegalArgumentException("Unknown protocol SCP" + HexUtil.hex8(scpVersion));
         }
+    }
+
+    public static SCPProtocol fromString(String scpString) {
+        if(!scpString.startsWith("SCP")) {
+            throw new IllegalArgumentException("Illegal SCP protocol specifier \"" + scpString + "\"");
+        }
+        if(scpString.length() != 8) {
+            throw new IllegalArgumentException("Illegal SCP protocol specifier \"" + scpString + "\"");
+        }
+        if(scpString.charAt(5) != '-') {
+            throw new IllegalArgumentException("Illegal SCP protocol specifier \"" + scpString + "\"");
+        }
+        String version = scpString.substring(3, 5);
+        String parameters = scpString.substring(6, 8);
+        return decode(HexUtil.unsigned8(version), HexUtil.unsigned8(parameters));
     }
 
     /** SCP protocol version */
