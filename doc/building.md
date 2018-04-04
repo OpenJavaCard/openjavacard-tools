@@ -34,29 +34,5 @@ If you encounter problems or want verbose output you can use the "run-trace.sh" 
 
 ### Standalone ant build
 
-The toolkit can also be built using ant because it is much simpler than maven
-and can be used on an offline system in a secure manner easily. 
-
-You need to download the dependencies using:
-
-```
-$ git submodule update --init
-```
-
-Then you can build the package:
-
-```
-$ ant
-```
-
-You can also run the tests (there are none yet, but soon there will be):
-
-```
-$ ant test
-```
-
-And generate the reference JavaDoc:
-
-```
-$ ant javadoc
-```
+XXX Requires setup
+XXX Document again
