@@ -20,6 +20,8 @@
 
 package org.openjavacard.gp.scp;
 
+import org.openjavacard.util.HexUtil;
+
 public class SCP03Protocol extends SCPProtocol {
 
     public final boolean pseudoRandomChallenge;
@@ -36,6 +38,15 @@ public class SCP03Protocol extends SCPProtocol {
     protected SCP03Protocol(int parameters) {
         super(3, parameters);
 
+        // check for unknown flags
+        int unknown = (parameters & 0x8F);
+        if(unknown != 0) {
+            throw new IllegalArgumentException(
+                    "Unknown SCP03 flags " + HexUtil.hex8(unknown) +
+                            " in parameters " + HexUtil.hex8(parameters));
+        }
+
+        // decode flags
         pseudoRandomChallenge = ((parameters & 0x10) != 0);
         rmacSupport = ((parameters & 0x20) != 0);
         rencSupport = ((parameters & 0x40) != 0);
