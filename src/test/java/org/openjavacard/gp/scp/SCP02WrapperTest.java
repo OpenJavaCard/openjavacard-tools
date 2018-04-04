@@ -61,21 +61,33 @@ public class SCP02WrapperTest extends TestCase {
         CommandAPDU cmac3 = wrap.wrap(plain8);
         Assert.assertArrayEquals(HexUtil.hexToBytes("1420003010010203040506070840f75851a11470c5"), cmac3.getBytes());
         CommandAPDU cmac4 = wrap.wrap(plain12);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("1420003014010203040506070801020304e651f07b2bddccc0"), cmac4.getBytes());
         CommandAPDU cmac5 = wrap.wrap(plain12);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("1420003014010203040506070801020304b4744d06cf32ce36"), cmac5.getBytes());
         CommandAPDU cmac6 = wrap.wrap(plain16);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("142000301801020304050607080102030405060708a3efc1f8df5c4660"), cmac6.getBytes());
         CommandAPDU cmac7 = wrap.wrap(plain16);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("142000301801020304050607080102030405060708f590535e9ec765cd"), cmac7.getBytes());
     }
     public void testSCP02_15WrapCENC() throws CardException {
         SCP0102Wrapper wrap = new SCP0102Wrapper(GPKeySet.GLOBALPLATFORM, SCP02_15);
         wrap.startENC();
-        CommandAPDU cmac0 = wrap.wrap(plain5);
-        CommandAPDU cmac1 = wrap.wrap(plain5);
-        CommandAPDU cmac2 = wrap.wrap(plain8);
-        CommandAPDU cmac3 = wrap.wrap(plain8);
-        CommandAPDU cmac4 = wrap.wrap(plain12);
-        CommandAPDU cmac5 = wrap.wrap(plain12);
-        CommandAPDU cmac6 = wrap.wrap(plain16);
-        CommandAPDU cmac7 = wrap.wrap(plain16);
+        CommandAPDU cenc0 = wrap.wrap(plain5);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("1420003010ca0868ab790be10ffb4034e025786ab1"), cenc0.getBytes());
+        CommandAPDU cenc1 = wrap.wrap(plain5);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("1420003010ca0868ab790be10f0a3bebcf697d0829"), cenc1.getBytes());
+        CommandAPDU cenc2 = wrap.wrap(plain8);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("14200030180e9a7741e84385be73d0941f83dad0fd1bebeae51e869dac"), cenc2.getBytes());
+        CommandAPDU cenc3 = wrap.wrap(plain8);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("14200030180e9a7741e84385be73d0941f83dad0fd40f75851a11470c5"), cenc3.getBytes());
+        CommandAPDU cenc4 = wrap.wrap(plain12);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("14200030180e9a7741e84385be7af4e62b6085037ae651f07b2bddccc0"), cenc4.getBytes());
+        CommandAPDU cenc5 = wrap.wrap(plain12);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("14200030180e9a7741e84385be7af4e62b6085037ab4744d06cf32ce36"), cenc5.getBytes());
+        CommandAPDU cenc6 = wrap.wrap(plain16);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("14200030200e9a7741e84385bea5312176c1f49f83f544aa3defb12223a3efc1f8df5c4660"), cenc6.getBytes());
+        CommandAPDU cenc7 = wrap.wrap(plain16);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("14200030200e9a7741e84385bea5312176c1f49f83f544aa3defb12223f590535e9ec765cd"), cenc7.getBytes());
     }
 
 }
