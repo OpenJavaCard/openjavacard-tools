@@ -19,7 +19,7 @@
         <delete dir="build/ant"/>
     </target>
 
-    <target name="all" depends="build,test,javadoc"
+    <target name="all" depends="build,test"
             description="Build everything">
     </target>
 
