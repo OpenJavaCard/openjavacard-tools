@@ -66,9 +66,8 @@ public class SCP0102Protocol extends SCPProtocol {
                         icvEncrypt = true;
                         break;
                     default:
-                        throw new UnsupportedOperationException(
-                                "Unknown SCP" + HexUtil.hex8(protocol)
-                                        + "(" + HexUtil.hex8(parameters) + ")");
+                        throw new IllegalArgumentException(
+                                "Unknown SCP01 variant " + HexUtil.hex8(parameters));
                 }
                 break;
             case 2:
@@ -80,11 +79,11 @@ public class SCP0102Protocol extends SCPProtocol {
                 rmacSupport = (parameters & 0x20) != 0;
                 wellKnown = (parameters & 0x40) != 0;
                 if ((parameters & 0x80) != 0) {
-                    throw new UnsupportedOperationException("Unknown SCP02 parameter 0x80");
+                    throw new IllegalArgumentException("Unknown SCP02 parameter flag 80");
                 }
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown protocol SCP" + HexUtil.hex8(protocol));
+                throw new IllegalArgumentException("Unknown protocol SCP" + HexUtil.hex8(protocol));
         }
     }
 
