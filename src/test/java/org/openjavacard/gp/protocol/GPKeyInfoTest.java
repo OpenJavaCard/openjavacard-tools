@@ -22,10 +22,15 @@ package org.openjavacard.gp.protocol;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.openjavacard.gp.scp.SCPProtocolPolicyTest;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
 
+@RunWith(BlockJUnit4ClassRunner.class)
 public class GPKeyInfoTest extends TestCase {
 
     static final GPKeyInfo KI_01_FF_DES_10 = new GPKeyInfo(1, 255, 0x80, 16);
@@ -36,6 +41,13 @@ public class GPKeyInfoTest extends TestCase {
     private byte[] KI_02_FF_DES_10_BYTES = HexUtil.hexToBytes("C00402ff8010");
     private byte[] KI_03_FF_DES_10_BYTES = HexUtil.hexToBytes("C00403ff8010");
 
+    private byte[] KI_01_FF_DES_10_BYTES_SHORT = HexUtil.hexToBytes("C00401ff80");
+    private byte[] KI_01_FF_DES_10_BYTES_LONG = HexUtil.hexToBytes("C00401ff8010FF");
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(GPKeyInfoTest.class);
+    }
+
     static void assertKeyInfoEquals(GPKeyInfo expected, GPKeyInfo other) {
         Assert.assertEquals(expected.getKeyId(), other.getKeyId());
         Assert.assertEquals(expected.getKeyVersion(), other.getKeyVersion());
@@ -43,6 +55,7 @@ public class GPKeyInfoTest extends TestCase {
         Assert.assertArrayEquals(expected.getKeySizes(), other.getKeySizes());
     }
 
+    @Test
     public void testParse() throws IOException {
         GPKeyInfo ki1 = GPKeyInfo.fromBytes(KI_01_FF_DES_10_BYTES);
         assertKeyInfoEquals(KI_01_FF_DES_10, ki1);
@@ -62,6 +75,16 @@ public class GPKeyInfoTest extends TestCase {
         Assert.assertEquals(255, ki3.getKeyVersion());
         Assert.assertArrayEquals(new int[]{0x80}, ki3.getKeyTypes());
         Assert.assertArrayEquals(new int[]{0x10}, ki3.getKeySizes());
+    }
+
+    @Test(expected = IOException.class)
+    public void testParseShort() throws IOException {
+        GPKeyInfo.fromBytes(KI_01_FF_DES_10_BYTES_SHORT);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseLong() throws IOException, IllegalArgumentException {
+        GPKeyInfo.fromBytes(KI_01_FF_DES_10_BYTES_LONG);
     }
 
 }

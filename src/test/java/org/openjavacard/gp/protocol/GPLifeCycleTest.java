@@ -22,10 +22,15 @@ package org.openjavacard.gp.protocol;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.openjavacard.gp.scp.SCPProtocolPolicyTest;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
 
+@RunWith(BlockJUnit4ClassRunner.class)
 public class GPLifeCycleTest extends TestCase {
 
     private static final byte[] CPLC_BYTES =
@@ -34,6 +39,23 @@ public class GPLifeCycleTest extends TestCase {
                      "B1C2D3ABCD4812333900000000060f20"+
                      "32A0B1C2D30000000000000000");
 
+    private static final byte[] CPLC_SHORT =
+            HexUtil.hexToBytes(
+                    "9f7f2a479050384791007833003332A0"+
+                    "B1C2D3ABCD4812333900000000060f20"+
+                    "32A0B1C2D300000000000000");
+
+    private static final byte[] CPLC_LONG =
+            HexUtil.hexToBytes(
+                    "9f7f2a479050384791007833003332A0"+
+                    "B1C2D3ABCD4812333900000000060f20"+
+                    "32A0B1C2D30000000000000000ABCD");
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(GPLifeCycleTest.class);
+    }
+
+    @Test
     public void testParse() {
         GPLifeCycle lc = GPLifeCycle.read(CPLC_BYTES);
         Assert.assertEquals("4790", lc.getFieldHex(GPLifeCycle.Field.ICFabricator));
@@ -54,6 +76,16 @@ public class GPLifeCycleTest extends TestCase {
         Assert.assertEquals("0000", lc.getFieldHex(GPLifeCycle.Field.ICPersonalizer));
         Assert.assertEquals("0000", lc.getFieldHex(GPLifeCycle.Field.ICPersonalizationDate));
         Assert.assertEquals("00000000", lc.getFieldHex(GPLifeCycle.Field.ICPersonalizationEquipmentID));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseShort() throws IllegalArgumentException {
+        GPLifeCycle.read(CPLC_SHORT);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseLong() throws IllegalArgumentException {
+        GPLifeCycle.read(CPLC_LONG);
     }
 
 }

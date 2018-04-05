@@ -22,16 +22,25 @@ package org.openjavacard.gp.protocol;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@RunWith(BlockJUnit4ClassRunner.class)
 public class GPKeyInfoTemplateTest extends TestCase {
 
     private static final byte[] KIT_SCP02_DEFAULT_BYTES =
             HexUtil.hexToBytes("e012c00401ff8010c00402ff8010c00403ff8010");
+
+    private static final byte[] KIT_SCP02_DEFAULT_SHORT =
+            HexUtil.hexToBytes("e012c00401ff8010c00402ff8010c00403ff80");
+    private static final byte[] KIT_SCP02_DEFAULT_LONG =
+            HexUtil.hexToBytes("e012c00401ff8010c00402ff8010c00403ff8010FF");
 
     private static final GPKeyInfoTemplate KIT_SCP02_DEFAULT;
     static {
@@ -42,6 +51,11 @@ public class GPKeyInfoTemplateTest extends TestCase {
         KIT_SCP02_DEFAULT = new GPKeyInfoTemplate(infos);
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(GPKeyInfoTest.class);
+    }
+
+    @Test
     public void testParse() throws IOException {
         // parse reference bytes
         GPKeyInfoTemplate kit = GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_BYTES);
@@ -54,6 +68,16 @@ public class GPKeyInfoTemplateTest extends TestCase {
         for(int i = 0; i < 3; i++) {
             GPKeyInfoTest.assertKeyInfoEquals(expectedKi.get(i), parsedKi.get(i));
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseShort() throws IOException, IllegalArgumentException {
+        GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_SHORT);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseLong() throws IOException, IllegalArgumentException {
+        GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_LONG);
     }
 
 }
