@@ -70,7 +70,7 @@ public class GPKeyInfoTemplateTest extends TestCase {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IOException.class)
     public void testParseShort() throws IOException, IllegalArgumentException {
         GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_SHORT);
     }
