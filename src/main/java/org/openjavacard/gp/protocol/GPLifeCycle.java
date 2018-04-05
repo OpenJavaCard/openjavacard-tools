@@ -20,8 +20,13 @@
 
 package org.openjavacard.gp.protocol;
 
+import org.openjavacard.tlv.TLV;
+import org.openjavacard.tlv.TLVConstructed;
+import org.openjavacard.tlv.TLVPrimitive;
+import org.openjavacard.tlv.TLVReader;
 import org.openjavacard.util.HexUtil;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -138,23 +143,31 @@ public class GPLifeCycle {
      * @param off of data
      * @param len of data
      */
-    public static GPLifeCycle read(byte[] buf, int off, int len) {
-        LinkedHashMap<Field, byte[]> values = new LinkedHashMap<>();
-        int fieldOff = off + 3; // XXX: need to parse TLV with long tag
-        // XXX length check before looping?
-        for (Field field : Field.values()) {
-            int fieldLen = field.fieldLength;
+    public static GPLifeCycle read(byte[] buf, int off, int len) throws IllegalArgumentException {
+        try {
+            TLVPrimitive tlv = TLVPrimitive.readPrimitive(buf, off, len).asPrimitive(0x9F7F);
+            LinkedHashMap<Field, byte[]> values = new LinkedHashMap<>();
+            byte[] dataBuf = tlv.getValueBytes();
+            int dataOff = 0;
+            for (Field field : Field.values()) {
+                int fieldLen = field.fieldLength;
 
-            if (fieldOff >= len) {
-                throw new IllegalArgumentException("CPLC to short");
+                if (dataOff >= dataBuf.length) {
+                    throw new IllegalArgumentException("CPLC to short");
+                }
+
+                values.put(field, Arrays.copyOfRange(dataBuf, dataOff, dataOff + fieldLen));
+
+                dataOff += fieldLen;
             }
-
-            values.put(field, Arrays.copyOfRange(buf, fieldOff, fieldOff + fieldLen));
-
-            fieldOff += fieldLen;
+            if(dataOff != dataBuf.length) {
+                throw new IllegalArgumentException("CPLC to long (" + (dataBuf.length - dataOff) + " bytes left)");
+            }
+            // construct and return instance
+            return new GPLifeCycle(values);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error parsing CPLC TLV", e);
         }
-        // construct and return instance
-        return new GPLifeCycle(values);
     }
 
 }
