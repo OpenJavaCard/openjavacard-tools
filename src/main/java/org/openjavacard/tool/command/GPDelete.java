@@ -30,6 +30,7 @@ import org.openjavacard.iso.AID;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Parameters(
@@ -64,23 +65,24 @@ public class GPDelete extends GPCommand {
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
         // check presence
+        ArrayList<AID> presentAIDS = new ArrayList<>();
         GPRegistry reg = card.getRegistry();
         for (AID aid : objectAIDs) {
             GPRegistry.Entry entry = reg.findAppletOrPackage(aid);
             if(entry != null) {
                 os.println("Object " + aid + ": " + entry);
+                presentAIDS.add(aid);
             } else {
                 if(present) {
                     throw new CardException("Object " + aid + " is not present on the card");
                 } else {
                     os.println("Object " + aid + " is not present");
-                    continue;
                 }
             }
         }
         // perform deletions
         GPIssuerDomain isd = card.getIssuerDomain();
-        for (AID aid : objectAIDs) {
+        for (AID aid : presentAIDS) {
             os.println("Deleting object " + aid + (related?" and related":""));
             isd.deleteObject(aid, related);
         }
