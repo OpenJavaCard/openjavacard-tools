@@ -185,7 +185,7 @@ public class SCP03Wrapper extends SCPWrapper {
                 throw new CardException("Can not unwrap: bad response MAC");
             }
 
-            // assemble result CardAPDU
+            // assemble response APDU
             ByteArrayOutputStream myData = new ByteArrayOutputStream();
             myData.write(data, 0, data.length - 8);
             myData.write(sw1);
