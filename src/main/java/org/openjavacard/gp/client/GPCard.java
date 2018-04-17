@@ -377,14 +377,12 @@ public class GPCard {
     /**
      * Connect to the card
      *
-     * @return true if connected
      * @throws CardException on error
      */
-    public boolean connect() throws CardException {
+    public void connect() throws CardException {
         // check already connected
         if (mIsConnected) {
             LOG.debug("already connected");
-            return true;
         }
 
         // disconnect on exception
@@ -488,8 +486,6 @@ public class GPCard {
                 disconnect();
             }
         }
-
-        return mIsConnected;
     }
 
     /**
