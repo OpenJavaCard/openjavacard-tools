@@ -436,7 +436,6 @@ public class GPIssuerDomain {
         byte[] cardIIN;
         byte[] cardCIN;
         byte[] cardISD;
-        byte[] cardData;
 
         @Override
         public byte[] toBytes() {
