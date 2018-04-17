@@ -27,13 +27,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class GPKey {
 
-    final byte mId;
+    private final byte mId;
 
-    final GPKeyType mType;
+    private final GPKeyType mType;
 
-    final GPKeyCipher mCipher;
+    private final GPKeyCipher mCipher;
 
-    final byte[] mSecret;
+    private final byte[] mSecret;
 
     /**
      * Constructs a key object for the provided data
