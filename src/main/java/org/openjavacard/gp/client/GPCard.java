@@ -180,8 +180,8 @@ public class GPCard {
     /**
      * Main constructor
      *
-     * @param context
-     * @param terminal
+     * @param context to operate in
+     * @param terminal to communicate on
      */
     public GPCard(GPContext context, CardTerminal terminal) {
         mContext = context;
@@ -334,7 +334,7 @@ public class GPCard {
      * If no ISD has been provided this will scan several well-known AIDs.
      * <p/>
      * @return true if we think we have an ISD
-     * @throws CardException
+     * @throws CardException on error
      */
     public boolean detect() throws CardException {
         return detect(false);
@@ -495,7 +495,7 @@ public class GPCard {
     /**
      * Disconnect from the card
      *
-     * @throws CardException
+     * @throws CardException on error
      */
     public void disconnect() throws CardException {
         // tear down the secure channel
@@ -541,7 +541,7 @@ public class GPCard {
      * Try to determine the ISD of the card
      *
      * @return AID of the ISD, if found
-     * @throws CardException
+     * @throws CardException on error
      */
     private AID findISD() throws CardException {
         AID isd = mISD;
@@ -568,9 +568,9 @@ public class GPCard {
     /**
      * Perform an ISO SELECT FILE BY NAME operation
      *
-     * @param name
+     * @param name in the form of an AID
      * @return response data
-     * @throws CardException
+     * @throws CardException on error
      */
     private byte[] selectFileByName(AID name) throws CardException {
         CommandAPDU command = APDUUtil.buildCommand(
@@ -586,9 +586,9 @@ public class GPCard {
     /**
      * Perform a GlobalPlatform GET DATA operation
      *
-     * @param p1p2
+     * @param p1p2 selecting the data
      * @return data retrieved
-     * @throws CardException
+     * @throws CardException on error
      */
     private byte[] readData(short p1p2) throws CardException {
         LOG.trace("readData(" + HexUtil.hex16(p1p2) + ")");
@@ -616,7 +616,7 @@ public class GPCard {
      * Read the ISO life cycle data object
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     private GPLifeCycle readCPLC() throws CardException {
         LOG.debug("readCPLC()");
@@ -632,7 +632,7 @@ public class GPCard {
      * Read the GlobalPlatform card data object
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     private GPCardData readCardData() throws CardException {
         LOG.debug("readCardData()");
@@ -652,7 +652,7 @@ public class GPCard {
      * Read the cards Issuer Identification Number (IIN)
      *
      * @return the IIN
-     * @throws CardException
+     * @throws CardException on error
      */
     private byte[] readCardIIN() throws CardException {
         LOG.debug("readCardIIN()");
@@ -663,7 +663,7 @@ public class GPCard {
      * Read the cards Card Image Number (CIN)
      *
      * @return the CIN
-     * @throws CardException
+     * @throws CardException on error
      */
     private byte[] readCardCIN() throws CardException {
         LOG.debug("readCardCIN()");
@@ -674,7 +674,7 @@ public class GPCard {
      * Read the GlobalPlatform Application Information object
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     private byte[] readApplicationInfo() throws CardException {
         LOG.debug("readApplicationInfo()");
@@ -685,7 +685,7 @@ public class GPCard {
      * Read the GlobalPlatform Key Information object
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     private GPKeyInfoTemplate readKeyInfo() throws CardException {
         LOG.debug("readKeyInfo()");
@@ -703,7 +703,7 @@ public class GPCard {
      * Read status information for the ISD
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     byte[] readStatusISD() throws CardException {
         return readStatus(GP.GET_STATUS_P1_ISD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
@@ -713,7 +713,7 @@ public class GPCard {
      * Read status information for all Apps and SDs
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     byte[] readStatusAppsAndSD() throws CardException {
         return readStatus(GP.GET_STATUS_P1_APP_AND_SD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
@@ -723,7 +723,7 @@ public class GPCard {
      * Read status information for all ELF
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     byte[] readStatusELF() throws CardException {
         return readStatus(GP.GET_STATUS_P1_ELF_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
@@ -733,7 +733,7 @@ public class GPCard {
      * Read status information for all ExM and ELF
      *
      * @return the object
-     * @throws CardException
+     * @throws CardException on error
      */
     byte[] readStatusEXMandELF() throws CardException {
         return readStatus(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, GP.GET_STATUS_P2_FORMAT_TLV);
@@ -747,7 +747,7 @@ public class GPCard {
      * @param p1Subset
      * @param p2Format
      * @return data retrieved
-     * @throws CardException
+     * @throws CardException on error
      */
     private byte[] readStatus(byte p1Subset, byte p2Format) throws CardException {
         byte[] criteria = {0x4F, 0x00}; // XXX !?
@@ -761,7 +761,7 @@ public class GPCard {
      * @param p2Format
      * @param criteria
      * @return data retrieved
-     * @throws CardException
+     * @throws CardException on error
      */
     private byte[] readStatus(byte p1Subset, byte p2Format, byte[] criteria) throws CardException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

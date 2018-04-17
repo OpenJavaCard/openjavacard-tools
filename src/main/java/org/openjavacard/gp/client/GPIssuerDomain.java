@@ -67,7 +67,7 @@ public class GPIssuerDomain {
      * @param cin to set or null
      * @param iin to set or null
      * @param isd to set or null
-     * @throws CardException
+     * @throws CardException on error
      */
     public void changeIdentity(byte[] iin, byte[] cin, byte[] isd) throws CardException {
         LOG.debug("setting card identity");
@@ -88,7 +88,7 @@ public class GPIssuerDomain {
      * Will create a package on the card.
      * <p/>
      * @param file to load
-     * @throws CardException
+     * @throws CardException on error
      */
     public void loadFile(GPLoadFile file) throws CardException {
         LOG.debug("loading package " + file.getPackageAID());
@@ -124,7 +124,7 @@ public class GPIssuerDomain {
      * @param appletAID AID for the new applet (optional)
      * @param appletPrivs privileges for the new applet (optional)
      * @param appletParams parameters for the new applet (optional)
-     * @throws CardException
+     * @throws CardException on error
      */
     public void installApplet(AID packageAID, AID moduleAID,
                               AID appletAID, byte[] appletPrivs, byte[] appletParams)
@@ -168,7 +168,7 @@ public class GPIssuerDomain {
      * to delete an object that is still in use will fail.
      * <p/>
      * @param aid of the object to be deleted
-     * @throws CardException
+     * @throws CardException on error
      */
     public void deleteObject(AID aid) throws CardException {
         deleteObject(aid, false);
@@ -183,7 +183,7 @@ public class GPIssuerDomain {
      * <p/>
      * @param aid of the object to be deleted
      * @param related true if dependent objects should be deleted
-     * @throws CardException
+     * @throws CardException on error
      */
     public void deleteObject(AID aid, boolean related) throws CardException {
         LOG.debug("deleting object " + aid + (related?" and related":""));
@@ -219,7 +219,7 @@ public class GPIssuerDomain {
      * application logic.
      * <p/>
      * @param newKeys to check
-     * @throws CardException
+     * @throws CardException on error
      */
     public void checkKeys(GPKeySet newKeys) throws CardException {
         GPKeyInfoTemplate keyInfo = mCard.getCardKeyInfo();
@@ -236,7 +236,7 @@ public class GPIssuerDomain {
      * Compatibility of the keys will be checked before the operation.
      * <p/>
      * @param newKeys to set
-     * @throws CardException
+     * @throws CardException on error
      */
     public void replaceKeys(GPKeySet newKeys) throws CardException {
         // do a safety check on the keys first
@@ -276,7 +276,7 @@ public class GPIssuerDomain {
     /**
      * Change the card state to INITIALIZED
      *
-     * @throws CardException
+     * @throws CardException on error
      */
     public void cardInitialized() throws CardException {
         LOG.debug("cardInitialized()");
@@ -286,7 +286,7 @@ public class GPIssuerDomain {
     /**
      * Change the card state to SECURED
      *
-     * @throws CardException
+     * @throws CardException on error
      */
     public void cardSecured() throws CardException {
         LOG.debug("cardSecured()");
@@ -296,7 +296,7 @@ public class GPIssuerDomain {
     /**
      * Lock the card
      *
-     * @throws CardException
+     * @throws CardException on error
      */
     public void lockCard() throws CardException {
         LOG.debug("cardInitialized()");
@@ -306,7 +306,7 @@ public class GPIssuerDomain {
     /**
      * Unlock locked card
      *
-     * @throws CardException
+     * @throws CardException on error
      */
     public void unlockCard() throws CardException {
         LOG.debug("unlockCard()");
@@ -316,7 +316,7 @@ public class GPIssuerDomain {
     /**
      * Terminate the card
      *
-     * @throws CardException
+     * @throws CardException on error
      */
     public void terminateCard() throws CardException {
         LOG.debug("terminateCard()");

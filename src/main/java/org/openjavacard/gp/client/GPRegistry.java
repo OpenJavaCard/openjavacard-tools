@@ -57,40 +57,62 @@ public class GPRegistry {
     private static final int TAG_GP_REGISTRY_PRIVILEGES = 0xC500;
     private static final int TAG_GP_REGISTRY_MODULE = 0x8400;
 
+    /** Card being operated on */
     private final GPCard mCard;
 
+    /** List of all registry entries */
     private ArrayList<Entry> mAllEntries = new ArrayList<>();
 
+    /** Entry for the ISD */
     private ISDEntry mISD = null;
 
+    /** List of all applet entries */
     private ArrayList<AppEntry> mAllApps = new ArrayList<>();
+    /** List of all SSD entries */
     private ArrayList<AppEntry> mAllSSDs = new ArrayList<>();
+    /** List of all ELF entries */
     private ArrayList<ELFEntry> mAllELFs = new ArrayList<>();
 
+    /**
+     * Main constructor
+     * @param card to operate on
+     */
     GPRegistry(GPCard card) {
         mCard = card;
     }
 
+    /** @return registry entry for the ISD */
     public ISDEntry getISD() {
         return mISD;
     }
 
+    /** @return all registry entries */
     public List<Entry> getAllEntries() {
         return new ArrayList<>(mAllEntries);
     }
 
+    /** @return list of applet entries */
     public List<AppEntry> getAllApps() {
         return new ArrayList<>(mAllApps);
     }
 
+    /** @return list of SSD entries */
     public List<AppEntry> getAllSSDs() {
         return new ArrayList<>(mAllSSDs);
     }
 
+    /** @return list of ELF entries */
     public List<ELFEntry> getAllELFs() {
         return new ArrayList<>(mAllELFs);
     }
 
+    /**
+     * Find an applet or package
+     *
+     * Used specifically for deletion.
+     *
+     * @param aid to search for
+     */
     public Entry findAppletOrPackage(AID aid) {
         Entry res;
         res = findApplet(aid);
@@ -104,6 +126,11 @@ public class GPRegistry {
         return res;
     }
 
+    /**
+     * Find an applet entry
+     * @param aid to search for
+     * @return applet entry or null
+     */
     public AppEntry findApplet(AID aid) {
         for(AppEntry app: mAllApps) {
             if(app.mAID.equals(aid)) {
@@ -113,10 +140,20 @@ public class GPRegistry {
         return null;
     }
 
+    /**
+     * Return true if applet is present
+     * @param aid to search for
+     * @return true if present
+     */
     public boolean hasApplet(AID aid) {
         return findApplet(aid) != null;
     }
 
+    /**
+     * Find a package entry
+     * @param aid to search for
+     * @return package entry or null
+     */
     public ELFEntry findPackage(AID aid) {
         for(ELFEntry elf: mAllELFs) {
             if(elf.mAID.equals(aid)) {
@@ -126,10 +163,20 @@ public class GPRegistry {
         return null;
     }
 
+    /**
+     * Return true if package is present
+     * @param aid to search for
+     * @return true if present
+     */
     public boolean hasPackage(AID aid) {
         return findPackage(aid) != null;
     }
 
+    /**
+     * Find a package entry containing the specified module
+     * @param aid to search for
+     * @return package entry or null
+     */
     public ELFEntry findPackageForModule(AID aid) {
         for(ELFEntry elf: mAllELFs) {
             for(AID mod: elf.mModules) {
@@ -201,10 +248,16 @@ public class GPRegistry {
         return res;
     }
 
+    /**
+     * Types of registry entries
+     */
     public enum Type {
         ISD, APP, SSD, ELF
     }
 
+    /**
+     * Registry entries
+     */
     public static abstract class Entry implements VerboseString {
         final Type mType;
         AID mAID;
