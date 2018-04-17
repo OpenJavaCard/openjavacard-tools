@@ -34,5 +34,25 @@ If you encounter problems or want verbose output you can use the "run-trace.sh" 
 
 ### Standalone ant build
 
-XXX Requires setup
-XXX Document again
+There also is an ant build which is more convenient when building or developing offline.
+
+Dependencies are taken from /usr/share/java by default.
+
+You need to install the required Java libraries (Example for Debian):
+
+```
+$ aptitude install ant libjcommander-java libslf4j-java liblogback-java junit4
+```
+
+You should then be able to build the package using ant:
+
+```
+$ ant
+```
+
+Tests can be executed and API documentation can be built:
+
+```
+$ ant test
+$ ant javadoc
+```
