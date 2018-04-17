@@ -148,18 +148,6 @@ public class GPKey {
             }
         }
         throw new Error("Do not know how to coerce DES key from length " + secretLen + " to length " + length);
-        /*
-        if (length == 24) {
-            byte[] key24 = new byte[24];
-            System.arraycopy(key, 0, key24, 0, 16);
-            System.arraycopy(key, 0, key24, 16, 8);
-            return key24;
-        } else {
-            byte[] key8 = new byte[8];
-            System.arraycopy(key, 0, key8, 0, 8);
-            return key8;
-        }
-        */
     }
 
     /**
