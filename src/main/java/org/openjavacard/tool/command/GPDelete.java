@@ -27,6 +27,7 @@ import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.client.GPIssuerDomain;
 import org.openjavacard.gp.client.GPRegistry;
 import org.openjavacard.iso.AID;
+import org.openjavacard.iso.AIDInfo;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -64,6 +65,15 @@ public class GPDelete extends GPCommand {
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
+        // check protection
+        for(AID aid: objectAIDs) {
+            AIDInfo info = AIDInfo.get(aid);
+            if(info != null && info.protect) {
+                if(!forceProtected) {
+                    throw new CardException("Object " + aid + " is protected");
+                }
+            }
+        }
         // check presence
         ArrayList<AID> presentAIDS = new ArrayList<>();
         GPRegistry reg = card.getRegistry();

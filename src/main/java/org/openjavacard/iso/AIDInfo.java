@@ -36,29 +36,36 @@ public class AIDInfo {
 
     private static final TreeMap<AID, AIDInfo> KNOWN = new TreeMap<>();
 
-    private static final void addKnown(String aid, String label) {
-        AIDInfo info = new AIDInfo(new AID(aid), label);
+    private static final void addProtected(String aid, String label) {
+        AIDInfo info = new AIDInfo(new AID(aid), label, true);
+        KNOWN.put(info.aid, info);
+    }
+
+    private static final void addDescription(String aid, String label) {
+        AIDInfo info = new AIDInfo(new AID(aid), label, false);
         KNOWN.put(info.aid, info);
     }
 
     static {
-        addKnown("a000000003000000", "Visa ISD");
-        addKnown("a0000000035350",   "Visa SSD Package");
-        addKnown("a000000151000000", "GlobalPlatform ISD");
-        addKnown("a0000001515350",   "GlobalPlatform SSD Package");
-        addKnown("D2760000850101",   "NDEF Type 4 Tag");
-        addKnown("D27600012401",     "fsfEurope OpenPGP");
-        addKnown("D2760001240101",   "fsfEurope OpenPGP V1");
-        addKnown("D2760001240102",   "fsfEurope OpenPGP V2");
-        addKnown("D27600012402",     "fsfEurope SmartChess");
+        addProtected("a000000003000000", "Visa ISD");
+        addProtected("a0000000035350",   "Visa SSD Package");
+        addProtected("a000000151000000", "GlobalPlatform ISD");
+        addProtected("a0000001515350",   "GlobalPlatform SSD Package");
+        addDescription("D2760000850101",   "NDEF Type 4 Tag");
+        addDescription("D27600012401",     "fsfEurope OpenPGP");
+        addDescription("D2760001240101",   "fsfEurope OpenPGP V1");
+        addDescription("D2760001240102",   "fsfEurope OpenPGP V2");
+        addDescription("D27600012402",     "fsfEurope SmartChess");
     }
 
     public final AID aid;
     public final String label;
+    public final boolean protect;
 
-    public AIDInfo(AID aid, String label) {
+    public AIDInfo(AID aid, String label, boolean protect) {
         this.aid = aid;
         this.label = label;
+        this.protect = protect;
     }
 
 }

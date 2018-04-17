@@ -104,6 +104,12 @@ public abstract class GPCommand implements Runnable {
     )
     protected boolean logKeys = false;
 
+    @Parameter(
+            names = "--force-protected",
+            description = "Force operation on protected object"
+    )
+    protected boolean forceProtected = false;
+
     protected GPContext mContext;
 
     public GPCommand(GPContext context) {
