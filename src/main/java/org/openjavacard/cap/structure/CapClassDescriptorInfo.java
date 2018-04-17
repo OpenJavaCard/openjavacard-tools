@@ -36,6 +36,18 @@ public class CapClassDescriptorInfo extends CapStructure {
     private ArrayList<CapFieldDescriptorInfo> mFields;
     private ArrayList<CapMethodDescriptorInfo> mMethods;
 
+    public ArrayList<CapClassRef> getInterfaces() {
+        return mInterfaces;
+    }
+
+    public ArrayList<CapFieldDescriptorInfo> getFields() {
+        return mFields;
+    }
+
+    public ArrayList<CapMethodDescriptorInfo> getMethods() {
+        return mMethods;
+    }
+
     public void read(CapStructureReader reader) throws IOException {
         int token = reader.readU1();
         int accessFlags = reader.readU1();

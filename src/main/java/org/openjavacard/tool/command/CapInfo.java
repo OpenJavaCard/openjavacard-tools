@@ -31,6 +31,7 @@ import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -66,60 +67,63 @@ public class CapInfo implements Runnable {
             showComponents = true;
         }
 
+        // for each specified file
         for (File file : capFiles) {
             os.println();
+            // read the file
+            os.println("Reading CAP file " + file + "...");
+            CapFile capFile;
             try {
-                os.println("Reading CAP file " + file + "...");
-                CapFile capFile = CapFileReader.readFile(file);
+                capFile = CapFileReader.readFile(file);
+            } catch (IOException e) {
+                throw new Error("Error reading CAP file", e);
+            }
+            os.println();
+            // print common information
+            os.println("CAP file " + file.getName());
+            os.println("  Manifest version: " + capFile.getManifestVersion());
+            os.println("  Created by: " + capFile.getCreatedBy());
+            os.println();
+            // print info for each package
+            for (CapFilePackage capPkg : capFile.getPackages()) {
+                os.println("CAP package " + capPkg.getPackageAID());
+                os.println("  Creation time: " + capPkg.getCapCreationTime());
+                os.println("  Converter provider: " + capPkg.getConverterProvider());
+                os.println("  Converter version: " + capPkg.getConverterVersion());
+                os.println("  Format version: " + capPkg.getCapFileVersion());
+                os.println("  Integer required: " + capPkg.isIntSupportRequired());
+                os.println("  Package name: " + capPkg.getPackageName());
+                os.println("  Package version: " + capPkg.getPackageVersion());
                 os.println();
-
-                os.println("CAP file " + file.getName());
-                os.println("  Manifest version: " + capFile.getManifestVersion());
-                os.println("  Created by: " + capFile.getCreatedBy());
+                // packages also have imports
+                for (CapFileImport capImp : capPkg.getImports()) {
+                    os.println("  Import " + capImp.getAID());
+                    os.println("    Version: " + capImp.getVersion());
+                }
                 os.println();
-
-                for (CapFilePackage capPkg : capFile.getPackages()) {
-                    os.println("CAP package " + capPkg.getPackageAID());
-                    os.println("  Creation time: " + capPkg.getCapCreationTime());
-                    os.println("  Converter provider: " + capPkg.getConverterProvider());
-                    os.println("  Converter version: " + capPkg.getConverterVersion());
-                    os.println("  Format version: " + capPkg.getCapFileVersion());
-                    os.println("  Integer required: " + capPkg.isIntSupportRequired());
-                    os.println("  Package name: " + capPkg.getPackageName());
-                    os.println("  Package version: " + capPkg.getPackageVersion());
-                    os.println();
-
-                    for (CapFileImport capImp : capPkg.getImports()) {
-                        os.println("  Import " + capImp.getAID());
-                        os.println("    Version: " + capImp.getVersion());
-                    }
-                    os.println();
-
-                    for (CapFileApplet capApp : capPkg.getApplets()) {
-                        String appName = capApp.getName();
-                        String appVersion = capApp.getVersion();
-                        os.println("  Applet " + capApp.getAID());
-                        os.println("    Name: " + appName);
-                        if(appVersion != null) {
-                            os.println("    Version: " + appVersion);
-                        }
-                    }
-                    os.println();
-
-                    if(showComponents) {
-                        for(CapComponentType type : CapComponentType.values()) {
-                            CapFileComponent capCom = capPkg.getComponentByType(type);
-                            if(capCom != null) {
-                                os.println("  Component " + capCom.getFilename());
-                                os.println("    Type: " + capCom.getName());
-                                os.println("    Size: " + capCom.getSize());
-                            }
-                        }
-                        os.println();
+                // packages can declare applets
+                for (CapFileApplet capApp : capPkg.getApplets()) {
+                    String appName = capApp.getName();
+                    String appVersion = capApp.getVersion();
+                    os.println("  Applet " + capApp.getAID());
+                    os.println("    Name: " + appName);
+                    if(appVersion != null) {
+                        os.println("    Version: " + appVersion);
                     }
                 }
-            } catch (Exception ex) {
-                throw new Error("Exception reading CAP file", ex);
+                os.println();
+                // show internal components if requested
+                if(showComponents) {
+                    for(CapComponentType type : CapComponentType.values()) {
+                        CapFileComponent capCom = capPkg.getComponentByType(type);
+                        if(capCom != null) {
+                            os.println("  Component " + capCom.getFilename());
+                            os.println("    Type: " + capCom.getName());
+                            os.println("    Size: " + capCom.getSize());
+                        }
+                    }
+                    os.println();
+                }
             }
         }
     }

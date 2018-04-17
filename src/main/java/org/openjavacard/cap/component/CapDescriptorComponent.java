@@ -41,6 +41,10 @@ public class CapDescriptorComponent extends CapComponent {
         super(CapComponentType.Descriptor);
     }
 
+    public ArrayList<CapClassDescriptorInfo> getClassInfos() {
+        return mClassInfos;
+    }
+
     public void read(CapStructureReader reader) throws IOException {
         int classCount = reader.readU1();
         LOG.trace("reading " + classCount + " classes");

@@ -29,6 +29,14 @@ public abstract class CapStructure {
     protected CapStructure() {
     }
 
+    protected CapStructure(CapStructure parent) {
+        mParent = parent;
+    }
+
+    public CapStructure getParent() {
+        return mParent;
+    }
+
     public abstract void read(CapStructureReader reader) throws IOException;
 
 }

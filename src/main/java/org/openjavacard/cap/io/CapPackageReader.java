@@ -110,6 +110,9 @@ public class CapPackageReader {
                     break;
                 case Descriptor:
                     mDescriptor = reader.readStructure(CapDescriptorComponent.class);
+                    // parse methods in the method component now
+                    // that we have the required descriptor data
+                    mMethods.decodeMethodInfo(mDescriptor);
                     break;
                 default:
                     LOG.warn("ignoring component " + type);

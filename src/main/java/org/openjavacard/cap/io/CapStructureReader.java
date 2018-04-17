@@ -32,8 +32,6 @@ import java.nio.charset.StandardCharsets;
 
 public class CapStructureReader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CapStructureReader.class);
-
     protected final BufferedInputStream mStream;
 
     CapStructureReader(byte[] data) {
