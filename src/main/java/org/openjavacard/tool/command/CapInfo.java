@@ -44,19 +44,19 @@ public class CapInfo implements Runnable {
             description = "CAP files to show information about",
             required = true
     )
-    List<File> capFiles;
+    private List<File> capFiles;
 
     @Parameter(
             names = "--all",
             description = "Show all details"
     )
-    boolean showAll = false;
+    private boolean showAll = false;
 
     @Parameter(
             names = "--components",
             description = "Show details of all components"
     )
-    boolean showComponents = false;
+    private boolean showComponents = false;
 
     @Override
     public void run() {
