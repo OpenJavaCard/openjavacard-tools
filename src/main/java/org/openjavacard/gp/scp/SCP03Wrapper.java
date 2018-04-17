@@ -33,7 +33,7 @@ import java.util.Arrays;
 
 public class SCP03Wrapper extends SCPWrapper {
 
-    SCP03Protocol mSCP;
+    private SCP03Protocol mSCP;
 
     /**
      * IV for all cryptographic operations

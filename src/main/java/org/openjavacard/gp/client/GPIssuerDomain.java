@@ -514,12 +514,12 @@ public class GPIssuerDomain {
     }
 
     private static class InstallForInstallRequest implements ToBytes {
-        public AID packageAID;
-        public AID moduleAID;
-        public AID appletAID;
-        public byte[] privileges;
-        public byte[] installParameters;
-        public byte[] installToken;
+        AID packageAID;
+        AID moduleAID;
+        AID appletAID;
+        byte[] privileges;
+        byte[] installParameters;
+        byte[] installToken;
 
         @Override
         public byte[] toBytes() {
