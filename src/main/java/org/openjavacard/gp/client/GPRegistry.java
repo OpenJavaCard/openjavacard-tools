@@ -223,9 +223,7 @@ public class GPRegistry {
             mAllApps = allApps;
             mAllELFs = allELFs;
             mAllSSDs = allSSDs;
-        } catch (CardException e) {
-            throw new CardException("Error updating registry", e);
-        } catch (IOException e) {
+        } catch (CardException | IOException e) {
             throw new CardException("Error updating registry", e);
         }
     }
@@ -239,9 +237,7 @@ public class GPRegistry {
                 E entry = clazz.newInstance();
                 entry.read(tlv.getValueBytes());
                 res.add(entry);
-            } catch (InstantiationException e) {
-                throw new Error("Error instantiating registry entry", e);
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 throw new Error("Error instantiating registry entry", e);
             }
         }
