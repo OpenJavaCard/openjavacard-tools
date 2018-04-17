@@ -53,7 +53,12 @@ public class GPIssuerDomain {
 
     private final GPCard mCard;
 
-    public GPIssuerDomain(GPCard card) {
+    /**
+     * Main constructor
+     *
+     * @param card to operate on
+     */
+    GPIssuerDomain(GPCard card) {
         mCard = card;
     }
 
