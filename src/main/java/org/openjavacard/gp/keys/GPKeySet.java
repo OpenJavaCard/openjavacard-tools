@@ -21,6 +21,7 @@
 package org.openjavacard.gp.keys;
 
 import org.openjavacard.gp.crypto.GPCrypto;
+import org.openjavacard.util.HexUtil;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -187,21 +188,75 @@ public class GPKeySet {
         }
     }
 
+    private static final GPKeyType[] DIVERSIFICATION_KEYS = {
+            GPKeyType.ENC, GPKeyType.MAC, GPKeyType.KEK, GPKeyType.RMAC
+    };
+
     /**
      * Perform key diversification on the keyset
      * <p/>
      * Will generate and return a new set of diversified keys.
      * <p/>
      * @param diversification function to be used
-     * @param data            for diversification
+     * @param diversificationData for diversification
      * @return keyset containing the diversified keys
      */
-    public GPKeySet diversify(GPKeyDiversification diversification, byte[] data) {
+    public GPKeySet diversify(GPKeyDiversification diversification, byte[] diversificationData) {
         if (mDiversification != GPKeyDiversification.NONE) {
             throw new IllegalArgumentException("Cannot diversify a diversified keyset");
         }
-        GPKeySet div = new GPKeySet(mName, mKeyVersion, diversification);
-        return div;
+        if(diversification == GPKeyDiversification.NONE) {
+            return this;
+        }
+        String diversifiedName = mName + "-" + diversification.name() + ":" + HexUtil.bytesToHex(diversificationData);
+        GPKeySet diversifiedKeys = new GPKeySet(diversifiedName, mKeyVersion, diversification);
+        switch(diversification) {
+            case EMV:
+                for(GPKeyType type: DIVERSIFICATION_KEYS) {
+                    GPKey key = getKeyByType(type);
+                    if(key != null) {
+                        diversifiedKeys.putKey(diversifyKeyEMV(type, getKeyByType(type), diversificationData));
+                    }
+                }
+                break;
+            case VISA2:
+                for(GPKeyType type: DIVERSIFICATION_KEYS) {
+                    GPKey key = getKeyByType(type);
+                    if(key != null) {
+                        diversifiedKeys.putKey(diversifyKeyVisa2(type, getKeyByType(type), diversificationData));
+                    }
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Diversification " + diversification + " not supported");
+        }
+        return diversifiedKeys;
+    }
+
+    private GPKey diversifyKeyEMV(GPKeyType type, GPKey key, byte[] diversificationData) {
+        byte[] data = new byte[16];
+        System.arraycopy(diversificationData, 4, data, 0, 6);
+        data[6] = (byte)0xF0;
+        data[7] = type.diversifyId;
+        System.arraycopy(diversificationData, 4, data, 8, 6);
+        data[14] = (byte)0x0F;
+        data[15] = type.diversifyId;
+        byte[] dKey = GPCrypto.enc_3des_ecb(key, data);
+        return new GPKey(type, key.getId(), key.getCipher(), dKey);
+    }
+
+    private GPKey diversifyKeyVisa2(GPKeyType type, GPKey key, byte[] diversificationData) {
+        byte[] data = new byte[16];
+        System.arraycopy(diversificationData, 0, data, 0, 2);
+        System.arraycopy(diversificationData, 4, data, 2, 4);
+        data[6] = (byte)0xF0;
+        data[7] = type.diversifyId;
+        System.arraycopy(diversificationData, 0, data, 8, 2);
+        System.arraycopy(diversificationData, 4, data, 10, 4);
+        data[14] = (byte)0x0F;
+        data[15] = type.diversifyId;
+        byte[] dKey = GPCrypto.enc_3des_ecb(key, data);
+        return new GPKey(type, key.getId(), key.getCipher(), dKey);
     }
 
     /**
