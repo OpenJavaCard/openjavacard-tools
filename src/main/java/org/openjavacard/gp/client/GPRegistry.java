@@ -24,13 +24,19 @@ import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPPrivilege;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.AIDInfo;
+import org.openjavacard.iso.ISO7816;
+import org.openjavacard.iso.SWException;
 import org.openjavacard.tlv.TLVPrimitive;
+import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -195,28 +201,34 @@ public class GPRegistry {
         LOG.debug("updating registry");
 
         try {
-            ISDEntry isdEntry;
+            ISDEntry isdEntry = null;
             ArrayList<Entry> allEntries = new ArrayList<>();
             ArrayList<AppEntry> allApps = new ArrayList<>();
             ArrayList<AppEntry> allSSDs = new ArrayList<>();
             ArrayList<ELFEntry> allELFs = new ArrayList<>();
 
             LOG.debug("reading ISD");
-            List<ISDEntry> isdEntries = readEntries(mCard.readStatusISD(), ISDEntry.class);
-            allEntries.addAll(isdEntries);
-            isdEntry = isdEntries.get(0);
+            List<ISDEntry> isdEntries = readEntries(readStatus(GP.GET_STATUS_P1_ISD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV), ISDEntry.class);
+            if(!isdEntries.isEmpty()) {
+                allEntries.addAll(isdEntries);
+                isdEntry = isdEntries.get(0);
+            }
 
             LOG.debug("reading APPs and SSDs");
-            List<AppEntry> appEntries = readEntries(mCard.readStatusAppsAndSD(), AppEntry.class);
-            allEntries.addAll(appEntries);
-            for (AppEntry appEntry : appEntries) {
-                allApps.add(appEntry);
+            List<AppEntry> appEntries = readEntries(readStatus(GP.GET_STATUS_P1_APP_AND_SD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV), AppEntry.class);
+            if(!appEntries.isEmpty()) {
+                allEntries.addAll(appEntries);
+                for (AppEntry appEntry : appEntries) {
+                    allApps.add(appEntry);
+                }
             }
 
             LOG.debug("reading ELFs and EXMs");
-            List<ELFEntry> elfEntries = readEntries(mCard.readStatusEXMandELF(), ELFEntry.class);
-            allEntries.addAll(elfEntries);
-            allELFs.addAll(elfEntries);
+            List<ELFEntry> elfEntries = readEntries(readStatus(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, GP.GET_STATUS_P2_FORMAT_TLV), ELFEntry.class);
+            if(!elfEntries.isEmpty()) {
+                allEntries.addAll(elfEntries);
+                allELFs.addAll(elfEntries);
+            }
 
             mISD = isdEntry;
             mAllEntries = allEntries;
@@ -242,6 +254,73 @@ public class GPRegistry {
             }
         }
         return res;
+    }
+
+
+    /**
+     * Perform a GlobalPlatform READ STATUS operation
+     * <p/>
+     * Convenience form. XXX: document
+     * <p/>
+     * @param p1Subset
+     * @param p2Format
+     * @return data retrieved
+     * @throws CardException on error
+     */
+    private byte[] readStatus(byte p1Subset, byte p2Format) throws CardException {
+        byte[] criteria = {0x4F, 0x00}; // XXX !?
+        return readStatus(p1Subset, p2Format, criteria);
+    }
+
+    /**
+     * Perform a GlobalPlatform SET STATUS operation
+     *
+     * @param p1Subset
+     * @param p2Format
+     * @param criteria
+     * @return data retrieved
+     * @throws CardException on error
+     */
+    private byte[] readStatus(byte p1Subset, byte p2Format, byte[] criteria) throws CardException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        boolean first = true;
+        do {
+            // determine first/next parameter
+            byte getParam = GP.GET_STATUS_P2_GET_NEXT;
+            if (first) {
+                getParam = GP.GET_STATUS_P2_GET_FIRST_OR_ALL;
+            }
+            first = false;
+            // build the command
+            CommandAPDU command = APDUUtil.buildCommand(
+                    GP.CLA_GP,
+                    GP.INS_GET_STATUS,
+                    p1Subset, (byte) (getParam | p2Format), criteria);
+            // run the command
+            ResponseAPDU response = mCard.transactSecure(command);
+            // get SW and data
+            int sw = response.getSW();
+            byte[] data = response.getData();
+            // append data, no matter the SW
+            if (data != null && data.length > 0) {
+                bos.write(data, 0, data.length);
+            }
+            // continue if SW says that we should
+            //   XXX extract this constant
+            if (sw == 0x6310) {
+                continue;
+            }
+            // check for various cases of "empty"
+            //   XXX rethink this loop
+            if (sw == ISO7816.SW_NO_ERROR
+                    || sw == ISO7816.SW_FILE_NOT_FOUND
+                    || sw == ISO7816.SW_REFERENCED_DATA_NOT_FOUND) {
+                break;
+            } else {
+                throw new SWException("Error in GET STATUS", sw);
+            }
+        } while (true);
+        return bos.toByteArray();
     }
 
     /**
