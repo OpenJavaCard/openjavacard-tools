@@ -70,7 +70,7 @@ public class GPKeySet {
      * @param keyVersion      of the keyset
      * @param diversification applied to the keyset
      */
-    public GPKeySet(String name, int keyVersion, GPKeyDiversification diversification) {
+    private GPKeySet(String name, int keyVersion, GPKeyDiversification diversification) {
         mName = name;
         mKeyVersion = keyVersion;
         mDiversification = diversification;
