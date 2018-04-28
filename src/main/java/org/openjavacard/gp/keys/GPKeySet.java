@@ -277,9 +277,6 @@ public class GPKeySet {
         StringBuffer sb = new StringBuffer();
         sb.append("keyset \"" + mName + "\"");
         sb.append(" version " + mKeyVersion);
-        if (mDiversification != GPKeyDiversification.NONE) {
-            sb.append(" diversification " + mDiversification);
-        }
         if (mKeys.isEmpty()) {
             sb.append(":\n EMPTY");
         } else {
