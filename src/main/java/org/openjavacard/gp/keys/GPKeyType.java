@@ -21,5 +21,15 @@
 package org.openjavacard.gp.keys;
 
 public enum GPKeyType {
-    MASTER, ENC, MAC, KEK, RMAC;
+    MASTER(0),
+    ENC(1),
+    MAC(2),
+    KEK(3),
+    RMAC(4);
+
+    public final byte diversifyId;
+
+    GPKeyType(int diversifyId) {
+        this.diversifyId = (byte)diversifyId;
+    }
 }
