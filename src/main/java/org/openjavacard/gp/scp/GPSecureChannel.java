@@ -24,6 +24,7 @@ import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
+import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyType;
 import org.openjavacard.gp.protocol.GP;
@@ -62,6 +63,8 @@ public class GPSecureChannel extends CardChannel {
     private CardChannel mChannel;
     /** Initial static keys */
     private GPKeySet mStaticKeys;
+    /** Key diversification to apply */
+    private GPKeyDiversification mDiversification;
     /** Protocol policy in effect */
     private SCPProtocolPolicy mProtocolPolicy;
     /** Security policy in effect */
@@ -91,7 +94,7 @@ public class GPSecureChannel extends CardChannel {
      * @param securityPolicy to conform to
      */
     public GPSecureChannel(GPCard card, CardChannel channel,
-                           GPKeySet keys,
+                           GPKeySet keys, GPKeyDiversification diversification,
                            SCPProtocolPolicy protocolPolicy,
                            SCPSecurityPolicy securityPolicy) {
         mRandom = new SecureRandom();
@@ -99,6 +102,7 @@ public class GPSecureChannel extends CardChannel {
         mCard = card;
         mChannel = channel;
         mStaticKeys = keys;
+        mDiversification = diversification;
         mProtocolPolicy = protocolPolicy;
         mSecurityPolicy = securityPolicy;
         reset();
@@ -293,10 +297,21 @@ public class GPSecureChannel extends CardChannel {
         checkAndSelectProtocol(init);
         LOG.debug("using " + mActiveProtocol);
 
+        GPKeySet actualKeys = mStaticKeys;
+
         // check key version
         int selectedKeyVersion = mStaticKeys.getKeyVersion();
         if (selectedKeyVersion > 0 && selectedKeyVersion != init.keyVersion) {
             throw new CardException("Key version mismatch: host " + selectedKeyVersion + " card " + init.keyVersion);
+        }
+
+        // diversify keys
+        if(mDiversification != GPKeyDiversification.NONE) {
+            LOG.trace("diversification " + mDiversification + " data " + HexUtil.bytesToHex(init.diversificationData));
+            actualKeys = actualKeys.diversify(mDiversification, init.diversificationData);
+            if(mContext.isKeyLoggingEnabled()) {
+                LOG.trace("diversified keys:\n" + actualKeys.toString());
+            }
         }
 
         // derive session keys
@@ -304,7 +319,7 @@ public class GPSecureChannel extends CardChannel {
             case 2:
                 byte[] seq = Arrays.copyOfRange(init.cardChallenge, 0, 2);
                 LOG.debug("card sequence " + HexUtil.bytesToHex(seq));
-                mSessionKeys = mStaticKeys.deriveSCP02(seq);
+                mSessionKeys = actualKeys.deriveSCP02(seq);
                 break;
             default:
                 throw new CardException("Unsupported SCP version " + mActiveProtocol);

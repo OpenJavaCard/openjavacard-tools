@@ -75,10 +75,10 @@ public abstract class GPCommand implements Runnable {
     protected AID isd;
 
     @Parameter(
-            names = "--scp-diversification",
+            names = "--diversification",
             description = "Use specified key diversification"
     )
-    protected GPKeyDiversification scpDiversification = GPKeyDiversification.NONE;
+    protected GPKeyDiversification diversification = GPKeyDiversification.NONE;
 
     @Parameter(
             names = "--scp-protocol",
@@ -126,10 +126,6 @@ public abstract class GPCommand implements Runnable {
             mContext.enableKeyLogging();
         }
 
-        if(scpDiversification != GPKeyDiversification.NONE) {
-            throw new Error("Key diversification is not supported yet");
-        }
-
         PrintStream os = System.out;
         if(keystoreFile != null) {
             os.println("Opening keystore " + keystoreFile);
@@ -144,6 +140,7 @@ public abstract class GPCommand implements Runnable {
                 throw new Error("Could not load keystore aliases", e);
             }
         }
+
         GPCard card = mContext.findSingleGPCard(reader, isd);
         try {
             AID isdConf = card.getISD();
@@ -152,6 +149,8 @@ public abstract class GPCommand implements Runnable {
             int protocol = HexUtil.unsigned8(scpProtocol);
             int parameters = HexUtil.unsigned8(scpParameters);
             SCPProtocolPolicy protocolPolicy = new SCPProtocolPolicy(protocol, parameters);
+            os.println("  Key diversification " + diversification);
+            card.setDiversification(diversification);
             os.println("  Protocol policy " + protocolPolicy);
             card.setProtocolPolicy(protocolPolicy);
             os.println("  Security policy " + scpSecurity);

@@ -20,6 +20,7 @@
 
 package org.openjavacard.gp.client;
 
+import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPCardData;
@@ -96,6 +97,10 @@ public class GPCard {
      * Keys to use for secure channel
      */
     private GPKeySet mKeys;
+    /**
+     * Key diversification to apply
+     */
+    private GPKeyDiversification mDiversification;
     /**
      * Protocol policy for secure channel
      */
@@ -187,6 +192,7 @@ public class GPCard {
         mContext = context;
         mTerminal = terminal;
         mKeys = GPKeySet.GLOBALPLATFORM;
+        mDiversification = GPKeyDiversification.NONE;
         mProtocolPolicy = SCPProtocolPolicy.PERMISSIVE;
         mSecurityPolicy = SCPSecurityPolicy.CMAC;
         mRegistry = new GPRegistry(this);
@@ -212,6 +218,10 @@ public class GPCard {
     /** @return keyset in use */
     public GPKeySet getKeys() {
         return mKeys;
+    }
+    /** @return key diversification to use */
+    public GPKeyDiversification getDiversification() {
+        return mDiversification;
     }
     /** @return protocol policy in use */
     public SCPProtocolPolicy getProtocolPolicy() {
@@ -297,6 +307,15 @@ public class GPCard {
     public void setKeys(GPKeySet keys) {
         ensureNotConnected();
         mKeys = keys;
+    }
+
+    /**
+     * Set the key diversification to be used
+     * @param diversification to be used
+     */
+    public void setDiversification(GPKeyDiversification diversification) {
+        ensureNotConnected();
+        mDiversification = diversification;
     }
 
     /**
@@ -456,7 +475,7 @@ public class GPCard {
             }
 
             // create a secure channel object
-            mSecure = new GPSecureChannel(this, mBasic, mKeys, mProtocolPolicy, mSecurityPolicy);
+            mSecure = new GPSecureChannel(this, mBasic, mKeys, mDiversification, mProtocolPolicy, mSecurityPolicy);
 
             // set protocol expectation of secure channel
             if (mCardData != null) {
