@@ -212,11 +212,6 @@ public class GPKeySet {
     };
 
     /**
-     * Counter for naming derived SCP02 session keys
-     */
-    private static final AtomicInteger SCP02_SESSION_COUNTER = new AtomicInteger();
-
-    /**
      * Table containing SCP02 session key derivation constants
      */
     private static final Hashtable<GPKeyType, byte[]> SCP02_DERIVE = new Hashtable<>();
@@ -241,8 +236,7 @@ public class GPKeySet {
      */
     public GPKeySet deriveSCP02(byte[] sequence) {
         // synthesize a name for the new keyset
-        int sessionId = SCP02_SESSION_COUNTER.incrementAndGet();
-        String name = mName + "-SCP02-Session" + sessionId;
+        String name = mName + "-SCP02:" + HexUtil.bytesToHex(sequence);
 
         // create the new set
         GPKeySet derivedSet = new GPKeySet(name, mKeyVersion, mDiversification);
