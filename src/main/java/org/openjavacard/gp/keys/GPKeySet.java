@@ -52,15 +52,15 @@ public class GPKeySet {
                     "GlobalPlatform", 0,
                     GLOBALPLATFORM_MASTER_KEY);
 
-    String mName;
+    private String mName;
 
-    int mKeyVersion;
+    private int mKeyVersion;
 
-    GPKeyDiversification mDiversification;
+    private GPKeyDiversification mDiversification;
 
-    final ArrayList<GPKey> mKeys = new ArrayList<>();
-    final Hashtable<GPKeyType, GPKey> mKeysByType = new Hashtable<>();
-    final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
+    private final ArrayList<GPKey> mKeys = new ArrayList<>();
+    private final Hashtable<GPKeyType, GPKey> mKeysByType = new Hashtable<>();
+    private final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
 
     /**
      * Internal: base constructor for empty keysets
