@@ -1,22 +1,12 @@
 ## Card compatibility
 
-### Policy
-
-This project is vendor-neutral, with a marked preference for cards that are available to the general public through retail channels. We will also prefer vendors with an open attitude (open sales, open information policy, open source).
-
-We will make a general effort to support any cards that we can get our hands on if we consider them "usable" for one purpose or another. 
-
-Being supported is no statement about the quality of the cards implementation, its security or suitability for any particular purpose. We also do not specifically endorse any manufacturers or resellers.
-
-No structured testing is being performed at this point, but we are working on a test farm that we will use in the future.
-
 ### General
 
-Most cards configured for SCP02 (the common default) will just work. Cards that require key diversification (Gemalto, Giesecke &amp; Devrient) are not supported yet.
+Most cards configured for SCP02 should just work.
 
-Cards using SCP01 might work or not. We have not tested any in a while, and you might have to specify the protocol parameters manually.
+Cards using SCP01 are currently not supported. 
 
-SCP03 has been implemented but not tested yet. It is unlikely to work.
+SCP03 support is in the works.
 
 ### Known Working
 
@@ -35,6 +25,12 @@ The following Feitian cards have been tried at some point:
    * A40 (GlobalPlatform 2.1.1, SCP02-55, Dual-Interface, 64k)
 
 These cards come without an SSD package, so they have only one security domain.
+
+#### Giesecke &amp; Devrient
+
+The following G&amp;D cards have been tried at some point:
+
+ * SmartCafe Expert 3.2 
 
 #### NXP
 
@@ -58,7 +54,3 @@ Other card variants should also work as long as the card is configured for SCP02
 #### Gemalto
 
 Not yet supported. Cards require key diversification, which is not yet supported.
-
-#### Giesecke &amp; Devrient
-
-Not assessed. Seems to require key diversification.
