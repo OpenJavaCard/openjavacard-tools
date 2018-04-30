@@ -20,7 +20,10 @@
 
 package org.openjavacard.gp.keys;
 
+import org.openjavacard.gp.crypto.GPBouncy;
 import org.openjavacard.gp.crypto.GPCrypto;
+import org.openjavacard.util.ArrayUtil;
+import org.openjavacard.util.BinUtil;
 import org.openjavacard.util.HexUtil;
 
 import java.util.ArrayList;
@@ -313,6 +316,56 @@ public class GPKeySet {
                 GPKey sessionKey = new GPKey(type, staticKey.getId(),
                         GPKeyCipher.DES3, derived);
                 // insert key into new set
+                derivedSet.putKey(sessionKey);
+            }
+        }
+
+        // return the new set
+        return derivedSet;
+    }
+
+    private static final GPKeyType[] SCP03_KEYS = {
+            GPKeyType.ENC, GPKeyType.MAC, GPKeyType.RMAC
+    };
+
+    private static final Hashtable<GPKeyType, Byte> SCP03_KDF_CONSTANTS = new Hashtable<>();
+    private static final Hashtable<GPKeyType, byte[]> SCP03_KDF_DERIVE = new Hashtable<>();
+
+    private static final byte[] SCP03_DERIVE_ENC = HexUtil.hexToBytes("0000000100");
+    private static final byte[] SCP03_DERIVE_MAC = HexUtil.hexToBytes("0000000200");
+    private static final byte[] SCP03_DERIVE_KEK = HexUtil.hexToBytes("0000000300");
+
+    static {
+        SCP03_KDF_CONSTANTS.put(GPKeyType.ENC,  (byte)0x04);
+        SCP03_KDF_CONSTANTS.put(GPKeyType.MAC,  (byte)0x06);
+        SCP03_KDF_CONSTANTS.put(GPKeyType.RMAC, (byte)0x07);
+        SCP03_KDF_DERIVE.put(GPKeyType.ENC, SCP03_DERIVE_ENC);
+        SCP03_KDF_DERIVE.put(GPKeyType.MAC, SCP03_DERIVE_MAC);
+        SCP03_KDF_DERIVE.put(GPKeyType.KEK, SCP03_DERIVE_KEK);
+    }
+
+    public GPKeySet deriveSCP03(byte[] sequence, byte[] hostChallenge, byte[] cardChallenge) {
+        // synthesize a name for the new keyset
+        String name = mName + "-SCP03:" + HexUtil.bytesToHex(sequence);
+
+        byte[] context = ArrayUtil.concatenate(hostChallenge, cardChallenge);
+
+        // create the new set
+        GPKeySet derivedSet = new GPKeySet(name, mKeyVersion, mDiversification);
+
+        // go through all keys
+        for (GPKeyType type : SCP03_KEYS) {
+            // get the static base key
+            GPKey staticKey = getKeyByType(type);
+            if(staticKey != null) {
+                GPKey sessionKey;
+                if(SCP03_KDF_CONSTANTS.containsKey(type)) {
+                    byte constant = SCP03_KDF_CONSTANTS.get(type);
+                    byte[] sessionSecret = GPBouncy.scp03_kdf(staticKey, constant, context, staticKey.getLength() * 8);
+                    sessionKey = new GPKey(type, staticKey.getId(), GPKeyCipher.AES, sessionSecret);
+                } else {
+                    sessionKey = new GPKey(type, staticKey.getId(), GPKeyCipher.AES, staticKey.getSecret());
+                }
                 derivedSet.putKey(sessionKey);
             }
         }
