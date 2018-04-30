@@ -99,9 +99,19 @@ public class GPKeySet {
         mDiversification = diversification;
     }
 
+    /** @return the name of this keyset */
+    public String getName() {
+        return mName;
+    }
+
     /** @return the version of this keyset */
     public int getKeyVersion() {
         return mKeyVersion;
+    }
+
+    /** @return the diversification of this keyset */
+    public GPKeyDiversification getDiversification() {
+        return mDiversification;
     }
 
     /** @return the keys in this keyset */
