@@ -6,6 +6,7 @@
 
     <!-- Main dependencies -->
     <property name="dep.commons-codec" value="${dep}/commons-codec.jar"/>
+    <property name="dep.bouncycastle"  value="${dep}/bcprov.jar"/>
     <property name="dep.slf4j-api"     value="${dep}/slf4j-api.jar"/>
     <property name="dep.slf4j-simple"  value="${dep}/slf4j-simple.jar"/>
     <property name="dep.jcommander"    value="${dep}/jcommander.jar"/>
@@ -43,6 +44,7 @@
                excludes="**/package-info.java">
             <classpath>
                 <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.bouncycastle}"/>
                 <pathelement path="${dep.slf4j-api}"/>
                 <pathelement path="${dep.slf4j-simple}"/>
                 <pathelement path="${dep.jcommander}"/>
@@ -57,6 +59,7 @@
                srcdir="src/test/java">
             <classpath>
                 <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.bouncycastle}"/>
                 <pathelement path="${dep.slf4j-api}"/>
                 <pathelement path="${dep.slf4j-simple}"/>
                 <pathelement path="${dep.jcommander}"/>
@@ -71,6 +74,7 @@
         <jar destfile="build/ant/jar/openjavacard-tools.jar">
             <fileset dir="build/ant/classes/main"/>
             <zipfileset src="${dep.commons-codec}"/>
+            <zipfileset src="${dep.bouncycastle}"/>
             <zipfileset src="${dep.slf4j-api}"/>
             <zipfileset src="${dep.slf4j-simple}"/>
             <zipfileset src="${dep.jcommander}"/>
@@ -89,6 +93,7 @@
             <formatter type="brief" usefile="false"/>
             <classpath>
                 <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.bouncycastle}"/>
                 <pathelement path="${dep.slf4j-api}"/>
                 <pathelement path="${dep.slf4j-simple}"/>
                 <pathelement path="${dep.jcommander}"/>
@@ -138,6 +143,7 @@
 
             <classpath>
                 <pathelement path="${dep.commons-codec}"/>
+                <pathelement path="${dep.bouncycastle}"/>
                 <pathelement path="${dep.slf4j-api}"/>
                 <pathelement path="${dep.slf4j-simple}"/>
                 <pathelement path="${dep.jcommander}"/>

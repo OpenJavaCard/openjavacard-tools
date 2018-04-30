@@ -41,7 +41,7 @@ Dependencies are taken from /usr/share/java by default.
 You need to install the required Java libraries (Example for Debian):
 
 ```
-$ aptitude install ant libjcommander-java libslf4j-java liblogback-java junit4
+$ aptitude install ant libbcprov-java libjcommander-java libslf4j-java liblogback-java junit4
 ```
 
 You should then be able to build the package using ant:
