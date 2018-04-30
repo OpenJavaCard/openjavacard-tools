@@ -20,6 +20,7 @@
 
 package org.openjavacard.gp.scp;
 
+import org.openjavacard.gp.crypto.GPBouncy;
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
@@ -127,7 +128,7 @@ public class SCP03Wrapper extends SCPWrapper {
             byte[] macData = macBuffer.toByteArray();
 
             // perform the MAC computation
-            mICV = GPCrypto.mac_aes(macKey, macData, mICV);
+            mICV = GPBouncy.scp03_mac(macKey, macData, 128);
         }
 
         // build wrapped command
