@@ -86,15 +86,6 @@ public class GPKey {
     }
 
     /**
-     * Return a SecretKey object for this key
-     *
-     * @return new SecretKey corresponding to this key
-     */
-    public SecretKey getSecretKey() {
-        return getSecretKey(mCipher);
-    }
-
-    /**
      * Return a SecretKey for a specific cipher
      * <p/>
      * Will coerce the key if required.

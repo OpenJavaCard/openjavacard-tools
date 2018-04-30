@@ -61,11 +61,12 @@ public class GPCrypto {
     private static final String DES3_CBC_NOPAD = "DESede/CBC/NoPadding";
 
 
-    private static void checkKeyCipher(GPKey key, GPKeyCipher cipher) {
+    private static SecretKey checkKeyCipher(GPKey key, GPKeyCipher cipher) {
         GPKeyCipher keyCipher = key.getCipher();
-        if (keyCipher != cipher) {
+        if (keyCipher != GPKeyCipher.GENERIC && keyCipher != cipher) {
             throw new IllegalArgumentException("Key is for wrong cipher " + keyCipher + ", need " + cipher);
         }
+        return key.getSecretKey(cipher);
     }
 
     /**
@@ -101,8 +102,8 @@ public class GPCrypto {
      * @return
      */
     public static byte[] enc_3des_ecb(GPKey key, byte[] text) {
-        checkKeyCipher(key, GPKeyCipher.DES3);
-        return enc(DES3_ECB_NOPAD, key.getSecretKey(), text, 0, text.length, null);
+        SecretKey secretKey = checkKeyCipher(key, GPKeyCipher.DES3);
+        return enc(DES3_ECB_NOPAD, secretKey, text, 0, text.length, null);
     }
 
     /**
@@ -125,8 +126,8 @@ public class GPCrypto {
      * @return
      */
     public static byte[] enc_3des_cbc(GPKey key, byte[] text, byte[] iv) {
-        checkKeyCipher(key, GPKeyCipher.DES3);
-        return enc(DES3_CBC_NOPAD, key.getSecretKey(), text, 0, text.length, iv);
+        SecretKey secretKey = checkKeyCipher(key, GPKeyCipher.DES3);
+        return enc(DES3_CBC_NOPAD, secretKey, text, 0, text.length, iv);
     }
 
     private static byte[] enc(String cipherSpec, Key key, byte[] text, int offset, int length, byte[] iv) {
@@ -241,9 +242,9 @@ public class GPCrypto {
      * @return
      */
     public static byte[] mac_3des(GPKey key, byte[] text, byte[] iv) {
-        checkKeyCipher(key, GPKeyCipher.DES3);
+        SecretKey secretKey = checkKeyCipher(key, GPKeyCipher.DES3);
         byte[] d = pad80(text, 8);
-        return mac_3des(key.getSecretKey(), d, 0, d.length, iv);
+        return mac_3des(secretKey, d, 0, d.length, iv);
     }
 
     private static byte[] mac_3des(Key key, byte[] text, int offset, int length, byte[] iv) {
