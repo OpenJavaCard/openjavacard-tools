@@ -23,7 +23,7 @@ package org.openjavacard.gp.keys;
 import org.openjavacard.gp.protocol.GP;
 
 public enum GPKeyCipher {
-    DES, DES3, AES;
+    GENERIC, DES, DES3, AES;
 
     public static GPKeyCipher getCipherForKeyType(byte keyType) {
         switch (keyType) {

@@ -117,9 +117,9 @@ public class GPKeyInfo {
         byte keyType = (byte) (mKeyTypes[0] & 0xFF);
         GPKeyCipher kiCipher = GPKeyCipher.getCipherForKeyType(keyType);
         GPKeyCipher keyCipher = key.getCipher();
-        // we allow the card to say DES when it means 3DES
-        if (kiCipher == GPKeyCipher.DES && keyCipher == GPKeyCipher.DES3) {
-        } else if (kiCipher != keyCipher) {
+
+        // check the type unless key is generic
+        if (keyCipher != GPKeyCipher.GENERIC && kiCipher != keyCipher) {
             return false;
         }
 
