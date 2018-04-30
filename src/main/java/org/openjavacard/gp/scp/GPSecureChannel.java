@@ -448,12 +448,7 @@ public class GPSecureChannel extends CardChannel {
         // determine and check SCP parameters
         int scpParams = init.scp03Parameters;
         if (init.scpProtocol == 3) {
-            // SCP03 has the parameters in the INIT UPDATE response,
-            // so check them for previous expectations and use them.
-            if (mExpectedParameters != 0 && scpParams != mExpectedParameters) {
-                throw new CardException("Unexpected SCP parameters " + HexUtil.hex8(scpParams)
-                        + ", expected " + HexUtil.hex8(mExpectedProtocol));
-            }
+            // SCP03 has the parameters in the INIT UPDATE response
         } else {
             // check that we have been told the parameters
             if (mExpectedParameters == 0) {
