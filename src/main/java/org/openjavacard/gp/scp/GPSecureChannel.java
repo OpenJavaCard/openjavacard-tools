@@ -296,12 +296,13 @@ public class GPSecureChannel extends CardChannel {
 
         // check and select the protocol to be used
         checkAndSelectProtocol(init);
-        LOG.debug("using " + mActiveProtocol);
+        LOG.debug("using protocol " + mActiveProtocol);
 
+        // derivation might replace keys
         GPKeySet actualKeys = mStaticKeys;
 
         // check key version
-        int selectedKeyVersion = mStaticKeys.getKeyVersion();
+        int selectedKeyVersion = actualKeys.getKeyVersion();
         if (selectedKeyVersion > 0 && selectedKeyVersion != init.keyVersion) {
             throw new CardException("Key version mismatch: host " + selectedKeyVersion + " card " + init.keyVersion);
         }
