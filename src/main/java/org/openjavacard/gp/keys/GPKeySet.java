@@ -99,13 +99,12 @@ public class GPKeySet {
         mDiversification = diversification;
     }
 
-    /**
-     * @return the version of this keyset
-     */
+    /** @return the version of this keyset */
     public int getKeyVersion() {
         return mKeyVersion;
     }
 
+    /** @return the keys in this keyset */
     public List<GPKey> getKeys() {
         return new ArrayList<>(mKeys);
     }
@@ -141,7 +140,7 @@ public class GPKeySet {
     /**
      * Store a key into the keyset
      *
-     * @param key
+     * @param key to store
      */
     public void putKey(GPKey key) {
         int keyId = key.getId();
@@ -331,10 +330,12 @@ public class GPKeySet {
             if(staticKey != null) {
                 GPKey sessionKey;
                 if(SCP03_KDF_CONSTANTS.containsKey(type)) {
+                    // perform derivation
                     byte constant = SCP03_KDF_CONSTANTS.get(type);
                     byte[] sessionSecret = GPBouncy.scp03_kdf(staticKey, constant, context, staticKey.getLength() * 8);
                     sessionKey = new GPKey(type, staticKey.getId(), GPKeyCipher.AES, sessionSecret);
                 } else {
+                    // copy keys that need no derivation
                     sessionKey = new GPKey(type, staticKey.getId(), GPKeyCipher.AES, staticKey.getSecret());
                 }
                 derivedSet.putKey(sessionKey);
