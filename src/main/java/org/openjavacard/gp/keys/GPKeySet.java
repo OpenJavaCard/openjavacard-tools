@@ -51,9 +51,7 @@ public class GPKeySet {
      * GlobalPlatform default key set
      */
     public static final GPKeySet GLOBALPLATFORM =
-            new GPKeySet(
-                    "GlobalPlatform", 0,
-                    GLOBALPLATFORM_MASTER_KEY);
+            buildGeneric("GlobalPlatform", GLOBALPLATFORM_MASTER_KEY);
 
     private String mName;
 
@@ -65,21 +63,21 @@ public class GPKeySet {
     private final Hashtable<GPKeyType, GPKey> mKeysByType = new Hashtable<>();
     private final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
 
-    /**
-     * Internal: base constructor for empty keysets
-     *
-     * @param name            of the keyset
-     * @param keyVersion      of the keyset
-     * @param diversification applied to the keyset
-     */
-    private GPKeySet(String name, int keyVersion, GPKeyDiversification diversification) {
-        mName = name;
-        mKeyVersion = keyVersion;
-        mDiversification = diversification;
+    private static final GPKeySet buildGeneric(String name, byte[] masterKey) {
+        GPKeySet keySet = new GPKeySet(name);
+        keySet.putKey(new GPKey(GPKeyType.MASTER, (byte)0, GPKeyCipher.GENERIC, masterKey));
+        return keySet;
     }
 
     /**
-     * Constructor for empty keysets without diversification
+     * Constructor for empty keysets
+     */
+    public GPKeySet(String name) {
+        this(name, 0, GPKeyDiversification.NONE);
+    }
+
+    /**
+     * Constructor for empty keysets
      *
      * @param name       of the keyset
      * @param keyVersion of the keyset
@@ -89,43 +87,16 @@ public class GPKeySet {
     }
 
     /**
-     * Constructor for empty keysets without a key version
+     * Constructor for empty keysets
+     *
+     * @param name            of the keyset
+     * @param keyVersion      of the keyset
+     * @param diversification of the keyset
      */
-    public GPKeySet(String name) {
-        this(name, 0, GPKeyDiversification.NONE);
-    }
-
-    /**
-     * Construct a keyset from a set of keys
-     * <p/>
-     * Keys for ENC, MAC and KEK can be specified separately.
-     * <p/>
-     * @param name       of the keyset
-     * @param keyVersion of the keyset
-     * @param baseKeyId  first key id to use
-     * @param encKey     to be used for ENC
-     * @param macKey     to be used for MAC
-     * @param kekKey     to be used for KEK
-     */
-    public GPKeySet(String name, int keyVersion, byte baseKeyId, byte[] encKey, byte[] macKey, byte[] kekKey) {
-        this(name, keyVersion);
-        putKey(new GPKey(GPKeyType.ENC, (byte) (baseKeyId + 0), GPKeyCipher.DES3, encKey));
-        putKey(new GPKey(GPKeyType.MAC, (byte) (baseKeyId + 1), GPKeyCipher.DES3, macKey));
-        putKey(new GPKey(GPKeyType.KEK, (byte) (baseKeyId + 2), GPKeyCipher.DES3, kekKey));
-    }
-
-    /**
-     * Construct a keyset from a common master key
-     * <p/>
-     * The given key will be used for ENC, MAC and KEK.
-     * <p/>
-     * @param name       of the keyset
-     * @param keyVersion of the keyset
-     * @param masterKey  to be used
-     */
-    public GPKeySet(String name, int keyVersion, byte[] masterKey) {
-        this(name, keyVersion);
-        putKey(new GPKey(GPKeyType.MASTER, (byte)0, GPKeyCipher.DES3, masterKey));
+    public GPKeySet(String name, int keyVersion, GPKeyDiversification diversification) {
+        mName = name;
+        mKeyVersion = keyVersion;
+        mDiversification = diversification;
     }
 
     /**
