@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.openjavacard.gp.protocol.GPCardDataTest;
+import org.openjavacard.gp.scp.SCP03Derivation;
 import org.openjavacard.util.HexUtil;
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -80,7 +81,7 @@ public class GPKeySetTest extends TestCase {
         byte[] cardSequence = HexUtil.hexToBytes("000010");
         byte[] hostChallenge = HexUtil.hexToBytes("A7F76C713F0A713D");
         byte[] cardChallenge = HexUtil.hexToBytes("31900058C1C451A2");
-        GPKeySet derived = GPKeySet.GLOBALPLATFORM.deriveSCP03(cardSequence, hostChallenge, cardChallenge);
+        GPKeySet derived = SCP03Derivation.deriveSessionKeys(GPKeySet.GLOBALPLATFORM, cardSequence, hostChallenge, cardChallenge);
         Assert.assertEquals(0, derived.getKeyVersion());
         GPKey encKey = derived.getKeyByType(GPKeyType.ENC);
         Assert.assertEquals(GPKeyCipher.AES, encKey.getCipher());
