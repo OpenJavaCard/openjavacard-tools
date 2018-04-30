@@ -320,7 +320,7 @@ public class GPSecureChannel extends CardChannel {
             case 2:
                 byte[] seq02 = Arrays.copyOfRange(init.cardChallenge, 0, 2);
                 LOG.debug("card sequence " + HexUtil.bytesToHex(seq02));
-                mSessionKeys = actualKeys.deriveSCP02(seq02);
+                mSessionKeys = SCP02Derivation.deriveSessionKeys(actualKeys, seq02);
                 break;
             case 3:
                 byte[] seq03 = init.scp03Sequence;

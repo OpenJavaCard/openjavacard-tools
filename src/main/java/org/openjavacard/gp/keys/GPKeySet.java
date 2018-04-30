@@ -241,69 +241,6 @@ public class GPKeySet {
         return new GPKey(type, key.getId(), key.getCipher(), dKey);
     }
 
-    /**
-     * Key type sequence for SCP02
-     */
-    private static final GPKeyType[] SCP02_KEYS = {
-        GPKeyType.ENC, GPKeyType.MAC, GPKeyType.KEK
-    };
-
-    /**
-     * Table containing SCP02 session key derivation constants
-     */
-    private static final Hashtable<GPKeyType, byte[]> SCP02_DERIVE = new Hashtable<>();
-
-    private static final byte[] SCP02_DERIVE_MAC  = {0x01, 0x01};
-    private static final byte[] SCP02_DERIVE_RMAC = {0x01, 0x02};
-    private static final byte[] SCP02_DERIVE_KEK = {0x01, (byte) 0x81};
-    private static final byte[] SCP02_DERIVE_ENC = {0x01, (byte) 0x82};
-
-    static {
-        SCP02_DERIVE.put(GPKeyType.MAC,  SCP02_DERIVE_MAC);
-        SCP02_DERIVE.put(GPKeyType.RMAC, SCP02_DERIVE_RMAC);
-        SCP02_DERIVE.put(GPKeyType.KEK,  SCP02_DERIVE_KEK);
-        SCP02_DERIVE.put(GPKeyType.ENC,  SCP02_DERIVE_ENC);
-    }
-
-    /**
-     * Derives a set of SCP02 session keys from this keyset
-     *
-     * @param sequence to be used for the computation
-     * @return a new keyset containing the derived keys
-     */
-    public GPKeySet deriveSCP02(byte[] sequence) {
-        // synthesize a name for the new keyset
-        String name = mName + "-SCP02:" + HexUtil.bytesToHex(sequence);
-
-        // create the new set
-        GPKeySet derivedSet = new GPKeySet(name, mKeyVersion, mDiversification);
-
-        // initialize buffer for derivation
-        byte[] buffer = new byte[16];
-        System.arraycopy(sequence, 0, buffer, 2, 2);
-
-        // go through all keys
-        for (GPKeyType type : SCP02_KEYS) {
-            // get the static base key
-            GPKey staticKey = getKeyByType(type);
-            if(staticKey != null) {
-                // insert derivation data
-                byte[] derivation = SCP02_DERIVE.get(type);
-                System.arraycopy(derivation, 0, buffer, 0, 2);
-                // derive using DES
-                byte[] derived = GPCrypto.enc_3des_cbc_nulliv(staticKey, buffer);
-                // construct the new key
-                GPKey sessionKey = new GPKey(type, staticKey.getId(),
-                        GPKeyCipher.DES3, derived);
-                // insert key into new set
-                derivedSet.putKey(sessionKey);
-            }
-        }
-
-        // return the new set
-        return derivedSet;
-    }
-
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("keyset \"" + mName + "\"");
