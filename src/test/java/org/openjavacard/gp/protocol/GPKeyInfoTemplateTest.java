@@ -52,7 +52,7 @@ public class GPKeyInfoTemplateTest extends TestCase {
     }
 
     public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(GPKeyInfoTest.class);
+        return new junit.framework.JUnit4TestAdapter(GPKeyInfoTemplateTest.class);
     }
 
     @Test
