@@ -26,7 +26,6 @@ import org.openjavacard.util.HexUtil;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Set of GlobalPlatform keys
