@@ -36,6 +36,10 @@ public enum GPKeyCipher {
     DES3,
     /** Key for AES */
     AES,
+    /** Key for RSA (Classic form) */
+    RSA_CLASSIC,
+    /** Key for RSA (CRT form) */
+    RSA_CRT
     ;
 
     /**
@@ -53,6 +57,17 @@ public enum GPKeyCipher {
                 return DES3;
             case GP.KEY_TYPE_AES:
                 return AES;
+            case GP.KEY_TYPE_RSA_MODULUS:
+            case GP.KEY_TYPE_RSA_MODULUS_CLEARTEXT:
+            case GP.KEY_TYPE_RSA_PRIVATE_EXPONENT_D:
+            case GP.KEY_TYPE_RSA_PUBLIC_EXPONENT_CLEARTEXT:
+                return RSA_CLASSIC;
+            case GP.KEY_TYPE_RSA_CHINESE_DPI:
+            case GP.KEY_TYPE_RSA_CHINESE_DQI:
+            case GP.KEY_TYPE_RSA_CHINESE_P:
+            case GP.KEY_TYPE_RSA_CHINESE_PQ:
+            case GP.KEY_TYPE_RSA_CHINESE_Q:
+                return RSA_CRT;
             default:
                 throw new IllegalArgumentException("Unsupported key type " + keyType);
         }
