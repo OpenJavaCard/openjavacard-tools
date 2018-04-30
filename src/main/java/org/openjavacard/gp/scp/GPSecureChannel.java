@@ -351,6 +351,7 @@ public class GPSecureChannel extends CardChannel {
                 break;
             case 3:
                 mWrapper = new SCP03Wrapper(mSessionKeys, ((SCP03Protocol) mActiveProtocol));
+                break;
             default:
                 throw new CardException("Unsupported SCP version " + mActiveProtocol);
         }
