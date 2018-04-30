@@ -26,7 +26,7 @@ import org.openjavacard.util.VerboseString;
 import javax.smartcardio.CardException;
 
 /**
- * Represents a specific variant of an SCP protocol
+ * Represents a parameterized SCP protocol
  * <p/>
  * This is a base class, SCP implementations should subclass it.
  * <p/>
@@ -58,6 +58,11 @@ public abstract class SCPProtocol implements VerboseString {
         }
     }
 
+    /**
+     * Parse an SCP protocol specification
+     * @param scpString to parse
+     * @return corresponding protocol
+     */
     public static SCPProtocol fromString(String scpString) {
         if(!scpString.startsWith("SCP")) {
             throw new IllegalArgumentException("Illegal SCP protocol specifier \"" + scpString + "\"");
