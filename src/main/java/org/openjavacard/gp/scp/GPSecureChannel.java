@@ -325,7 +325,7 @@ public class GPSecureChannel extends CardChannel {
             case 3:
                 byte[] seq03 = init.scp03Sequence;
                 LOG.debug("card sequence " + HexUtil.bytesToHex(seq03));
-                mSessionKeys = actualKeys.deriveSCP03(seq03, hostChallenge, init.cardChallenge);
+                mSessionKeys = SCP03Derivation.deriveSessionKeys(actualKeys, seq03, hostChallenge, init.cardChallenge);
                 break;
             default:
                 throw new CardException("Unsupported SCP version " + mActiveProtocol);
