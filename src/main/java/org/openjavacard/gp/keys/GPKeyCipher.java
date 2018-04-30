@@ -22,19 +22,37 @@ package org.openjavacard.gp.keys;
 
 import org.openjavacard.gp.protocol.GP;
 
+/**
+ * Key cipher type
+ * <p/>
+ * Used to indicate what ciphers a key may be used with.
+ */
 public enum GPKeyCipher {
-    GENERIC, DES, DES3, AES;
+    /** Key for any symmetric cipher */
+    GENERIC,
+    /** Key for single-DES */
+    DES,
+    /** Key for triple-DES */
+    DES3,
+    /** Key for AES */
+    AES,
+    ;
 
+    /**
+     * Get the cipher for a GlobalPlatform key type
+     * @param keyType to interpret
+     * @return cipher corresponding to type
+     */
     public static GPKeyCipher getCipherForKeyType(byte keyType) {
         switch (keyType) {
             case GP.KEY_TYPE_DES:
             case GP.KEY_TYPE_DES_CBC:
             case GP.KEY_TYPE_DES_ECB:
-                return GPKeyCipher.DES;
+                return DES;
             case GP.KEY_TYPE_3DES_CBC:
-                return GPKeyCipher.DES3;
+                return DES3;
             case GP.KEY_TYPE_AES:
-                return GPKeyCipher.AES;
+                return AES;
             default:
                 throw new IllegalArgumentException("Unsupported key type " + keyType);
         }
