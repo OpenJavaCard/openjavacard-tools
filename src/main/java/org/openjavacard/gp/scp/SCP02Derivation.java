@@ -21,12 +21,10 @@ public class SCP02Derivation {
 
     /** Derivation constants */
     private static final Hashtable<GPKeyType, byte[]> CONSTANTS = new Hashtable<>();
-
     private static final byte[] SCP02_DERIVE_MAC  = {0x01, 0x01};
     private static final byte[] SCP02_DERIVE_RMAC = {0x01, 0x02};
     private static final byte[] SCP02_DERIVE_KEK = {0x01, (byte) 0x81};
     private static final byte[] SCP02_DERIVE_ENC = {0x01, (byte) 0x82};
-
     static {
         CONSTANTS.put(GPKeyType.MAC,  SCP02_DERIVE_MAC);
         CONSTANTS.put(GPKeyType.RMAC, SCP02_DERIVE_RMAC);
@@ -44,14 +42,11 @@ public class SCP02Derivation {
     public static GPKeySet deriveSessionKeys(GPKeySet staticKeys, byte[] sequence) {
         // synthesize a name for the new keyset
         String name = staticKeys.getName() + "-SCP02:" + HexUtil.bytesToHex(sequence);
-
         // create the new set
         GPKeySet derivedSet = new GPKeySet(name, staticKeys.getKeyVersion(), staticKeys.getDiversification());
-
         // initialize buffer for derivation
         byte[] buffer = new byte[16];
         System.arraycopy(sequence, 0, buffer, 2, 2);
-
         // go through all keys
         for (GPKeyType type : KEY_TYPES) {
             // get the static base key
@@ -69,7 +64,6 @@ public class SCP02Derivation {
                 derivedSet.putKey(sessionKey);
             }
         }
-
         // return the new set
         return derivedSet;
     }
