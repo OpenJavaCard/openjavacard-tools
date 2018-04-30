@@ -296,7 +296,7 @@ public class GPSecureChannel extends CardChannel {
 
         // check and select the protocol to be used
         checkAndSelectProtocol(init);
-        LOG.debug("using protocol " + mActiveProtocol);
+        LOG.debug("protocol " + mActiveProtocol);
 
         // derivation might replace keys
         GPKeySet actualKeys = mStaticKeys;
@@ -332,6 +332,7 @@ public class GPSecureChannel extends CardChannel {
                 throw new CardException("Unsupported SCP version " + mActiveProtocol);
         }
 
+        // log session keys
         if(mContext.isKeyLoggingEnabled()) {
             LOG.trace("session keys:\n" + mSessionKeys.toString());
         }
