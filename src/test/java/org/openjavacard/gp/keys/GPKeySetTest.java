@@ -64,6 +64,21 @@ public class GPKeySetTest extends TestCase {
     }
 
     @Test
+    public void testDeriveSCP03() {
+        byte[] cardSequence = HexUtil.hexToBytes("000010");
+        byte[] hostChallenge = HexUtil.hexToBytes("A7F76C713F0A713D");
+        byte[] cardChallenge = HexUtil.hexToBytes("31900058C1C451A2");
+        GPKeySet derived = GPKeySet.GLOBALPLATFORM.deriveSCP03(cardSequence, hostChallenge, cardChallenge);
+        Assert.assertEquals(0, derived.getKeyVersion());
+        GPKey encKey = derived.getKeyByType(GPKeyType.ENC);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("258a78866f41482bef482dc8ca976ccd"), encKey.getSecret());
+        GPKey macKey = derived.getKeyByType(GPKeyType.MAC);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("053db6abc7fdf3b63a0d965ee16b0255"), macKey.getSecret());
+        GPKey rmacKey = derived.getKeyByType(GPKeyType.RMAC);
+        Assert.assertArrayEquals(HexUtil.hexToBytes("eda0b4f2ec0345bfc50f3bc59cfef936"), rmacKey.getSecret());
+    }
+
+    @Test
     public void testDiversifyEMV_00000000000000000000() {
         GPKeySet diversified = GPKeySet.GLOBALPLATFORM.diversify(GPKeyDiversification.EMV,
                 HexUtil.hexToBytes("00000000000000000000"));
