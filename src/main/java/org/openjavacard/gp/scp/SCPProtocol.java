@@ -38,9 +38,6 @@ import javax.smartcardio.CardException;
  */
 public abstract class SCPProtocol implements VerboseString {
 
-    public static final SCPProtocol SCP02_15 = decode(0x02, 0x15);
-    public static final SCPProtocol SCP02_55 = decode(0x02, 0x15);
-
     /**
      * Decode SCP parameters
      *
