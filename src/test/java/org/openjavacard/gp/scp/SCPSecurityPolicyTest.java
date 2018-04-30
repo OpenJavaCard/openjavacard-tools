@@ -36,7 +36,7 @@ public class SCPSecurityPolicyTest extends TestCase {
     private SCPParameters SCP02_55 = SCPParameters.decode(0x02, 0x55);
 
     public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(SCPProtocolPolicyTest.class);
+        return new junit.framework.JUnit4TestAdapter(SCPSecurityPolicyTest.class);
     }
 
     @Test
