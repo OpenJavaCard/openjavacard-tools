@@ -208,14 +208,14 @@ public class GPRegistry {
             ArrayList<ELFEntry> allELFs = new ArrayList<>();
 
             LOG.debug("reading ISD");
-            List<ISDEntry> isdEntries = readEntries(readStatus(GP.GET_STATUS_P1_ISD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV), ISDEntry.class);
+            List<ISDEntry> isdEntries = readEntriesTLV(GP.GET_STATUS_P1_ISD_ONLY, ISDEntry.class);
             if(!isdEntries.isEmpty()) {
                 allEntries.addAll(isdEntries);
                 isdEntry = isdEntries.get(0);
             }
 
             LOG.debug("reading APPs and SSDs");
-            List<AppEntry> appEntries = readEntries(readStatus(GP.GET_STATUS_P1_APP_AND_SD_ONLY, GP.GET_STATUS_P2_FORMAT_TLV), AppEntry.class);
+            List<AppEntry> appEntries = readEntriesTLV(GP.GET_STATUS_P1_APP_AND_SD_ONLY, AppEntry.class);
             if(!appEntries.isEmpty()) {
                 allEntries.addAll(appEntries);
                 for (AppEntry appEntry : appEntries) {
@@ -224,7 +224,7 @@ public class GPRegistry {
             }
 
             LOG.debug("reading ELFs and EXMs");
-            List<ELFEntry> elfEntries = readEntries(readStatus(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, GP.GET_STATUS_P2_FORMAT_TLV), ELFEntry.class);
+            List<ELFEntry> elfEntries = readEntriesTLV(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, ELFEntry.class);
             if(!elfEntries.isEmpty()) {
                 allEntries.addAll(elfEntries);
                 allELFs.addAll(elfEntries);
@@ -241,7 +241,9 @@ public class GPRegistry {
     }
 
     private <E extends Entry>
-    List<E> readEntries(byte[] data, Class<E> clazz) throws IOException {
+    List<E> readEntriesTLV(byte p1Subset, Class<E> clazz) throws IOException, CardException {
+        byte format = GP.GET_STATUS_P2_FORMAT_TLV;
+        byte[] data = readStatus(p1Subset, format);
         List<E> res = new ArrayList<>();
         List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(data);
         for (TLVPrimitive tlv : tlvs) {
@@ -255,7 +257,6 @@ public class GPRegistry {
         }
         return res;
     }
-
 
     /**
      * Perform a GlobalPlatform READ STATUS operation
