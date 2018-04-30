@@ -63,7 +63,7 @@ public class GPKeySet {
     private final Hashtable<GPKeyType, GPKey> mKeysByType = new Hashtable<>();
     private final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
 
-    private static final GPKeySet buildGeneric(String name, byte[] masterKey) {
+    private static GPKeySet buildGeneric(String name, byte[] masterKey) {
         GPKeySet keySet = new GPKeySet(name);
         keySet.putKey(new GPKey(GPKeyType.MASTER, (byte)0, GPKeyCipher.GENERIC, masterKey));
         return keySet;
