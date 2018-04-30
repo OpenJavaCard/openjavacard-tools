@@ -16,7 +16,7 @@ public class SCP02Derivation {
 
     /** All key types in SCP02 */
     private static final GPKeyType[] KEY_TYPES = {
-            GPKeyType.ENC, GPKeyType.MAC, GPKeyType.KEK
+            GPKeyType.ENC, GPKeyType.MAC, GPKeyType.KEK, GPKeyType.RMAC
     };
 
     /** Derivation constants */
