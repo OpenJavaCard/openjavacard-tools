@@ -30,10 +30,10 @@ import javax.smartcardio.CardException;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class SCPSecurityPolicyTest extends TestCase {
 
-    private SCPProtocol SCP01_05 = SCPProtocol.decode(0x01, 0x05);
-    private SCPProtocol SCP01_15 = SCPProtocol.decode(0x01, 0x15);
-    private SCPProtocol SCP02_15 = SCPProtocol.decode(0x02, 0x15);
-    private SCPProtocol SCP02_55 = SCPProtocol.decode(0x02, 0x55);
+    private SCPParameters SCP01_05 = SCPParameters.decode(0x01, 0x05);
+    private SCPParameters SCP01_15 = SCPParameters.decode(0x01, 0x15);
+    private SCPParameters SCP02_15 = SCPParameters.decode(0x02, 0x15);
+    private SCPParameters SCP02_55 = SCPParameters.decode(0x02, 0x55);
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(SCPProtocolPolicyTest.class);

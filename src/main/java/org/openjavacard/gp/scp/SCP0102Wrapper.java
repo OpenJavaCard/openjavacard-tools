@@ -42,7 +42,7 @@ public class SCP0102Wrapper extends SCPWrapper {
     /**
      * SCP parameters in use
      */
-    private final SCP0102Protocol mSCP;
+    private final SCP0102Parameters mSCP;
     /**
      * IV for C-MAC
      */
@@ -64,7 +64,7 @@ public class SCP0102Wrapper extends SCPWrapper {
      * @param keys to use for the session
      * @param parameters determined for the session
      */
-    SCP0102Wrapper(GPKeySet keys, SCP0102Protocol parameters) {
+    SCP0102Wrapper(GPKeySet keys, SCP0102Parameters parameters) {
         super(keys);
 
         // check for unsupported parameters

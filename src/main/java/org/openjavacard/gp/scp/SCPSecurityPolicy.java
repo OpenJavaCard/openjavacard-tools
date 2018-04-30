@@ -69,7 +69,7 @@ public enum SCPSecurityPolicy {
      * @param protocol to check
      * @throws CardException if the protocol does not comply
      */
-    public void checkProtocol(SCPProtocol protocol) throws CardException {
+    public void checkProtocol(SCPParameters protocol) throws CardException {
         if(!protocol.isSecuritySupported(this)) {
             throw new CardException("Security protocol " + protocol + " is insufficient for this security policy");
         }

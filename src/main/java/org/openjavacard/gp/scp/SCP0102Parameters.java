@@ -25,7 +25,7 @@ import org.openjavacard.util.HexUtil;
 /**
  * Represents SCP parameters for SCP01 and SCP02
  */
-public class SCP0102Protocol extends SCPProtocol {
+public class SCP0102Parameters extends SCPParameters {
 
     /** Number of keys required (usually 1 or 3) */
     public final int numKeys;
@@ -47,7 +47,7 @@ public class SCP0102Protocol extends SCPProtocol {
      * @param protocol to be used
      * @param parameters to be used
      */
-    SCP0102Protocol(int protocol, int parameters) {
+    SCP0102Parameters(int protocol, int parameters) {
         super(protocol, parameters);
 
         switch (protocol) {

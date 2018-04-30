@@ -22,7 +22,7 @@ package org.openjavacard.gp.scp;
 
 import org.openjavacard.util.HexUtil;
 
-public class SCP03Protocol extends SCPProtocol {
+public class SCP03Parameters extends SCPParameters {
 
     public final boolean pseudoRandomChallenge;
 
@@ -35,7 +35,7 @@ public class SCP03Protocol extends SCPProtocol {
      *
      * @param parameters
      */
-    protected SCP03Protocol(int parameters) {
+    protected SCP03Parameters(int parameters) {
         super(3, parameters);
 
         // check for unknown flags

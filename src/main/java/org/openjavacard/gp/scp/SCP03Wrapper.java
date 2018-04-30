@@ -34,7 +34,7 @@ import java.util.Arrays;
 
 public class SCP03Wrapper extends SCPWrapper {
 
-    private SCP03Protocol mSCP;
+    private SCP03Parameters mSCP;
 
     /**
      * IV for all cryptographic operations
@@ -43,7 +43,7 @@ public class SCP03Wrapper extends SCPWrapper {
      */
     private byte[] mICV = new byte[16];
 
-    SCP03Wrapper(GPKeySet keys, SCP03Protocol parameters) {
+    SCP03Wrapper(GPKeySet keys, SCP03Parameters parameters) {
         super(keys);
         // remember protocol parameters
         mSCP = parameters;

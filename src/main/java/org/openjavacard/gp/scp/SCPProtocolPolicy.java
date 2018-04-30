@@ -107,7 +107,7 @@ public final class SCPProtocolPolicy {
     }
 
     /** @return true if the given SCP protocol is allowed */
-    public boolean isProtocolAllowed(SCPProtocol protocol) {
+    public boolean isProtocolAllowed(SCPParameters protocol) {
         return isVersionAllowed(protocol.scpVersion) && isParametersAllowed(protocol.scpParameters);
     }
 
@@ -118,7 +118,7 @@ public final class SCPProtocolPolicy {
      *
      * @throws CardException if the protocol is denied use
      */
-    public void checkProtocol(SCPProtocol p) throws CardException {
+    public void checkProtocol(SCPParameters p) throws CardException {
         checkProtocol(p.scpVersion, p.scpParameters);
     }
 

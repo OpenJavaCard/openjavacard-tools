@@ -27,7 +27,7 @@ import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.protocol.GPLifeCycle;
 import org.openjavacard.gp.scp.GPSecureChannel;
-import org.openjavacard.gp.scp.SCPProtocol;
+import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;
 import org.openjavacard.iso.AID;
@@ -44,7 +44,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
@@ -233,7 +232,7 @@ public class GPCard {
     }
 
     /** @return the active security protocol */
-    public SCPProtocol getProtocol() {
+    public SCPParameters getProtocol() {
         if (mSecure == null || !mSecure.isEstablished()) {
             return null;
         }

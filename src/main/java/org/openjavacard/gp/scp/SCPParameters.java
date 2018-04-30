@@ -36,7 +36,7 @@ import javax.smartcardio.CardException;
  * Contrary to protocol policies these actually know what level
  * of security the protocol supports.
  */
-public abstract class SCPProtocol implements VerboseString {
+public abstract class SCPParameters implements VerboseString {
 
     /**
      * Decode SCP parameters
@@ -45,14 +45,14 @@ public abstract class SCPProtocol implements VerboseString {
      * @param scpParameters for decoding
      * @return an object describing the parameters
      */
-    public static SCPProtocol decode(int scpVersion, int scpParameters) {
+    public static SCPParameters decode(int scpVersion, int scpParameters) {
         // create version-dependent variants
         switch(scpVersion) {
             case 1:
             case 2:
-                return new SCP0102Protocol(scpVersion, scpParameters);
+                return new SCP0102Parameters(scpVersion, scpParameters);
             case 3:
-                return new SCP03Protocol(scpParameters);
+                return new SCP03Parameters(scpParameters);
             default:
                 throw new IllegalArgumentException("Unknown protocol SCP" + HexUtil.hex8(scpVersion));
         }
@@ -63,7 +63,7 @@ public abstract class SCPProtocol implements VerboseString {
      * @param scpString to parse
      * @return corresponding protocol
      */
-    public static SCPProtocol fromString(String scpString) {
+    public static SCPParameters fromString(String scpString) {
         if(!scpString.startsWith("SCP")) {
             throw new IllegalArgumentException("Illegal SCP protocol specifier \"" + scpString + "\"");
         }
@@ -89,7 +89,7 @@ public abstract class SCPProtocol implements VerboseString {
      * @param version
      * @param parameters
      */
-    protected SCPProtocol(int version, int parameters) {
+    protected SCPParameters(int version, int parameters) {
         scpVersion = version;
         scpParameters = parameters;
     }

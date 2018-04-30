@@ -32,18 +32,18 @@ import javax.smartcardio.CardException;
 public class SCPProtocolPolicyTest extends TestCase {
 
     // all variants of SCP01
-    private SCPProtocol SCP01_05 = SCPProtocol.decode(0x01, 0x05);
-    private SCPProtocol SCP01_15 = SCPProtocol.decode(0x01, 0x15);
+    private SCPParameters SCP01_05 = SCPParameters.decode(0x01, 0x05);
+    private SCPParameters SCP01_15 = SCPParameters.decode(0x01, 0x15);
     // common variants of SCP02
-    private SCPProtocol SCP02_15  = SCPProtocol.decode(0x02, 0x15);
-    private SCPProtocol SCP02_55  = SCPProtocol.decode(0x02, 0x55);
+    private SCPParameters SCP02_15  = SCPParameters.decode(0x02, 0x15);
+    private SCPParameters SCP02_55  = SCPParameters.decode(0x02, 0x55);
     // realistic variants of SCP03
-    private SCPProtocol SCP03_00  = SCPProtocol.decode(0x03, 0x00);
-    private SCPProtocol SCP03_10  = SCPProtocol.decode(0x03, 0x10);
-    private SCPProtocol SCP03_20  = SCPProtocol.decode(0x03, 0x20);
-    private SCPProtocol SCP03_30  = SCPProtocol.decode(0x03, 0x30);
-    private SCPProtocol SCP03_60  = SCPProtocol.decode(0x03, 0x60);
-    private SCPProtocol SCP03_70  = SCPProtocol.decode(0x03, 0x70);
+    private SCPParameters SCP03_00  = SCPParameters.decode(0x03, 0x00);
+    private SCPParameters SCP03_10  = SCPParameters.decode(0x03, 0x10);
+    private SCPParameters SCP03_20  = SCPParameters.decode(0x03, 0x20);
+    private SCPParameters SCP03_30  = SCPParameters.decode(0x03, 0x30);
+    private SCPParameters SCP03_60  = SCPParameters.decode(0x03, 0x60);
+    private SCPParameters SCP03_70  = SCPParameters.decode(0x03, 0x70);
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(SCPProtocolPolicyTest.class);

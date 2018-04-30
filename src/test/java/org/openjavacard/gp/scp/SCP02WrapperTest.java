@@ -31,7 +31,7 @@ import javax.smartcardio.CommandAPDU;
 
 public class SCP02WrapperTest extends TestCase {
 
-    private SCP0102Protocol SCP02_15 = (SCP0102Protocol)SCPProtocol.decode(0x02, 0x15);
+    private SCP0102Parameters SCP02_15 = (SCP0102Parameters) SCPParameters.decode(0x02, 0x15);
 
     // sizes chosen to trigger padding issues
     private CommandAPDU plain5 = APDUUtil.buildCommand((byte)0x10, (byte)0x20, (short)0x30,

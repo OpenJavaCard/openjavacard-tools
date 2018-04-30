@@ -75,7 +75,7 @@ public class GPSecureChannel extends CardChannel {
     /** Expected SCP parameters - 0 means ANY */
     private int mExpectedParameters = 0;
     /** SCP protocol and parameters in use */
-    private SCPProtocol mActiveProtocol;
+    private SCPParameters mActiveProtocol;
     /** Derived session keys */
     private GPKeySet mSessionKeys;
     /** Helper performing wrapping/unwrapping of APDUs */
@@ -122,7 +122,7 @@ public class GPSecureChannel extends CardChannel {
     }
 
     /** @return the active SCP protocol on this channel */
-    public SCPProtocol getActiveProtocol() {
+    public SCPParameters getActiveProtocol() {
         return mActiveProtocol;
     }
 
@@ -350,10 +350,10 @@ public class GPSecureChannel extends CardChannel {
         // create CardAPDU wrapper
         switch (mActiveProtocol.scpVersion) {
             case 2:
-                mWrapper = new SCP0102Wrapper(mSessionKeys, ((SCP0102Protocol) mActiveProtocol));
+                mWrapper = new SCP0102Wrapper(mSessionKeys, ((SCP0102Parameters) mActiveProtocol));
                 break;
             case 3:
-                mWrapper = new SCP03Wrapper(mSessionKeys, ((SCP03Protocol) mActiveProtocol));
+                mWrapper = new SCP03Wrapper(mSessionKeys, ((SCP03Parameters) mActiveProtocol));
                 break;
             default:
                 throw new CardException("Unsupported SCP version " + mActiveProtocol);
@@ -481,7 +481,7 @@ public class GPSecureChannel extends CardChannel {
         }
 
         // we now know the protocol to be used
-        SCPProtocol selected = SCPProtocol.decode(scpProto, scpParams);
+        SCPParameters selected = SCPParameters.decode(scpProto, scpParams);
 
         // check against the protocol policy
         mProtocolPolicy.checkProtocol(selected);

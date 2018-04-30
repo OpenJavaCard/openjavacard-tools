@@ -26,7 +26,7 @@ import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.protocol.GPLifeCycle;
-import org.openjavacard.gp.scp.SCPProtocol;
+import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.util.ATRUtil;
 import org.openjavacard.util.HexUtil;
 
@@ -95,7 +95,7 @@ public class GPInfo extends GPCommand {
         }
         os.println();
 
-        SCPProtocol scpProtocol = card.getProtocol();
+        SCPParameters scpProtocol = card.getProtocol();
         if (scpProtocol == null) {
             os.println("Could not determine SCP protocol");
         } else {
