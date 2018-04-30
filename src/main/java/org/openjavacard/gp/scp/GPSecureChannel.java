@@ -610,7 +610,7 @@ public class GPSecureChannel extends CardChannel {
             int length = data.length;
 
             // check for possible lengths
-            if (length != SCP0102_LENGTH || length == SCP03_LENGTH) {
+            if (length != SCP0102_LENGTH && length != SCP03_LENGTH) {
                 throw new IllegalArgumentException("Invalid INIT UPDATE response length " + length);
             }
 
