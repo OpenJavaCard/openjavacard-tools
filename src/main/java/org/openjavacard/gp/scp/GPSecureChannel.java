@@ -22,6 +22,7 @@ package org.openjavacard.gp.scp;
 
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
+import org.openjavacard.gp.crypto.GPBouncy;
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeyDiversification;
@@ -400,9 +401,19 @@ public class GPSecureChannel extends CardChannel {
      * @return the card cryptogram
      */
     private byte[] computeCardCryptogram(byte[] hostChallenge, byte[] cardChallenge) {
-        GPKey encKey = mSessionKeys.getKeyByType(GPKeyType.ENC);
         byte[] cardContext = ArrayUtil.concatenate(hostChallenge, cardChallenge);
-        return GPCrypto.mac_3des_nulliv(encKey, cardContext);
+        switch(mActiveProtocol.scpVersion) {
+            case 2:
+                LOG.info("computing cryptogram for SCP02");
+                GPKey encKey = mSessionKeys.getKeyByType(GPKeyType.ENC);
+                return GPCrypto.mac_3des_nulliv(encKey, cardContext);
+            case 3:
+                LOG.info("computing cryptogram for SCP03");
+                GPKey macKey = mSessionKeys.getKeyByType(GPKeyType.MAC);
+                return GPBouncy.scp03_kdf(macKey, (byte)0x00, cardContext, 64);
+            default:
+                throw new RuntimeException("Unsupported SCP version " + mActiveProtocol);
+        }
     }
 
     /**
@@ -426,9 +437,18 @@ public class GPSecureChannel extends CardChannel {
      * @return a valid host cryptogram
      */
     private byte[] computeHostCryptogram(byte[] hostChallenge, byte[] cardChallenge) {
-        GPKey encKey = mSessionKeys.getKeyByType(GPKeyType.ENC);
-        byte[] hostContext = ArrayUtil.concatenate(cardChallenge, hostChallenge);
-        return GPCrypto.mac_3des_nulliv(encKey, hostContext);
+        switch(mActiveProtocol.scpVersion) {
+            case 2:
+                byte[] hostContext02 = ArrayUtil.concatenate(cardChallenge, hostChallenge);
+                GPKey encKey = mSessionKeys.getKeyByType(GPKeyType.ENC);
+                return GPCrypto.mac_3des_nulliv(encKey, hostContext02);
+            case 3:
+                byte[] hostContext03 = ArrayUtil.concatenate(hostChallenge, cardChallenge);
+                GPKey macKey = mSessionKeys.getKeyByType(GPKeyType.MAC);
+                return GPBouncy.scp03_kdf(macKey, (byte)0x01, hostContext03, 64);
+            default:
+                throw new RuntimeException("Unsupported SCP version " + mActiveProtocol);
+        }
     }
 
     /**
