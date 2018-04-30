@@ -22,8 +22,6 @@ package org.openjavacard.cap.io;
 
 import org.openjavacard.cap.structure.CapClassRef;
 import org.openjavacard.iso.AID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

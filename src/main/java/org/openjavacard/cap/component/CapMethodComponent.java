@@ -24,7 +24,6 @@ import org.openjavacard.cap.file.CapComponentType;
 import org.openjavacard.cap.io.CapComponent;
 import org.openjavacard.cap.io.CapStructureReader;
 import org.openjavacard.cap.structure.CapClassDescriptorInfo;
-import org.openjavacard.cap.structure.CapClassInfo;
 import org.openjavacard.cap.structure.CapExceptionHandlerInfo;
 import org.openjavacard.cap.structure.CapMethodDescriptorInfo;
 import org.slf4j.Logger;

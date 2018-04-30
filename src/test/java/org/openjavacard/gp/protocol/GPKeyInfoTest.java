@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-import org.openjavacard.gp.scp.SCPProtocolPolicyTest;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;

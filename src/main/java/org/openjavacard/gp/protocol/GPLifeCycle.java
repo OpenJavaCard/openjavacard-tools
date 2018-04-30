@@ -20,15 +20,11 @@
 
 package org.openjavacard.gp.protocol;
 
-import org.openjavacard.tlv.TLV;
-import org.openjavacard.tlv.TLVConstructed;
 import org.openjavacard.tlv.TLVPrimitive;
-import org.openjavacard.tlv.TLVReader;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

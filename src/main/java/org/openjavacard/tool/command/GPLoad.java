@@ -25,11 +25,7 @@ import com.beust.jcommander.Parameters;
 import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;
-import org.openjavacard.gp.client.GPCard;
-import org.openjavacard.gp.client.GPContext;
-import org.openjavacard.gp.client.GPIssuerDomain;
-import org.openjavacard.gp.client.GPLoadFile;
-import org.openjavacard.gp.client.GPRegistry;
+import org.openjavacard.gp.client.*;
 import org.openjavacard.iso.AID;
 
 import javax.smartcardio.CardException;

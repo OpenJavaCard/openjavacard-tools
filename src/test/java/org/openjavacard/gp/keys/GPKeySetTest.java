@@ -5,9 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-import org.openjavacard.gp.protocol.GPCardDataTest;
-import org.openjavacard.gp.scp.SCP02Derivation;
-import org.openjavacard.gp.scp.SCP03Derivation;
 import org.openjavacard.util.HexUtil;
 
 @RunWith(BlockJUnit4ClassRunner.class)

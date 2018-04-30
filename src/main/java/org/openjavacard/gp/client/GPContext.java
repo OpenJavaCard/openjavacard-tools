@@ -22,7 +22,6 @@ package org.openjavacard.gp.client;
 
 import org.openjavacard.generic.GenericContext;
 import org.openjavacard.iso.AID;
-import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;

@@ -20,10 +20,7 @@
 
 package org.openjavacard.gp.keys;
 
-import org.openjavacard.gp.crypto.GPBouncy;
 import org.openjavacard.gp.crypto.GPCrypto;
-import org.openjavacard.util.ArrayUtil;
-import org.openjavacard.util.BinUtil;
 import org.openjavacard.util.HexUtil;
 
 import java.util.ArrayList;
