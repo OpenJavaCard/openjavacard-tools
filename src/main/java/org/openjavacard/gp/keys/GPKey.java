@@ -145,20 +145,31 @@ public class GPKey {
      * Internal: check that key length is appropriate
      */
     private void checkKeyLength() {
-        int keyLength = -1;
+        int length = mSecret.length;
         switch (mCipher) {
+            case GENERIC:
+                if(length % 8 != 0) {
+                    throw new IllegalArgumentException("Bad key length");
+                }
+                if(length > 32) {
+                    throw new IllegalArgumentException("Key to long");
+                }
+                break;
             case DES:
-                keyLength = 8;
+                if(length != 8) {
+                    throw new IllegalArgumentException("DES keys must be 8 bytes long");
+                }
                 break;
             case DES3:
-            case AES:
-                keyLength = 16;
+                if(length != 8 && length != 16 && length != 24) {
+                    throw new IllegalArgumentException("3DES keys must be [8,16,24] bytes long");
+                }
                 break;
-        }
-        if (mSecret.length != keyLength) {
-            throw new IllegalArgumentException(
-                    "Wrong key length " + mSecret.length
-                            + " for " + mCipher + ", need " + keyLength);
+            case AES:
+                if(length != 16) {
+                    throw new IllegalArgumentException("AES keys must be 16 bytes long");
+                }
+                break;
         }
     }
 
