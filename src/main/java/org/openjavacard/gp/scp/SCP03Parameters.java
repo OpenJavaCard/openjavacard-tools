@@ -22,20 +22,23 @@ package org.openjavacard.gp.scp;
 
 import org.openjavacard.util.HexUtil;
 
+/**
+ * Protocol parameters for SCP03
+ */
 public class SCP03Parameters extends SCPParameters {
 
+    /** If true then card challenges are pseudo-random and predictable */
     public final boolean pseudoRandomChallenge;
-
+    /** True if RMAC is supported */
     public final boolean rmacSupport;
-
+    /** True if RENC is supported */
     public final boolean rencSupport;
 
     /**
      * Main constructor
-     *
-     * @param parameters
+     * @param parameters to parse
      */
-    protected SCP03Parameters(int parameters) {
+    SCP03Parameters(int parameters) {
         super(3, parameters);
 
         // check for unknown flags

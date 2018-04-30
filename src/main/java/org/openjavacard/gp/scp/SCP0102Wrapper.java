@@ -32,10 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 /**
- * APDU wrapper object for SCP01 and SCP02
- *
- * This is common for both protocols because
- * they are closely related and very similar.
+ * Host-side APDU wrapper for SCP01 and SCP02
  */
 public class SCP0102Wrapper extends SCPWrapper {
 

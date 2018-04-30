@@ -32,6 +32,9 @@ import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+/**
+ * Host-side APDU wrapper for SCP03
+ */
 public class SCP03Wrapper extends SCPWrapper {
 
     private SCP03Parameters mSCP;

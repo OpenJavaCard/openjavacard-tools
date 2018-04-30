@@ -23,11 +23,11 @@ package org.openjavacard.gp.scp;
 import org.openjavacard.util.HexUtil;
 
 /**
- * Represents SCP parameters for SCP01 and SCP02
+ * Protocol parameters for SCP01 and SCP02
  */
 public class SCP0102Parameters extends SCPParameters {
 
-    /** Number of keys required (usually 1 or 3) */
+    /** Number of keys required (always 1 or 3) */
     public final int numKeys;
     /** If true then C-MAC is computed on the unmodified CardAPDU (original CLA, INS, length) */
     public final boolean cmacUnmodified;
@@ -37,15 +37,15 @@ public class SCP0102Parameters extends SCPParameters {
     public final boolean icvMACAID;
     /** If true then the ICV goes through an additional encryption step */
     public final boolean icvEncrypt;
-    /** True if R-MAC is supported */
+    /** True if RMAC is supported */
     public final boolean rmacSupport;
-    /** True if the card uses the well-known deterministic challenge generator */
+    /** If true then card challenges are pseudo-random and predictable */
     public final boolean wellKnown;
 
     /**
      * Parse the given protocol parameters
-     * @param protocol to be used
-     * @param parameters to be used
+     * @param protocol to be parsed
+     * @param parameters to be parsed
      */
     SCP0102Parameters(int protocol, int parameters) {
         super(protocol, parameters);
@@ -79,11 +79,11 @@ public class SCP0102Parameters extends SCPParameters {
                 rmacSupport = (parameters & 0x20) != 0;
                 wellKnown = (parameters & 0x40) != 0;
                 if ((parameters & 0x80) != 0) {
-                    throw new IllegalArgumentException("Unknown SCP02 parameter flag 80");
+                    throw new IllegalArgumentException("Unknown SCP02 parameter 80");
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Unknown protocol SCP" + HexUtil.hex8(protocol));
+                throw new IllegalArgumentException("Got protocol SCP" + HexUtil.hex8(protocol) + ", need SCP01 or SCP02");
         }
     }
 
