@@ -32,17 +32,12 @@ import org.bouncycastle.crypto.macs.CMac;
 import org.bouncycastle.crypto.params.KDFCounterParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.openjavacard.gp.keys.GPKey;
-import org.openjavacard.util.HexUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class GPBouncy {
-
-    private static final Logger LOG = LoggerFactory.getLogger(GPBouncy.class);
 
     public static byte[] scp03_mac(GPKey key, byte[] msg, int lengthbits) {
         return scp03_mac(key.getSecret(), msg, lengthbits);
@@ -82,7 +77,6 @@ public class GPBouncy {
     }
 
     private static byte[] scp03_kdf(byte[] key, byte[] a, byte[] b, int bytes) {
-        LOG.info("scp03_kdf key=" + HexUtil.bytesToHex(key) + " a=" + HexUtil.bytesToHex(a) + " b=" + HexUtil.bytesToHex(b) + " bytes=" + bytes);
         BlockCipher cipher = new AESEngine();
         CMac cmac = new CMac(cipher);
         KDFCounterBytesGenerator kdf = new KDFCounterBytesGenerator(cmac);
@@ -91,6 +85,5 @@ public class GPBouncy {
         kdf.generateBytes(cgram, 0, cgram.length);
         return cgram;
     }
-
 
 }
