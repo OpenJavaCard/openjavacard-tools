@@ -25,6 +25,13 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 sourceSets {
     main {
         java.srcDirs = [ 'src/main/java' ]
@@ -87,11 +94,4 @@ artifacts {
     archives fatJar
     archives sourcesJar
     archives javadocJar
-}
-
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
-    }
 }
