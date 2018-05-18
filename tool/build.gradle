@@ -1,8 +1,7 @@
+apply plugin: 'java-library'
+
 group 'openjavacard-tools'
 version '0.1-SNAPSHOT'
-
-apply plugin: 'java'
-apply plugin: 'java-library'
 
 sourceCompatibility = 1.8
 

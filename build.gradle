@@ -3,7 +3,7 @@ apply plugin: 'java-library'
 apply plugin: 'maven'
 apply plugin: 'idea'
 
-group = 'openjavacard'
+group = 'openjavacard-tools'
 version = '0.1-SNAPSHOT'
 
 repositories {
