@@ -36,6 +36,8 @@ public class CapPackageReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapPackageReader.class);
 
+    private ArrayList<CapComponent> mComponents;
+
     private CapHeaderComponent mHeader;
     private CapDirectoryComponent mDirectory;
     private CapImportComponent mImports;
@@ -52,7 +54,12 @@ public class CapPackageReader {
     private final ArrayList<CapClassRef> mClassRefs;
 
     public CapPackageReader() {
+        mComponents = new ArrayList<>();
         mClassRefs = new ArrayList<>();
+    }
+
+    public List<CapComponent> getComponents() {
+        return new ArrayList<>(mComponents);
     }
 
     public void read(CapFilePackage filePackage) throws IOException {
@@ -70,36 +77,47 @@ public class CapPackageReader {
             switch (type) {
                 case Header:
                     mHeader = reader.readStructure(CapHeaderComponent.class);
+                    mComponents.add(mHeader);
                     break;
                 case Directory:
                     mDirectory = reader.readStructure(CapDirectoryComponent.class);
+                    mComponents.add(mDirectory);
                     break;
                 case Import:
                     mImports = reader.readStructure(CapImportComponent.class);
+                    mComponents.add(mImports);
                     break;
                 case Applet:
                     mApplets = reader.readStructure(CapAppletComponent.class);
+                    mComponents.add(mApplets);
                     break;
                 case Class:
                     mClasses = reader.readStructure(CapClassComponent.class);
+                    mComponents.add(mClasses);
                     break;
                 case Method:
                     mMethods = reader.readStructure(CapMethodComponent.class);
+                    mComponents.add(mMethods);
                     break;
                 case StaticField:
                     mStaticFields = reader.readStructure(CapStaticFieldComponent.class);
+                    mComponents.add(mStaticFields);
                     break;
                 case Export:
                     mExports = reader.readStructure(CapExportComponent.class);
+                    mComponents.add(mExports);
                     break;
                 case ConstantPool:
                     mConstantPool = reader.readStructure(CapConstantPoolComponent.class);
+                    mComponents.add(mConstantPool);
                     break;
                 case ReferenceLocation:
                     mReferenceLocation = reader.readStructure(CapReferenceLocationComponent.class);
+                    mComponents.add(mReferenceLocation);
                     break;
                 case Descriptor:
                     mDescriptor = reader.readStructure(CapDescriptorComponent.class);
+                    mComponents.add(mDescriptor);
                     // parse methods in the method component now
                     // that we have the required descriptor data
                     mMethods.decodeMethodInfo(mDescriptor);
