@@ -25,7 +25,7 @@ import com.beust.jcommander.Parameters;
 import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;
-import org.openjavacard.cap.io.CapPackageReader;
+import org.openjavacard.cap.base.CapPackageReader;
 
 import java.io.File;
 import java.io.IOException;

@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.cap.io;
+package org.openjavacard.cap.base;
 
 import org.openjavacard.cap.structure.CapClassRef;
 import org.openjavacard.iso.AID;

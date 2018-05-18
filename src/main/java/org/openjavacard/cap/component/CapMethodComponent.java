@@ -21,8 +21,8 @@
 package org.openjavacard.cap.component;
 
 import org.openjavacard.cap.file.CapComponentType;
-import org.openjavacard.cap.io.CapComponent;
-import org.openjavacard.cap.io.CapStructureReader;
+import org.openjavacard.cap.base.CapComponent;
+import org.openjavacard.cap.base.CapStructureReader;
 import org.openjavacard.cap.structure.CapClassDescriptorInfo;
 import org.openjavacard.cap.structure.CapExceptionHandlerInfo;
 import org.openjavacard.cap.structure.CapMethodDescriptorInfo;

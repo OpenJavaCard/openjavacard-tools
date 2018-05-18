@@ -18,7 +18,7 @@
  *
  */
 
-package org.openjavacard.cap.io;
+package org.openjavacard.cap.base;
 
 import java.io.IOException;
 

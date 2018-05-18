@@ -18,29 +18,7 @@
  *
  */
 
-package org.openjavacard.cap.io;
-
-import junit.framework.TestCase;
-import org.openjavacard.cap.file.CapFile;
-import org.openjavacard.cap.file.CapFilePackage;
-import org.openjavacard.cap.file.CapFileReader;
-import org.openjavacard.cap.test.CapTestFiles;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-public class CapPackageReaderTest extends TestCase {
-
-    public void testFiles() throws IOException {
-        List<File> files = CapTestFiles.getFiles();
-        for(File file: files) {
-            CapFile capFile = CapFileReader.readFile(file);
-            for(CapFilePackage filePackage: capFile.getPackages()) {
-                CapPackageReader pkgReader = new CapPackageReader();
-                pkgReader.read(filePackage);
-            }
-        }
-    }
-
-}
+/**
+ * CAP file reading
+ */
+package org.openjavacard.cap.base;

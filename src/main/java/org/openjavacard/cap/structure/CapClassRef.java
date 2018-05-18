@@ -20,8 +20,8 @@
 
 package org.openjavacard.cap.structure;
 
-import org.openjavacard.cap.io.CapStructure;
-import org.openjavacard.cap.io.CapStructureReader;
+import org.openjavacard.cap.base.CapStructure;
+import org.openjavacard.cap.base.CapStructureReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
