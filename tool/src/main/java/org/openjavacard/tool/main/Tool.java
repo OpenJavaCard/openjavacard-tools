@@ -97,7 +97,7 @@ public class Tool {
 
         jc.addCommand(new CapInfo());
         jc.addCommand(new CapSize());
-        jc.addCommand(new CapRead());
+        jc.addCommand(new CapDump());
 
         jc.addCommand(new GenericAPDU(mContext));
         jc.addCommand(new GenericScanName(mContext));

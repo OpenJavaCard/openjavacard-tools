@@ -22,10 +22,16 @@ package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.openjavacard.cap.base.CapComponent;
 import org.openjavacard.cap.base.CapPackageReader;
 import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;
+import org.openjavacard.jackson.OJCJacksonModule;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +39,10 @@ import java.io.PrintStream;
 import java.util.List;
 
 @Parameters(
-        commandNames = "cap-read",
-        commandDescription = "CAP: EXPERIMENTAL - Read a CAP file"
+        commandNames = "cap-dump",
+        commandDescription = "CAP: EXPERIMENTAL - Dump a CAP file"
 )
-public class CapRead implements Runnable {
+public class CapDump implements Runnable {
 
     @Parameter(
             description = "CAP files to show information about",
@@ -48,23 +54,42 @@ public class CapRead implements Runnable {
     public void run() {
         PrintStream os = System.out;
 
+        JacksonXmlModule xmlModule = new JacksonXmlModule();
+        xmlModule.setDefaultUseWrapper(true);
+        XmlMapper xmlMap = new XmlMapper();
+        xmlMap.registerModule(new OJCJacksonModule());
+        xmlMap.configure(SerializationFeature.INDENT_OUTPUT, true);
+        xmlMap.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         for (File file : capFiles) {
             os.println();
 
-            CapFile cap;
+            CapFile capFile;
             try {
                 os.println("Reading CAP file " + file);
-                cap = CapFileReader.readFile(file);
+                capFile = CapFileReader.readFile(file);
             } catch (Exception ex) {
-                throw new Error("Exception reading CAP file", ex);
+                throw new Error("Error reading CAP file", ex);
             }
 
-            CapFilePackage pkg = cap.getPackage();
-            CapPackageReader capPkg = new CapPackageReader();
+            CapFilePackage capFilePkg = capFile.getPackage();
+            CapPackageReader capReader = new CapPackageReader();
             try {
-                capPkg.read(pkg);
+                capReader.read(capFilePkg);
             } catch (IOException e) {
-                throw new Error("Error reading CAP file", e);
+                throw new Error("Error parsing CAP file", e);
+            }
+
+            os.println("Dumping " + capReader.getComponents().size() + " components");
+
+            for(CapComponent component: capReader.getComponents()) {
+                os.println("Dumping component " + component.getComponentType());
+                try {
+                    os.println(xmlMap.writeValueAsString(component));
+                } catch (IOException e) {
+                    throw new Error("Error dumping CAP component", e);
+                }
+                os.println("done");
             }
         }
     }
