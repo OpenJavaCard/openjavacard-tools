@@ -3,3 +3,5 @@ include 'cap-file'
 include 'cap-model'
 include 'globalplatform'
 include 'tool'
+include 'jackson'
+

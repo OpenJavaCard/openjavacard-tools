@@ -1,0 +1,19 @@
+apply plugin: 'java-library'
+
+group 'openjavacard-tools'
+version '0.1-SNAPSHOT'
+
+archivesBaseName = 'openjavacard-jackson'
+sourceCompatibility = 1.8
+
+dependencies {
+    compile project(':common')
+    compile project(':globalplatform')
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.5'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
