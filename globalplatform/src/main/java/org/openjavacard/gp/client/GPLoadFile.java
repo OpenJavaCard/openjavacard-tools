@@ -20,9 +20,17 @@
 
 package org.openjavacard.gp.client;
 
+import org.openjavacard.cap.file.CapComponentType;
+import org.openjavacard.cap.file.CapFile;
+import org.openjavacard.cap.file.CapFileComponent;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tlv.TLVLength;
+import org.openjavacard.tlv.TLVTag;
+import org.openjavacard.util.ArrayUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +105,58 @@ public class GPLoadFile {
         }
         // add the block
         mBlocks.add(block);
+    }
+
+
+    /**
+     * Generate a combined load file
+     * @param blockSize for the file
+     * @return a GPLoadFile
+     */
+    public static GPLoadFile generateCombinedLoadFile(CapFilePackage capFilePackage, int blockSize) {
+        GPLoadFile res = new GPLoadFile(capFilePackage.getPackageAID());
+        try {
+            // need to know total length
+            int totalSize = 0;
+            // need to know components to emit
+            List<CapFileComponent> components = new ArrayList<>();
+
+            // find components in load order
+            for (CapComponentType type : CapComponentType.LOAD_ORDER) {
+                CapFileComponent component = capFilePackage.getComponentByType(type);
+                // if we have a component of the given type
+                if (component != null) {
+                    byte[] data = component.getData();
+                    // add up the total size
+                    totalSize += data.length;
+                    // remember the components
+                    components.add(component);
+                }
+            }
+
+            // emit one tag with all the components
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.write(TLVTag.tagBytes(0xC400));
+            bos.write(TLVLength.lengthBytes(totalSize));
+            for(CapFileComponent component : components) {
+                byte[] data = component.getData();
+                bos.write(data);
+            }
+
+            // get ourselves an array with all the data
+            byte[] raw = bos.toByteArray();
+
+            // split the result into appropriate blocks
+            byte[][] blocks = ArrayUtil.splitBlocks(raw, blockSize);
+
+            // add the blocks to the load file
+            for(byte[] block: blocks) {
+                res.addBlock(block);
+            }
+        } catch (IOException e) {
+            throw new Error("Error generating load file", e);
+        }
+        return res;
     }
 
 }

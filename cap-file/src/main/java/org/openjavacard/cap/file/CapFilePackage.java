@@ -20,7 +20,6 @@
 
 package org.openjavacard.cap.file;
 
-import org.openjavacard.gp.client.GPLoadFile;
 import org.openjavacard.iso.AID;
 import org.openjavacard.tlv.TLVLength;
 import org.openjavacard.tlv.TLVTag;
@@ -164,57 +163,6 @@ public class CapFilePackage implements VerboseString {
                 "\n  Package AID: " + mPackageAID +
                 "\n";
         return sb;
-    }
-
-    /**
-     * Generate a combined load file
-     * @param blockSize for the file
-     * @return a GPLoadFile
-     */
-    public GPLoadFile generateCombinedLoadFile(int blockSize) {
-        GPLoadFile res = new GPLoadFile(getPackageAID());
-        try {
-            // need to know total length
-            int totalSize = 0;
-            // need to know components to emit
-            List<CapFileComponent> components = new ArrayList<>();
-
-            // find components in load order
-            for (CapComponentType type : CapComponentType.LOAD_ORDER) {
-                CapFileComponent component = getComponentByType(type);
-                // if we have a component of the given type
-                if (component != null) {
-                    byte[] data = component.getData();
-                    // add up the total size
-                    totalSize += data.length;
-                    // remember the components
-                    components.add(component);
-                }
-            }
-
-            // emit one tag with all the components
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(TLVTag.tagBytes(0xC400));
-            bos.write(TLVLength.lengthBytes(totalSize));
-            for(CapFileComponent component : components) {
-                byte[] data = component.getData();
-                bos.write(data);
-            }
-
-            // get ourselves an array with all the data
-            byte[] raw = bos.toByteArray();
-
-            // split the result into appropriate blocks
-            byte[][] blocks = ArrayUtil.splitBlocks(raw, blockSize);
-
-            // add the blocks to the load file
-            for(byte[] block: blocks) {
-                res.addBlock(block);
-            }
-        } catch (IOException e) {
-            throw new Error("Error generating load file", e);
-        }
-        return res;
     }
 
     /**

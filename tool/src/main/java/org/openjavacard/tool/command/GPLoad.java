@@ -172,7 +172,7 @@ public class GPLoad extends GPCommand {
 
         GPLoadFile loadFile;
         try {
-            loadFile = pkg.generateCombinedLoadFile(128);
+            loadFile = GPLoadFile.generateCombinedLoadFile(pkg, 128);
         } catch (Exception e) {
             throw new Error("Error slicing CAP file", e);
         }

@@ -63,7 +63,7 @@ public class CapSize implements Runnable {
             GPLoadFile loadFile;
             try {
                 pkg = cap.getPackages().get(0);
-                loadFile = pkg.generateCombinedLoadFile(128);
+                loadFile = GPLoadFile.generateCombinedLoadFile(pkg, 128);
             } catch (Exception e) {
                 throw new Error("Could not generate load file", e);
             }
