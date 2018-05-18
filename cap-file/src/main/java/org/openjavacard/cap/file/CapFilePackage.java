@@ -21,15 +21,10 @@
 package org.openjavacard.cap.file;
 
 import org.openjavacard.iso.AID;
-import org.openjavacard.tlv.TLVLength;
-import org.openjavacard.tlv.TLVTag;
-import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.jar.Attributes;
 

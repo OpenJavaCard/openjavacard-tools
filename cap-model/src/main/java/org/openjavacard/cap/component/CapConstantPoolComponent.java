@@ -20,9 +20,9 @@
 
 package org.openjavacard.cap.component;
 
-import org.openjavacard.cap.file.CapComponentType;
 import org.openjavacard.cap.base.CapComponent;
 import org.openjavacard.cap.base.CapStructureReader;
+import org.openjavacard.cap.file.CapComponentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

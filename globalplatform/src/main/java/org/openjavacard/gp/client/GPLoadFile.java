@@ -21,7 +21,6 @@
 package org.openjavacard.gp.client;
 
 import org.openjavacard.cap.file.CapComponentType;
-import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFileComponent;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.iso.AID;
