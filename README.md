@@ -108,4 +108,4 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ```
 
-At some point these license dependencies will be eliminated in the course of introducing keystore support and cleaning up TLV parsing, respectively.
+We will replace these routines at some point, probably when implementing keystore support.
