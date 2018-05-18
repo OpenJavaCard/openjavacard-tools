@@ -34,6 +34,8 @@ If you encounter problems or want verbose output you can use the "run-trace.sh" 
 
 ### Standalone ant build
 
+STOP: Currently broken because of splitting the package. Will be fixed.
+
 There also is an ant build which is more convenient when building or developing offline.
 
 Dependencies are taken from /usr/share/java by default.
