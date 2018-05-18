@@ -1,0 +1,25 @@
+group 'openjavacard'
+version '0.1-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'java-library'
+
+sourceCompatibility = 1.8
+
+dependencies {
+    compile project(':common')
+    compile project(':cap-file')
+
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
+    // https://mvnrepository.com/artifact/com.beust/jcommander
+    compile group: 'com.beust', name: 'jcommander', version: '1.72'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

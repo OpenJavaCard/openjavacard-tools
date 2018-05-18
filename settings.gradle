@@ -1,0 +1,5 @@
+include 'common'
+include 'cap-file'
+include 'cap-model'
+include 'globalplatform'
+include 'tool'
