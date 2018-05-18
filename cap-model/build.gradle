@@ -3,6 +3,7 @@ apply plugin: 'java-library'
 group 'openjavacard-tools'
 version '0.1-SNAPSHOT'
 
+archivesBaseName = 'openjavacard-cap-model'
 sourceCompatibility = 1.8
 
 dependencies {
