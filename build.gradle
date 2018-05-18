@@ -6,7 +6,18 @@ repositories {
 }
 
 allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'maven'
+
     repositories {
         mavenCentral()
+    }
+
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
+        }
     }
 }
