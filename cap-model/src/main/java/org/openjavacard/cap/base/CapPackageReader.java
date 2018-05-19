@@ -36,91 +36,72 @@ public class CapPackageReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapPackageReader.class);
 
-    private ArrayList<CapComponent> mComponents;
-
-    private CapHeaderComponent mHeader;
-    private CapDirectoryComponent mDirectory;
-    private CapImportComponent mImports;
-    private CapAppletComponent mApplets;
-    private CapClassComponent mClasses;
-    private CapMethodComponent mMethods;
-    private CapStaticFieldComponent mStaticFields;
-    private CapExportComponent mExports;
-    private CapConstantPoolComponent mConstantPool;
-    private CapReferenceLocationComponent mReferenceLocation;
-
-    private CapDescriptorComponent mDescriptor;
-
     private final ArrayList<CapClassRef> mClassRefs;
 
     public CapPackageReader() {
-        mComponents = new ArrayList<>();
         mClassRefs = new ArrayList<>();
     }
 
-    public List<CapComponent> getComponents() {
-        return new ArrayList<>(mComponents);
-    }
-
-    public void read(CapFilePackage filePackage) throws IOException {
+    public CapPackage read(CapFilePackage filePackage) throws IOException {
+        CapPackage pkg = new CapPackage();
         List<CapFileComponent> fileComponents = filePackage.getLoadComponents();
         for(CapFileComponent fileComponent: fileComponents) {
             LOG.debug("reading component " + fileComponent.getType());
             CapComponentReader reader = new CapComponentReader(this, fileComponent);
             CapComponentType type = fileComponent.getType();
             int size = reader.readComponentHeader();
-            if(mDirectory != null) {
-                if(size != mDirectory.getComponentSize(type)) {
+            if(pkg.mDirectory != null) {
+                if(size != pkg.mDirectory.getComponentSize(type)) {
                     throw new IOException("Component size disagrees with directory");
                 }
             }
             switch (type) {
                 case Header:
-                    mHeader = reader.readStructure(CapHeaderComponent.class);
-                    mComponents.add(mHeader);
+                    pkg.mHeader = reader.readStructure(CapHeaderComponent.class);
+                    pkg.mComponents.add(pkg.mHeader);
                     break;
                 case Directory:
-                    mDirectory = reader.readStructure(CapDirectoryComponent.class);
-                    mComponents.add(mDirectory);
+                    pkg.mDirectory = reader.readStructure(CapDirectoryComponent.class);
+                    pkg.mComponents.add(pkg.mDirectory);
                     break;
                 case Import:
-                    mImports = reader.readStructure(CapImportComponent.class);
-                    mComponents.add(mImports);
+                    pkg.mImports = reader.readStructure(CapImportComponent.class);
+                    pkg.mComponents.add(pkg.mImports);
                     break;
                 case Applet:
-                    mApplets = reader.readStructure(CapAppletComponent.class);
-                    mComponents.add(mApplets);
+                    pkg.mApplets = reader.readStructure(CapAppletComponent.class);
+                    pkg.mComponents.add(pkg.mApplets);
                     break;
                 case Class:
-                    mClasses = reader.readStructure(CapClassComponent.class);
-                    mComponents.add(mClasses);
+                    pkg.mClasses = reader.readStructure(CapClassComponent.class);
+                    pkg.mComponents.add(pkg.mClasses);
                     break;
                 case Method:
-                    mMethods = reader.readStructure(CapMethodComponent.class);
-                    mComponents.add(mMethods);
+                    pkg.mMethods = reader.readStructure(CapMethodComponent.class);
+                    pkg.mComponents.add(pkg.mMethods);
                     break;
                 case StaticField:
-                    mStaticFields = reader.readStructure(CapStaticFieldComponent.class);
-                    mComponents.add(mStaticFields);
+                    pkg.mStaticFields = reader.readStructure(CapStaticFieldComponent.class);
+                    pkg.mComponents.add(pkg.mStaticFields);
                     break;
                 case Export:
-                    mExports = reader.readStructure(CapExportComponent.class);
-                    mComponents.add(mExports);
+                    pkg.mExports = reader.readStructure(CapExportComponent.class);
+                    pkg.mComponents.add(pkg.mExports);
                     break;
                 case ConstantPool:
-                    mConstantPool = reader.readStructure(CapConstantPoolComponent.class);
-                    mComponents.add(mConstantPool);
+                    pkg.mConstantPool = reader.readStructure(CapConstantPoolComponent.class);
+                    pkg.mComponents.add(pkg.mConstantPool);
                     break;
                 case ReferenceLocation:
-                    mReferenceLocation = reader.readStructure(CapReferenceLocationComponent.class);
-                    mComponents.add(mReferenceLocation);
+                    pkg.mReferenceLocation = reader.readStructure(CapReferenceLocationComponent.class);
+                    pkg.mComponents.add(pkg.mReferenceLocation);
                     break;
                 case Descriptor:
-                    mDescriptor = reader.readStructure(CapDescriptorComponent.class);
-                    mComponents.add(mDescriptor);
+                    pkg.mDescriptor = reader.readStructure(CapDescriptorComponent.class);
+                    pkg.mComponents.add(pkg.mDescriptor);
                     // parse methods in the method component now
                     // that we have the required descriptor data
-                    mMethods.decodeMethodInfo(mDescriptor);
+                    pkg.mMethods.decodeMethodInfo(pkg.mDescriptor);
                     break;
                 default:
                     LOG.warn("ignoring component " + type);
@@ -130,6 +111,7 @@ public class CapPackageReader {
                 throw new IOException("Trailing data in component " + type);
             }
         }
+        return pkg;
     }
 
 }

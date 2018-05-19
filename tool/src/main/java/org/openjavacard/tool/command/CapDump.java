@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.openjavacard.cap.base.CapComponent;
+import org.openjavacard.cap.base.CapPackage;
 import org.openjavacard.cap.base.CapPackageReader;
 import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFilePackage;
@@ -74,22 +75,17 @@ public class CapDump implements Runnable {
 
             CapFilePackage capFilePkg = capFile.getPackage();
             CapPackageReader capReader = new CapPackageReader();
+            CapPackage capPkg;
             try {
-                capReader.read(capFilePkg);
+                capPkg = capReader.read(capFilePkg);
             } catch (IOException e) {
                 throw new Error("Error parsing CAP file", e);
             }
 
-            os.println("Dumping " + capReader.getComponents().size() + " components");
-
-            for(CapComponent component: capReader.getComponents()) {
-                os.println("Dumping component " + component.getComponentType());
-                try {
-                    os.println(xmlMap.writeValueAsString(component));
-                } catch (IOException e) {
-                    throw new Error("Error dumping CAP component", e);
-                }
-                os.println("done");
+            try {
+                os.println(xmlMap.writeValueAsString(capPkg));
+            } catch (IOException e) {
+                throw new Error("Error dumping CAP component", e);
             }
         }
     }
