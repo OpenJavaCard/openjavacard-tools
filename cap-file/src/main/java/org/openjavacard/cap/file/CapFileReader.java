@@ -49,14 +49,23 @@ public class CapFileReader {
         return reader.read(file);
     }
 
+    public static CapFile readStream(InputStream stream) throws IOException {
+        CapFileReader reader = new CapFileReader();
+        return reader.read(stream);
+    }
+
     private CapFileReader() {
     }
 
     private CapFile read(File file) throws IOException {
         LOG.debug("reading file " + file);
+        FileInputStream fis = new FileInputStream(file);
+        return read(fis);
+    }
 
+    private CapFile read(InputStream stream) throws IOException {
         // create an input stream for the zip file
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
+        ZipInputStream zis = new ZipInputStream(stream);
 
         // zip entry during iteration
         ZipEntry ze;

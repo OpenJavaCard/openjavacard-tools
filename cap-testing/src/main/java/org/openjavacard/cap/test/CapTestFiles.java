@@ -21,6 +21,7 @@
 package org.openjavacard.cap.test;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +35,14 @@ public class CapTestFiles {
             "openjavacard-app-demo.cap",
     };
 
-    public static List<File> getFiles() {
+    public static List<InputStream> getFiles() {
         Class cls = CapTestFiles.class;
-        ArrayList<File> files = new ArrayList<>();
+        ArrayList<InputStream> streams = new ArrayList<>();
         for(String fileName: FILES) {
-            URL resourceUrl = cls.getResource(fileName);
-            File file = new File(resourceUrl.getFile());
-            files.add(file);
+            InputStream stream = cls.getResourceAsStream(fileName);
+            streams.add(stream);
         }
-        return files;
+        return streams;
     }
 
 }

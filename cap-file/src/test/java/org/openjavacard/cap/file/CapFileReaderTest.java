@@ -25,14 +25,15 @@ import org.openjavacard.cap.test.CapTestFiles;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class CapFileReaderTest extends TestCase {
 
     public void testFiles() throws IOException {
-        List<File> files = CapTestFiles.getFiles();
-        for(File file: files) {
-            CapFileReader.readFile(file);
+        List<InputStream> streams = CapTestFiles.getFiles();
+        for(InputStream stream: streams) {
+            CapFileReader.readStream(stream);
         }
     }
 
