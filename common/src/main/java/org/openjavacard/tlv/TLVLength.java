@@ -52,7 +52,7 @@ public class TLVLength {
             throw new IllegalArgumentException("Length " + length + " is to large");
         } if(length > 127) {
             byte[] res = new byte[3];
-            res[0] = 2;
+            res[0] = 2 | TLVLength.LENGTH_LONG_FLAG;
             BinUtil.setShort(res, 1, (short)length);
             return res;
         } else {

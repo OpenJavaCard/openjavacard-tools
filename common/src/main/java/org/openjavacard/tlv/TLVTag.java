@@ -147,7 +147,7 @@ public class TLVTag {
             res[1] = (byte)tagSecondByte(tag);
             return res;
         } else {
-            return new byte[] { (byte)(tag & 0xFF) };
+            return new byte[] { (byte)tagFirstByte(tag) };
         }
     }
 
