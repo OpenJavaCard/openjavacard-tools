@@ -37,6 +37,18 @@ public class CapPackageInfo extends CapStructure {
 
     private AID mAID;
 
+    public int getMinorVersion() {
+        return mMinorVersion;
+    }
+
+    public int getMajorVersion() {
+        return mMajorVersion;
+    }
+
+    public AID getAID() {
+        return mAID;
+    }
+
     public void read(CapStructureReader reader) throws IOException {
         mMinorVersion = reader.readU1();
         mMajorVersion = reader.readU1();

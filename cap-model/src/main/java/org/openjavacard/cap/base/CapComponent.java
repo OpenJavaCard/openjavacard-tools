@@ -20,6 +20,7 @@
 
 package org.openjavacard.cap.base;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openjavacard.cap.file.CapComponentType;
 
 public abstract class CapComponent extends CapStructure {
@@ -30,6 +31,7 @@ public abstract class CapComponent extends CapStructure {
         mComponentType = componentType;
     }
 
+    @JsonIgnore
     public CapComponentType getComponentType() {
         return mComponentType;
     }

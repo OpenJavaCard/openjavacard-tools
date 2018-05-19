@@ -1,5 +1,7 @@
 package org.openjavacard.cap.structure;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class CapVersion {
 
     public static final CapVersion CAP21 = new CapVersion(2, 1);
@@ -13,6 +15,7 @@ public class CapVersion {
         this.minor = minor;
     }
 
+    @JsonIgnore
     public boolean isSupported() {
         if(this.major == 2) {
             if(this.minor == 1) {
