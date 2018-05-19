@@ -75,16 +75,20 @@ public class GenericContext {
         return terminals.get(0);
     }
 
+    public List<CardTerminal> findTerminals() {
+        return findTerminals(null);
+    }
+
     public List<CardTerminal> findTerminals(String prefix) {
         LOG.debug("findTerminals()");
         ArrayList<CardTerminal> found = new ArrayList<>();
         TerminalFactory tf = TerminalFactory.getDefault();
         CardTerminals ts = tf.terminals();
         try {
-            List<CardTerminal> terminals = ts.list(CardTerminals.State.CARD_PRESENT);
+            List<CardTerminal> terminals = ts.list();
             for (CardTerminal terminal : terminals) {
                 String name = terminal.getName();
-                LOG.trace("checking terminal \"" + name + "\"");
+                LOG.trace("terminal \"" + name + "\"");
                 if (prefix == null || name.startsWith(prefix)) {
                     found.add(terminal);
                 }
