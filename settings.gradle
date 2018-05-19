@@ -2,6 +2,6 @@ include 'common'
 include 'cap-file'
 include 'cap-model'
 include 'globalplatform'
-include 'tool'
 include 'jackson'
-
+include 'testbench'
+include 'tool'
