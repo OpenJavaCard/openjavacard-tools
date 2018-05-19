@@ -489,8 +489,8 @@ public class GPCard {
             // try to open the secure channel
             mSecure.open();
 
-            // fetch registry information
-            mRegistry.update();
+            // mark registry dirty
+            mRegistry.dirty();
 
             // mark as connected
             mIsConnected = true;
