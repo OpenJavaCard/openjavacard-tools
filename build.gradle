@@ -1,5 +1,3 @@
-group = 'openjavacard-tools'
-version = '0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -8,6 +6,9 @@ repositories {
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'maven'
+
+    group 'org.openjavacard.tools'
+    version '0.1-SNAPSHOT'
 
     repositories {
         mavenCentral()

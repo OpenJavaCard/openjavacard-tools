@@ -1,8 +1,5 @@
 apply plugin: 'java-library'
 
-group 'openjavacard-tools'
-version '0.1-SNAPSHOT'
-
 archivesBaseName = 'openjavacard-cap-file'
 sourceCompatibility = 1.8
 
