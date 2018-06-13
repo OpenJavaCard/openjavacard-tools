@@ -1,6 +1,7 @@
 apply plugin: 'java-library'
 
 archivesBaseName = 'openjavacard-testbench'
+sourceCompatibility = 1.8
 
 dependencies {
     compile project(':cap-file')
