@@ -438,7 +438,7 @@ public class GPRegistry {
                         modules.add(new AID(tlv.getValueBytes()));
                         break;
                     default:
-                        throw new IllegalArgumentException("Unknown tag " + HexUtil.hex16(tag) + " in registry entry");
+                        LOG.warn("Unknown TLV in registry entry: " + tlv.toString());
                 }
             }
             mModules = modules;
