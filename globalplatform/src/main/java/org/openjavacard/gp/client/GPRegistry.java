@@ -93,52 +93,32 @@ public class GPRegistry {
 
     /** @return registry entry for the ISD */
     public ISDEntry getISD() {
-        try {
-            update();
-            return mISD;
-        } catch (CardException e) {
-            return null;
-        }
+        ensureUpdated();
+        return mISD;
     }
 
     /** @return all registry entries */
     public List<Entry> getAllEntries() {
-        try {
-            update();
-            return new ArrayList<>(mAllEntries);
-        } catch (CardException e) {
-            return null;
-        }
+        ensureUpdated();
+        return new ArrayList<>(mAllEntries);
     }
 
     /** @return list of applet entries */
     public List<AppEntry> getAllApps() {
-        try {
-            update();
-            return new ArrayList<>(mAllApps);
-        } catch (CardException e) {
-            return null;
-        }
+        ensureUpdated();
+        return new ArrayList<>(mAllApps);
     }
 
     /** @return list of SSD entries */
     public List<AppEntry> getAllSSDs() {
-        try {
-            update();
-            return new ArrayList<>(mAllSSDs);
-        } catch (CardException e) {
-            return null;
-        }
+        ensureUpdated();
+        return new ArrayList<>(mAllSSDs);
     }
 
     /** @return list of ELF entries */
     public List<ELFEntry> getAllELFs() {
-        try {
-            update();
-            return new ArrayList<>(mAllELFs);
-        } catch (CardException e) {
-            return null;
-        }
+        ensureUpdated();
+        return new ArrayList<>(mAllELFs);
     }
 
     /**
@@ -167,17 +147,13 @@ public class GPRegistry {
      * @return applet entry or null
      */
     public AppEntry findApplet(AID aid) {
-        try {
-            update();
-            for(AppEntry app: mAllApps) {
-                if(app.mAID.equals(aid)) {
-                    return app;
-                }
+        ensureUpdated();
+        for(AppEntry app: mAllApps) {
+            if(app.mAID.equals(aid)) {
+                return app;
             }
-            return null;
-        } catch (CardException e) {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -195,17 +171,13 @@ public class GPRegistry {
      * @return package entry or null
      */
     public ELFEntry findPackage(AID aid) {
-        try {
-            update();
-            for (ELFEntry elf : mAllELFs) {
-                if (elf.mAID.equals(aid)) {
-                    return elf;
-                }
+        ensureUpdated();
+        for (ELFEntry elf : mAllELFs) {
+            if (elf.mAID.equals(aid)) {
+                return elf;
             }
-            return null;
-        } catch (CardException e) {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -223,19 +195,15 @@ public class GPRegistry {
      * @return package entry or null
      */
     public ELFEntry findPackageForModule(AID aid) {
-        try {
-            update();
-            for (ELFEntry elf : mAllELFs) {
-                for (AID mod : elf.mModules) {
-                    if (mod.equals(aid)) {
-                        return elf;
-                    }
+        ensureUpdated();
+        for (ELFEntry elf : mAllELFs) {
+            for (AID mod : elf.mModules) {
+                if (mod.equals(aid)) {
+                    return elf;
                 }
             }
-            return null;
-        } catch (CardException e) {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -250,9 +218,6 @@ public class GPRegistry {
      * Perform a full update of the registry
      */
     public void update() throws CardException {
-        if(!mDirty) {
-            return;
-        }
         LOG.debug("update()");
 
         try {
@@ -294,6 +259,18 @@ public class GPRegistry {
             mDirty = false;
         } catch (CardException | IOException e) {
             throw new CardException("Error updating registry", e);
+        }
+    }
+
+    private void ensureUpdated() {
+        LOG.trace("ensureUpdated()");
+        if(mDirty) {
+            try {
+                update();
+            } catch (CardException e) {
+                LOG.error("Error updating registry", e);
+                mDirty = true;
+            }
         }
     }
 
