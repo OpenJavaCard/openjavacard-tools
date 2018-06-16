@@ -1,4 +1,4 @@
-package org.openjavacard.testbench.core;
+package org.openjavacard.testbench.main;
 
 public enum BenchMode {
     ONCE,

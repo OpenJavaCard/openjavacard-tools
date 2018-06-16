@@ -2,9 +2,6 @@ package org.openjavacard.testbench.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.openjavacard.testbench.core.BenchMode;
-
-import java.util.List;
 
 public class Main {
 
@@ -13,40 +10,29 @@ public class Main {
             help = true,
             description = "Show help"
     )
-    private boolean showHelp;
+    boolean showHelp;
 
-    @Parameter(
-            names = "--all-readers",
-            description = "Use all available readers"
-    )
-    private boolean allReaders;
-
-    @Parameter(
-            names = "--reader",
-            description = "Use the specified reader"
-    )
-    private List<String> reader;
-
-    @Parameter(
-            names = "--mode",
-            description = "Specify testbench mode"
-    )
-    private BenchMode mode = BenchMode.ONCE;
-
-    private void run(JCommander jc) {
-        if(showHelp) {
+    public static void main(String[] arguments) {
+        // object for help handling
+        Main main = new Main();
+        // create configuration object
+        BenchConfiguration config = new BenchConfiguration();
+        // create commander
+        JCommander jc = JCommander.newBuilder()
+                .addObject(main)
+                .addObject(config)
+                .build();
+        // parse arguments
+        jc.parse(arguments);
+        // check for help
+        if(main.showHelp) {
             jc.usage();
             return;
         }
-    }
-
-    public static void main(String[] arguments) {
-        Main main = new Main();
-        JCommander jc = JCommander.newBuilder()
-                .addObject(main)
-                .build();
-        jc.parse(arguments);
-        main.run(jc);
+        // execute bench
+        Bench bench = new Bench(config);
+        bench.configure();
+        bench.execute();
     }
 
 }
