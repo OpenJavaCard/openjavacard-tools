@@ -1,4 +1,4 @@
-## OpenJavaCard Development Tools
+## OpenJavaCard Tools
 
 This project is a toolkit for JavaCard development and provisioning.
 
