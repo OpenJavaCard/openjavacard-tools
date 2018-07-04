@@ -70,7 +70,7 @@ public enum CapComponentType {
     /** Map of all component types by filename */
     private static final Map<String, CapComponentType> BY_FILENAME;
 
-    /** Initialize the by-filename map */
+    /* Initialize the by-filename map */
     static {
         HashMap<String, CapComponentType> table = new HashMap<>();
         for(CapComponentType type: CapComponentType.values()) {
