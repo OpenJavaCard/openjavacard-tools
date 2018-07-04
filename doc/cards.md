@@ -26,12 +26,6 @@ The following Feitian cards have been tried at some point:
 
 These cards come without an SSD package, so they have only one security domain.
 
-#### Giesecke &amp; Devrient
-
-The following G&amp;D cards have been tried at some point:
-
- * SmartCafe Expert 3.2 
-
 #### NXP
 
 The following NXP cards have been used as development targets:
@@ -54,3 +48,10 @@ Other card variants should also work as long as the card is configured for SCP02
 #### Gemalto
 
 Not yet supported. Cards require key diversification, which is not yet supported.
+
+#### Giesecke &amp; Devrient
+
+The following G&amp;D cards have been tried at some point but are not fully working:
+
+ * SmartCafe Expert 3.2 (peculiar about its SCP02)
+ * SmartCafe Expert 7.0 (uses SCP03)
