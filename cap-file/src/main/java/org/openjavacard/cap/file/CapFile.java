@@ -32,7 +32,7 @@ import java.util.jar.Manifest;
 /**
  * In-memory representation of a CAP file
  * <p/>
- * This containts the raw binary components of all packages in the
+ * This contains the raw binary components of all packages in the
  * CAP file as well as the relevant metadata from the manifest.
  */
 public class CapFile {
