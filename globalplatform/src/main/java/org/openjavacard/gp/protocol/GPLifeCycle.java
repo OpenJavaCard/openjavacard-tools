@@ -74,9 +74,6 @@ public class GPLifeCycle {
     public GPLifeCycle(Map<Field, byte[]> values) {
         LinkedHashMap<Field,byte[]> valueMap = new LinkedHashMap<>();
         for(Field field: Field.values()) {
-            if(!values.containsKey(field)) {
-                throw new IllegalArgumentException("Missing field " + field + " in CPLC");
-            }
             valueMap.put(field, values.get(field));
         }
         mValues = valueMap;
