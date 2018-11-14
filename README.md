@@ -11,6 +11,10 @@ CAUTION: This is still in its beta stage, even for development use.
 
 [![Build Status](https://travis-ci.org/OpenJavaCard/openjavacard-tools.svg?branch=master)](https://travis-ci.org/OpenJavaCard/openjavacard-tools)
 
+### Project
+
+For more information about this overall project, see our [website](https://openjavacard.org/).
+
 ### Documentation
 
  * [Build instructions](doc/building.md)
