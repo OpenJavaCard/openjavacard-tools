@@ -82,7 +82,7 @@ public enum GPPrivilege {
     public static byte[] toBytes(Iterable<GPPrivilege> privilegeIterable) {
         byte[] res = new byte[1];
         for(GPPrivilege privilege: privilegeIterable) {
-            if(privilege.privilegeByte > 0 && res.length < 1) {
+            if(privilege.privilegeByte > 0 && res.length <= 1) {
                 byte[] nres = new byte[3];
                 System.arraycopy(res, 0, nres, 0, res.length);
                 res = nres;
