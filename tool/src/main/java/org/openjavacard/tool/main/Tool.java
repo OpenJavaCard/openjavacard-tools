@@ -95,6 +95,8 @@ public class Tool {
         JCommander jc = new JCommander();
         jc.addConverterFactory(new ConverterFactory());
 
+        jc.addCommand(new AIDNow());
+
         jc.addCommand(new CapInfo());
         jc.addCommand(new CapSize());
         jc.addCommand(new CapDump());
