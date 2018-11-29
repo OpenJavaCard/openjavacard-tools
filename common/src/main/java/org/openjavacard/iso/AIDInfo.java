@@ -47,15 +47,48 @@ public class AIDInfo {
     }
 
     static {
+        // GlobalPlatform / OpenPlatform
         addProtected("a000000003000000", "Visa ISD");
         addProtected("a0000000035350",   "Visa SSD Package");
         addProtected("a000000151000000", "GlobalPlatform ISD");
         addProtected("a0000001515350",   "GlobalPlatform SSD Package");
+
+        // NFC Forum (under RID provided by NXP Germany)
         addDescription("D2760000850101",   "NDEF Type 4 Tag");
+
+        // Free Software Foundation in Europe
         addDescription("D27600012401",     "fsfEurope OpenPGP");
         addDescription("D2760001240101",   "fsfEurope OpenPGP V1");
         addDescription("D2760001240102",   "fsfEurope OpenPGP V2");
         addDescription("D27600012402",     "fsfEurope SmartChess");
+
+        // OpenJavaCard project (under RID provided by signal interrupt)
+        addDescription("D2760001771001", "OpenJavaCard Applications");
+        addDescription("D2760001771002", "OpenJavaCard Packages");
+        addDescription("D2760001771003", "OpenJavaCard Libraries");
+        addDescription("D2760001771004", "OpenJavaCard Domains");
+        addDescription("D27600017710020101", "OpenJavaCard NDEF (full plain)");
+        addDescription("D27600017710020102", "OpenJavaCard NDEF (stub plain)");
+        addDescription("D27600017710020103", "OpenJavaCard NDEF (tiny plain)");
+        addDescription("D2760001771002010101", "OpenJavaCard NDEF (full plain)");
+        addDescription("D2760001771002010201", "OpenJavaCard NDEF (stub plain)");
+        addDescription("D2760001771002010301", "OpenJavaCard NDEF (tiny plain)");
+        addDescription("D27600017710020111", "OpenJavaCard NDEF (full proguard)");
+        addDescription("D27600017710020112", "OpenJavaCard NDEF (stub proguard)");
+        addDescription("D27600017710020113", "OpenJavaCard NDEF (tiny proguard)");
+        addDescription("D2760001771002011101", "OpenJavaCard NDEF (full proguard)");
+        addDescription("D2760001771002011201", "OpenJavaCard NDEF (stub proguard)");
+        addDescription("D2760001771002011301", "OpenJavaCard NDEF (tiny proguard)");
+
+        // self-assigned space provided by signal interrupt
+        addDescription("D276000177E0", "Self-Assigned Experimental Applications (signal interrupt)");
+        addDescription("D276000177E1", "Self-Assigned Experimental Packages (signal interrupt)");
+        addDescription("D276000177E2", "Self-Assigned Experimental Libraries (signal interrupt");
+        addDescription("D276000177E3", "Self-Assigned Experimental Domains (signal interrupt");
+        addDescription("D276000177F0", "Self-Assigned Production Applications (signal interrupt)");
+        addDescription("D276000177F1", "Self-Assigned Production Packages (signal interrupt)");
+        addDescription("D276000177F2", "Self-Assigned Production Libraries (signal interrupt)");
+        addDescription("D276000177F3", "Self-Assigned Production Domains (signal interrupt)");
     }
 
     public final AID aid;
