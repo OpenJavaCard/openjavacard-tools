@@ -24,9 +24,7 @@ import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * GlobalPlatform Card Production Life Cycle data
@@ -71,12 +69,28 @@ public class GPLifeCycle {
     /** HashMap containing field values */
     private final LinkedHashMap<Field, byte[]> mValues;
 
+    /**
+     * Constructor for empty life cycle data objects
+     */
+    public GPLifeCycle() {
+        mValues = new LinkedHashMap<>();
+    }
+
+    /**
+     * Constructor for life cycle data objects
+     * @param values to populate the object with
+     */
     public GPLifeCycle(Map<Field, byte[]> values) {
         LinkedHashMap<Field,byte[]> valueMap = new LinkedHashMap<>();
         for(Field field: Field.values()) {
             valueMap.put(field, values.get(field));
         }
         mValues = valueMap;
+    }
+
+    /** @return list of fields present in this object */
+    public List<Field> getFields() {
+        return new ArrayList<>(mValues.keySet());
     }
 
     /** Get the value of a field in binary form */
