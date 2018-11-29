@@ -122,9 +122,6 @@ public class Bench {
                     } else {
                         event = mTerminal.waitForCardPresent(30000);
                     }
-                    if(!event) {
-                        continue;
-                    }
                     // handle interruptions
                     if(Thread.interrupted()) {
                         LOG.debug("interrupted");
@@ -132,6 +129,10 @@ public class Bench {
                             mReader.onCardRemoved();
                         }
                         return;
+                    }
+                    // wait again if no event
+                    if(!event) {
+                        continue;
                     }
                     // update state
                     mPresent = mTerminal.isCardPresent();
