@@ -21,13 +21,6 @@ import java.util.List;
 public class AIDNow implements Runnable {
 
     @Parameter(
-            names = "--usage",
-            description = "Usage types for generated AIDs",
-            required = true
-    )
-    List<AIDUsage> types;
-
-    @Parameter(
             names = "--production",
             description = "Mark the AIDs for production use"
     )
@@ -37,66 +30,161 @@ public class AIDNow implements Runnable {
     public void run() {
         PrintStream os = System.out;
 
-        SecureRandom random = new SecureRandom();
+        os.println();
+        os.println("Welcome to AID Now!");
+        os.println();
+        os.println("This program will generate a self-assigned AID for your project.");
+        os.println();
 
-        for(AIDUsage type: types) {
-            try {
-                AID base = getBase(type);
-                int randomLength = 16 - 2 - base.getLength();
-
-                MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                byte[] seed = random.generateSeed(digest.getDigestLength());
-                digest.update(seed);
-                byte[] hash = digest.digest();
-
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bos.write(base.getBytes());
-                bos.write(hash, 0, randomLength);
-                byte[] aidBytes = bos.toByteArray();
-                AID aid = new AID(aidBytes);
-
-                os.println("AID: " + aid);
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+        if(production) {
+            os.println("The following assignment is for PRODUCTION applications only.");
+            os.println();
+            os.println("Experimental applications should use an EXPERIMENTAL identifier instead.");
+        } else {
+            os.println("The following assignment is for EXPERIMENTAL applications only.");
+            os.println();
+            os.println("Specify the --production option to generate production identifiers.");
         }
+        os.println();
+
+        SecureRandom random = new SecureRandom();
+        int randomLength = 8;
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            byte[] seed = random.generateSeed(digest.getDigestLength());
+            digest.reset();
+            digest.update(seed);
+            byte[] hash = digest.digest();
+
+            os.println("================================================================================");
+            os.println();
+            os.println("For an APPLICATION please use the following selectable AID");
+            os.println();
+
+            AID aidApp = buildAID(
+                    ASSIGN_APPLICATION.getAID(production),
+                    hash, 0, randomLength);
+
+            os.println("    " + aidApp);
+            os.println();
+
+            os.println("You can construct AIDs for multiple instances like this");
+            os.println();
+
+            for(int i = 1; i <= 3; i++) {
+                os.println("    " + aidApp + " 0" + i);
+            }
+            os.println("    " + "...");
+            os.println();
+
+            os.println("The corresponding PACKAGE should be named");
+            os.println();
+
+            AID aidPkg = buildAID(
+                    ASSIGN_PACKAGE.getAID(production),
+                    hash, 0, randomLength);
+
+            os.println("    " + aidPkg);
+            os.println();
+
+            os.println("Any MODULES in the package should be named");
+            os.println();
+
+            for(int i = 1; i <= 3; i++) {
+                os.println("    " + aidPkg + " 0" + i);
+            }
+            os.println("    " + "...");
+            os.println();
+
+            os.println("================================================================================");
+            os.println();
+            os.println("For a LIBRARY project please use the following AID");
+            os.println();
+
+            AID aidLib = buildAID(
+                    ASSIGN_LIBRARY.getAID(production),
+                    hash, 0, randomLength);
+
+            os.println("    " + aidLib);
+            os.println();
+
+            os.println("================================================================================");
+            os.println();
+            os.println("For a SECURITY DOMAIN please use the following AID");
+            os.println();
+
+            AID aidDom = buildAID(
+                    ASSIGN_DOMAIN.getAID(production),
+                    hash, 0, randomLength);
+
+            os.println("    " + aidDom);
+            os.println();
+
+            os.println("================================================================================");
+            os.println();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        os.println("This service is provided by OpenJavaCard in cooperation with signal interrupt.");
+        os.println();
+        os.println("See https://openjavacard.org/resources/aid-now.html for more information.");
+        os.println();
     }
 
-    private AID getBase(AIDUsage usage) {
-        switch (usage) {
-            case APPLET:
-                if(production) {
-                    return BASE_PRODUCTION_APPLICATION;
-                } else {
-                    return BASE_EXPERIMENTAL_APPLICATION;
-                }
-            case PACKAGE:
-            case MODULE:
-                if(production) {
-                    return BASE_PRODUCTION_PACKAGE;
-                } else {
-                    return BASE_EXPERIMENTAL_PACKAGE;
-                }
-            case DOMAIN:
-                if(production) {
-                    return BASE_PRODUCTION_DOMAIN;
-                } else {
-                    return BASE_EXPERIMENTAL_DOMAIN;
-                }
-            default:
-                throw new UnsupportedOperationException("Cannot generate AID for usage " + usage);
+    private AID buildAID(AID base, byte[] tailBuf, int tailOff, int tailLen) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bos.write(base.getBytes());
+        bos.write(tailBuf, tailOff, tailLen);
+        byte[] aidBytes = bos.toByteArray();
+        return new AID(aidBytes);
+    }
+
+    static class Assignment {
+        final String name;
+        final String description;
+        final AID aidExperimental;
+        final AID aidProduction;
+        Assignment(String name, String description, AID aidExperimental, AID aidProduction) {
+            this.name = name;
+            this.description = description;
+            this.aidExperimental = aidExperimental;
+            this.aidProduction = aidProduction;
+        }
+        AID getAID(boolean production) {
+            if(production) {
+                return aidProduction;
+            } else {
+                return aidExperimental;
+            }
         }
     }
 
     static AID BASE_EXPERIMENTAL_APPLICATION = new AID("D276000177E0");
     static AID BASE_EXPERIMENTAL_PACKAGE = new AID("D276000177E1");
-    static AID BASE_EXPERIMENTAL_DOMAIN = new AID("D276000177E2");
+    static AID BASE_EXPERIMENTAL_LIBRARY = new AID("D276000177E2");
+    static AID BASE_EXPERIMENTAL_DOMAIN = new AID("D276000177E3");
 
     static AID BASE_PRODUCTION_APPLICATION = new AID("D276000177F0");
     static AID BASE_PRODUCTION_PACKAGE = new AID("D276000177F1");
-    static AID BASE_PRODUCTION_DOMAIN = new AID("D276000177F2");
+    static AID BASE_PRODUCTION_LIBRARY = new AID("D276000177F2");
+    static AID BASE_PRODUCTION_DOMAIN = new AID("D276000177F3");
 
+    static Assignment ASSIGN_APPLICATION = new Assignment(
+            "Application", "Selectable applications (applets)",
+            BASE_EXPERIMENTAL_APPLICATION, BASE_PRODUCTION_APPLICATION);
+    static Assignment ASSIGN_PACKAGE = new Assignment(
+            "Package", "Installable packages (containing modules)",
+            BASE_EXPERIMENTAL_PACKAGE, BASE_PRODUCTION_PACKAGE);
+    static Assignment ASSIGN_LIBRARY = new Assignment(
+            "Library", "Installable libraries (usually without modules)",
+            BASE_EXPERIMENTAL_LIBRARY, BASE_PRODUCTION_LIBRARY);
+    static Assignment ASSIGN_DOMAIN = new Assignment(
+            "Domain", "Security domains",
+            BASE_EXPERIMENTAL_DOMAIN, BASE_PRODUCTION_DOMAIN);
 }
