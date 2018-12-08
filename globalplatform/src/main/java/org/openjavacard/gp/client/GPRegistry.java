@@ -449,6 +449,9 @@ public class GPRegistry {
             if(aidInfo != null) {
                 sb.append("\n  Label: ");
                 sb.append(aidInfo.label);
+                if(aidInfo.protect) {
+                    sb.append(" [protected]");
+                }
             }
             sb.append("\n  State: ");
             sb.append(GP.appletStateString(mState));
@@ -472,6 +475,9 @@ public class GPRegistry {
             if(aidInfo != null) {
                 sb.append("\n  Label: ");
                 sb.append(aidInfo.label);
+                if(aidInfo.protect) {
+                    sb.append(" [protected]");
+                }
             }
             sb.append("\n  State: ");
             sb.append(GP.cardStateString(mState));
@@ -495,6 +501,9 @@ public class GPRegistry {
             if(aidInfo != null) {
                 sb.append("\n  Label: ");
                 sb.append(aidInfo.label);
+                if(aidInfo.protect) {
+                    sb.append(" [protected]");
+                }
             }
             sb.append("\n  State: ");
             sb.append(GP.elfStateString(mState));
