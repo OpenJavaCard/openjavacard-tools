@@ -117,11 +117,27 @@ public abstract class GPCommand implements Runnable {
 
     @Override
     public void run() {
+        GPCard card = prepareOperation();
+        try {
+            beforeOperation(card);
+            performOperation(mContext, card);
+            afterOperation(card);
+        } catch (CardException e) {
+            throw new Error("Error performing operation", e);
+        }
+    }
+
+    /**
+     * Prepare for GP operation and detect card
+     * @return card or null if not found
+     */
+    private GPCard prepareOperation() {
+        PrintStream os = System.out;
+
         if(logKeys) {
             mContext.enableKeyLogging();
         }
 
-        PrintStream os = System.out;
         if(keystoreFile != null) {
             os.println("Opening keystore " + keystoreFile);
             KeyStore ks = openKeyStore();
@@ -136,32 +152,53 @@ public abstract class GPCommand implements Runnable {
             }
         }
 
-        GPCard card = mContext.findSingleGPCard(reader, isd);
-        try {
-            AID isdConf = card.getISD();
-            os.println("Host GP configuration:");
-            os.println("  ISD " + ((isdConf==null)?"auto":isdConf));
-            int protocol = HexUtil.unsigned8(scpProtocol);
-            int parameters = HexUtil.unsigned8(scpParameters);
-            SCPProtocolPolicy protocolPolicy = new SCPProtocolPolicy(protocol, parameters);
-            os.println("  Key diversification " + diversification);
-            card.setDiversification(diversification);
-            os.println("  Protocol policy " + protocolPolicy);
-            card.setProtocolPolicy(protocolPolicy);
-            os.println("  Security policy " + scpSecurity);
-            card.setSecurityPolicy(scpSecurity);
-            os.println();
-            os.println("CONNECTING");
-            card.connect();
-            performOperation(mContext, card);
-            os.println("DISCONNECTING");
-            card.disconnect();
-        } catch (CardException e) {
-            throw new Error("Error performing operation", e);
-        }
+        return mContext.findSingleGPCard(reader, isd);
     }
 
+    /**
+     * Executed before performing the operation
+     * @param card
+     * @throws CardException
+     */
+    private void beforeOperation(GPCard card) throws CardException {
+        PrintStream os = System.out;
+
+        AID isdConf = card.getISD();
+        os.println("Host GP configuration:");
+        os.println("  ISD " + ((isdConf==null)?"auto":isdConf));
+        int protocol = HexUtil.unsigned8(scpProtocol);
+        int parameters = HexUtil.unsigned8(scpParameters);
+        SCPProtocolPolicy protocolPolicy = new SCPProtocolPolicy(protocol, parameters);
+        os.println("  Key diversification " + diversification);
+        card.setDiversification(diversification);
+        os.println("  Protocol policy " + protocolPolicy);
+        card.setProtocolPolicy(protocolPolicy);
+        os.println("  Security policy " + scpSecurity);
+        card.setSecurityPolicy(scpSecurity);
+        os.println();
+        os.println("CONNECTING");
+        card.connect();
+    }
+
+    /**
+     * Override this for the operation itself
+     * @param context
+     * @param card
+     * @throws CardException
+     */
     protected void performOperation(GPContext context, GPCard card) throws CardException {
+    }
+
+    /**
+     * Executed after performing the operation
+     * @param card
+     * @throws CardException
+     */
+    private void afterOperation(GPCard card) throws CardException {
+        PrintStream os = System.out;
+
+        os.println("DISCONNECTING");
+        card.disconnect();
     }
 
     private KeyStore openKeyStore() {
