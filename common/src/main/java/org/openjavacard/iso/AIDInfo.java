@@ -20,8 +20,7 @@
 
 package org.openjavacard.iso;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class AIDInfo {
 
@@ -36,69 +35,112 @@ public class AIDInfo {
 
     private static final TreeMap<AID, AIDInfo> KNOWN = new TreeMap<>();
 
-    private static final void addProtected(String aid, String label) {
-        AIDInfo info = new AIDInfo(new AID(aid), label, true);
+    private static final void addProtected(String aid, String label, AIDUsage usage) {
+        AIDUsage[] usageArray = new AIDUsage[] {usage};
+        AIDInfo info = new AIDInfo(new AID(aid), label, true, usageArray, null);
         KNOWN.put(info.aid, info);
     }
 
-    private static final void addDescription(String aid, String label) {
-        AIDInfo info = new AIDInfo(new AID(aid), label, false);
+    private static final void addDescription(String aid, String label, AIDUsage usage) {
+        AIDUsage[] usageArray = new AIDUsage[] {usage};
+        AIDInfo info = new AIDInfo(new AID(aid), label, false, usageArray, null);
+        KNOWN.put(info.aid, info);
+    }
+
+    private static final void addDescription(String aid, String label, AIDUsage usage, AIDUsage prefixUsage) {
+        AIDUsage[] usageArray = new AIDUsage[] {usage};
+        AIDUsage[] prefixUsageArray = new AIDUsage[] {prefixUsage};
+        AIDInfo info = new AIDInfo(new AID(aid), label, false, usageArray, prefixUsageArray);
         KNOWN.put(info.aid, info);
     }
 
     static {
-        // GlobalPlatform / OpenPlatform
-        addProtected("a000000003000000", "Visa ISD");
-        addProtected("a0000000035350",   "Visa SSD Package");
-        addProtected("a000000151000000", "GlobalPlatform ISD");
-        addProtected("a0000001515350",   "GlobalPlatform SSD Package");
 
+        // Visa International
+        addDescription("A000000003",       "Visa International", AIDUsage.PREFIX);
+        // OpenPlatform (early GlobalPlatform, under RID provided by Visa)
+        addProtected(  "A000000003000000", "OpenPlatform ISD", AIDUsage.DOMAIN);
+        addProtected(  "A0000000035350",   "OpenPlatform SSD Package", AIDUsage.PACKAGE);
+
+        // GlobalPlatform
+        addDescription("A000000151",       "GlobalPlatform", AIDUsage.PREFIX);
+        addProtected(  "A000000151000000", "GlobalPlatform ISD", AIDUsage.DOMAIN);
+        addProtected(  "A0000001515350",   "GlobalPlatform SSD Package", AIDUsage.PACKAGE);
+
+        // Yubico
+        addDescription("A000000527",       "Yubico", AIDUsage.PREFIX);
+        addDescription("A000000527210101", "Yubikey OATH", AIDUsage.APPLET);
+
+        // NXP Germany
+        addDescription("D276000085",       "NXP Germany", AIDUsage.PREFIX);
         // NFC Forum (under RID provided by NXP Germany)
-        addDescription("D2760000850101",   "NDEF Type 4 Tag");
+        addDescription("D2760000850101",   "NDEF Type 4 Tag", AIDUsage.APPLET);
 
-        // Free Software Foundation in Europe
-        addDescription("D27600012401",     "fsfEurope OpenPGP");
-        addDescription("D2760001240101",   "fsfEurope OpenPGP V1");
-        addDescription("D2760001240102",   "fsfEurope OpenPGP V2");
-        addDescription("D27600012402",     "fsfEurope SmartChess");
+        // FSF Europe
+        addDescription("D276000124",       "fsfEurope", AIDUsage.PREFIX);
+        addDescription("D27600012401",     "fsfEurope OpenPGP", AIDUsage.PREFIX);
+        addDescription("D2760001240101",   "fsfEurope OpenPGP V1", AIDUsage.APPLET);
+        addDescription("D2760001240102",   "fsfEurope OpenPGP V2", AIDUsage.APPLET);
+        addDescription("D2760001240103",   "fsfEurope OpenPGP V3", AIDUsage.APPLET);
+        addDescription("D27600012402",     "fsfEurope SmartChess", AIDUsage.PREFIX);
 
         // OpenJavaCard project (under RID provided by signal interrupt)
-        addDescription("D2760001771001", "OpenJavaCard Applications");
-        addDescription("D2760001771002", "OpenJavaCard Packages");
-        addDescription("D2760001771003", "OpenJavaCard Libraries");
-        addDescription("D2760001771004", "OpenJavaCard Domains");
-        addDescription("D27600017710020101", "OpenJavaCard NDEF (full plain)");
-        addDescription("D27600017710020102", "OpenJavaCard NDEF (stub plain)");
-        addDescription("D27600017710020103", "OpenJavaCard NDEF (tiny plain)");
-        addDescription("D2760001771002010101", "OpenJavaCard NDEF (full plain)");
-        addDescription("D2760001771002010201", "OpenJavaCard NDEF (stub plain)");
-        addDescription("D2760001771002010301", "OpenJavaCard NDEF (tiny plain)");
-        addDescription("D27600017710020111", "OpenJavaCard NDEF (full proguard)");
-        addDescription("D27600017710020112", "OpenJavaCard NDEF (stub proguard)");
-        addDescription("D27600017710020113", "OpenJavaCard NDEF (tiny proguard)");
-        addDescription("D2760001771002011101", "OpenJavaCard NDEF (full proguard)");
-        addDescription("D2760001771002011201", "OpenJavaCard NDEF (stub proguard)");
-        addDescription("D2760001771002011301", "OpenJavaCard NDEF (tiny proguard)");
+        addDescription("D27600017710",   "OpenJavaCard", AIDUsage.PREFIX);
+        addDescription("D2760001771001", "OpenJavaCard Applications", AIDUsage.PREFIX, AIDUsage.APPLET);
+        addDescription("D2760001771002", "OpenJavaCard Install Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D2760001771003", "OpenJavaCard Library Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D2760001771004", "OpenJavaCard Security Domains", AIDUsage.PREFIX, AIDUsage.DOMAIN);
+        addDescription("D27600017710021001", "OpenJavaCard Libraries (demo)", AIDUsage.PREFIX);
+        addDescription("D27600017710021101", "OpenJavaCard NDEF (full plain)", AIDUsage.PACKAGE);
+        addDescription("D27600017710021102", "OpenJavaCard NDEF (stub plain)", AIDUsage.PACKAGE);
+        addDescription("D27600017710021103", "OpenJavaCard NDEF (tiny plain)", AIDUsage.PACKAGE);
+        addDescription("D27600017710021111", "OpenJavaCard NDEF (full proguard)", AIDUsage.PACKAGE);
+        addDescription("D27600017710021112", "OpenJavaCard NDEF (stub proguard)", AIDUsage.PACKAGE);
+        addDescription("D27600017710021113", "OpenJavaCard NDEF (tiny proguard)", AIDUsage.PACKAGE);
+        addDescription("D27600017710022001", "OpenJavaCard YKNeo OpenPGP (standard)", AIDUsage.PACKAGE);
+        addDescription("D27600017710022101", "OpenJavaCard YKNeo OATH (standard)", AIDUsage.PACKAGE);
+        addDescription("D27600017710022201", "OpenJavaCard IsoApplet (standard)", AIDUsage.PACKAGE);
 
-        // self-assigned space provided by signal interrupt
-        addDescription("D276000177E0", "Self-Assigned Experimental Applications (signal interrupt)");
-        addDescription("D276000177E1", "Self-Assigned Experimental Packages (signal interrupt)");
-        addDescription("D276000177E2", "Self-Assigned Experimental Libraries (signal interrupt");
-        addDescription("D276000177E3", "Self-Assigned Experimental Domains (signal interrupt");
-        addDescription("D276000177F0", "Self-Assigned Production Applications (signal interrupt)");
-        addDescription("D276000177F1", "Self-Assigned Production Packages (signal interrupt)");
-        addDescription("D276000177F2", "Self-Assigned Production Libraries (signal interrupt)");
-        addDescription("D276000177F3", "Self-Assigned Production Domains (signal interrupt)");
+        // signal interrupt
+        addDescription("D276000177",   "signal interrupt", AIDUsage.PREFIX);
+        addDescription("D276000177E0", "Self-Assigned Experimental Applications", AIDUsage.PREFIX, AIDUsage.APPLET);
+        addDescription("D276000177E1", "Self-Assigned Experimental Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D276000177E2", "Self-Assigned Experimental Libraries", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D276000177E3", "Self-Assigned Experimental Domains", AIDUsage.PREFIX, AIDUsage.DOMAIN);
+        addDescription("D276000177F0", "Self-Assigned Production Applications", AIDUsage.PREFIX, AIDUsage.APPLET);
+        addDescription("D276000177F1", "Self-Assigned Production Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D276000177F2", "Self-Assigned Production Libraries", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D276000177F3", "Self-Assigned Production Domains", AIDUsage.PREFIX, AIDUsage.DOMAIN);
     }
 
+    /** AID for this information object */
     public final AID aid;
+
+    /** Short label for this object */
     public final String label;
+
+    /** True if instances should be protected from inadvertent deletion */
     public final boolean protect;
 
-    public AIDInfo(AID aid, String label, boolean protect) {
+    /** Intended usage for the AID or its children */
+    public final Set<AIDUsage> usage;
+    /** Intended usage for children in case of an explicit PREFIX */
+    public final Set<AIDUsage> prefixUsage;
+
+    public AIDInfo(AID aid, String label, boolean protect, AIDUsage[] usage, AIDUsage[] prefixUsage) {
         this.aid = aid;
         this.label = label;
         this.protect = protect;
+        if(usage != null) {
+            this.usage = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(usage)));
+        } else {
+            this.usage = Collections.emptySet();
+        }
+        if(prefixUsage != null) {
+            this.prefixUsage = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(prefixUsage)));
+        } else {
+            this.prefixUsage = Collections.emptySet();
+        }
     }
 
 }
