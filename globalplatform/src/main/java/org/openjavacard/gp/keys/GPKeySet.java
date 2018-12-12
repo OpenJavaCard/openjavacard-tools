@@ -37,6 +37,11 @@ import java.util.List;
 public class GPKeySet {
 
     /**
+     * An empty keyset
+     */
+    public static final GPKeySet EMPTY = new GPKeySet("Empty");
+
+    /**
      * GlobalPlatform default master key
      */
     private static final byte[] GLOBALPLATFORM_MASTER_KEY = {
