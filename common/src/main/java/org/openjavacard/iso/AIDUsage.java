@@ -1,11 +1,11 @@
 package org.openjavacard.iso;
 
 public enum AIDUsage {
+    PREFIX("Prefix"),
     APPLET("Applet"),
     DOMAIN("Domain"),
     MODULE("Module"),
-    PACKAGE("Package"),
-    PREFIX("Prefix");
+    PACKAGE("Package");
 
     public final String name;
 
