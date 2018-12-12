@@ -28,7 +28,6 @@ import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
-import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +63,9 @@ public class GPRegistry {
 
     /** Card being operated on */
     private final GPCard mCard;
+
+    /** Flag to indicate use of the legacy entry format */
+    private boolean mUseLegacy;
 
     /** True if data needs refreshing */
     private boolean mDirty;
@@ -221,43 +222,44 @@ public class GPRegistry {
         LOG.debug("update()");
 
         try {
+            // read all entries on the card
+            List<ISDEntry> isdEntries = readEntriesISD();
+            List<AppEntry> appEntries = readEntriesAppAndSSD();
+            List<ELFEntry> elfEntries = readEntriesELF();
+
+            // we produce various lists sorted by type
             ISDEntry isdEntry = null;
             ArrayList<Entry> allEntries = new ArrayList<>();
             ArrayList<AppEntry> allApps = new ArrayList<>();
             ArrayList<AppEntry> allSSDs = new ArrayList<>();
             ArrayList<ELFEntry> allELFs = new ArrayList<>();
 
-            LOG.debug("reading ISD");
-            List<ISDEntry> isdEntries = readEntriesTLV(GP.GET_STATUS_P1_ISD_ONLY, ISDEntry.class);
-            if(!isdEntries.isEmpty()) {
+            // check each set of results
+            if (!isdEntries.isEmpty()) {
                 allEntries.addAll(isdEntries);
                 isdEntry = isdEntries.get(0);
             }
-
-            LOG.debug("reading APPs and SSDs");
-            List<AppEntry> appEntries = readEntriesTLV(GP.GET_STATUS_P1_APP_AND_SD_ONLY, AppEntry.class);
-            if(!appEntries.isEmpty()) {
+            if (!appEntries.isEmpty()) {
                 allEntries.addAll(appEntries);
                 for (AppEntry appEntry : appEntries) {
                     allApps.add(appEntry);
                 }
             }
-
-            LOG.debug("reading ELFs and EXMs");
-            List<ELFEntry> elfEntries = readEntriesTLV(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, ELFEntry.class);
-            if(!elfEntries.isEmpty()) {
+            if (!elfEntries.isEmpty()) {
                 allEntries.addAll(elfEntries);
                 allELFs.addAll(elfEntries);
             }
 
+            // update state
             mISD = isdEntry;
             mAllEntries = allEntries;
             mAllApps = allApps;
             mAllELFs = allELFs;
             mAllSSDs = allSSDs;
 
+            // no longer dirty
             mDirty = false;
-        } catch (CardException | IOException e) {
+        } catch (CardException e) {
             throw new CardException("Error updating registry", e);
         }
     }
@@ -274,20 +276,126 @@ public class GPRegistry {
         }
     }
 
-    private <E extends Entry>
-    List<E> readEntriesTLV(byte p1Subset, Class<E> clazz) throws IOException, CardException {
-        byte format = GP.GET_STATUS_P2_FORMAT_TLV;
-        byte[] data = readStatus(p1Subset, format);
-        List<E> res = new ArrayList<>();
-        List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(data);
-        for (TLVPrimitive tlv : tlvs) {
+    List<ISDEntry> readEntriesISD() throws CardException {
+        LOG.trace("readEntriesISD()");
+        return readStatusGeneric(GP.GET_STATUS_P1_ISD_ONLY, ISDEntry.class);
+    }
+
+    List<AppEntry> readEntriesAppAndSSD() throws CardException {
+        LOG.trace("readEntriesAppAndSSD()");
+        return readStatusGeneric(GP.GET_STATUS_P1_APP_AND_SD_ONLY, AppEntry.class);
+    }
+
+    List<ELFEntry> readEntriesELF() throws CardException {
+        LOG.trace("readEntriesELF()");
+        List<ELFEntry> elfEntries;
+        if(mUseLegacy) {
+            elfEntries = readStatusLegacy(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
+        } else {
             try {
-                E entry = clazz.newInstance();
-                entry.read(tlv.getValueBytes());
-                res.add(entry);
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new Error("Error instantiating registry entry", e);
+                elfEntries = readStatusTLV(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, ELFEntry.class);
+            } catch (SWException e) {
+                if (e.getCode() == ISO7816.SW_FUNC_NOT_SUPPORTED) {
+                    elfEntries = readStatusLegacy(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
+                    mUseLegacy = true;
+                } else {
+                    throw e;
+                }
             }
+        }
+        return elfEntries;
+    }
+
+    /**
+     * Perform GET STATUS, retrieving either TLV or legacy entries
+     *
+     * @param p1Subset subset parameter
+     * @param clazz to instantiate
+     * @param <E> class of entries
+     * @return list of entries
+     * @throws CardException on error
+     */
+    private <E extends Entry>
+    List<E> readStatusGeneric(byte p1Subset, Class<E> clazz) throws CardException {
+        // use legacy after one failure
+        if(mUseLegacy) {
+            return readStatusLegacy(p1Subset, clazz);
+        }
+        // guarded attempt at using TLV
+        List<E> res;
+        try {
+            res = readStatusTLV(p1Subset, clazz);
+        } catch (SWException e) {
+            if(e.getCode() == ISO7816.SW_INCORRECT_P1P2) {
+                // fall back to legacy format
+                res = readStatusLegacy(p1Subset, clazz);
+                // continue using legacy format
+                mUseLegacy = true;
+            } else {
+                throw e;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Perform GET STATUS and parse the result as legacy data
+     *
+     * @param p1Subset subset parameter
+     * @param clazz to instantiate
+     * @param <E> class of entries
+     * @return list of entries
+     * @throws CardException on error
+     */
+    private <E extends Entry>
+    List<E> readStatusLegacy(byte p1Subset, Class<E> clazz) throws CardException {
+        byte format = GP.GET_STATUS_P2_FORMAT_LEGACY;
+        List<byte[]> chunks = readStatus(p1Subset, format);
+        List<E> res = new ArrayList<>();
+        for (byte[] chunk: chunks) {
+            int off = 0;
+            while(off < chunk.length) {
+                try {
+                    E entry = clazz.newInstance();
+                    off = entry.readLegacy(chunk, off);
+                    res.add(entry);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new Error("Error instantiating registry entry", e);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Perform GET STATUS and parse the result as TLV
+     *
+     * @param p1Subset subset parameter
+     * @param clazz to instantiate
+     * @param <E> class of entry
+     * @return list of entries
+     * @throws CardException on error
+     */
+    private <E extends Entry>
+    List<E> readStatusTLV(byte p1Subset, Class<E> clazz) throws CardException {
+        byte format = GP.GET_STATUS_P2_FORMAT_TLV;
+        List<byte[]> chunks = readStatus(p1Subset, format);
+        List<E> res = new ArrayList<>();
+        try {
+            for (byte[] chunk : chunks) {
+                List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(chunk);
+                for (TLVPrimitive tlv : tlvs) {
+                    try {
+                        E entry = clazz.newInstance();
+                        entry.readTLV(tlv.getValueBytes());
+                        res.add(entry);
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        throw new Error("Error instantiating registry entry", e);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new Error("Error parsing TLV", e);
         }
         return res;
     }
@@ -302,7 +410,7 @@ public class GPRegistry {
      * @return data retrieved
      * @throws CardException on error
      */
-    private byte[] readStatus(byte p1Subset, byte p2Format) throws CardException {
+    private List<byte[]> readStatus(byte p1Subset, byte p2Format) throws CardException {
         byte[] criteria = {0x4F, 0x00}; // XXX !?
         return readStatus(p1Subset, p2Format, criteria);
     }
@@ -316,8 +424,8 @@ public class GPRegistry {
      * @return data retrieved
      * @throws CardException on error
      */
-    private byte[] readStatus(byte p1Subset, byte p2Format, byte[] criteria) throws CardException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ArrayList<byte[]> readStatus(byte p1Subset, byte p2Format, byte[] criteria) throws CardException {
+        ArrayList<byte[]> res = new ArrayList<>();
         boolean first = true;
         do {
             // determine first/next parameter
@@ -338,7 +446,7 @@ public class GPRegistry {
             byte[] data = response.getData();
             // append data, no matter the SW
             if (data != null && data.length > 0) {
-                bos.write(data, 0, data.length);
+                res.add(data);
             }
             // continue if SW says that we should
             //   XXX extract this constant
@@ -355,7 +463,7 @@ public class GPRegistry {
                 throw new SWException("Error in GET STATUS", sw);
             }
         } while (true);
-        return bos.toByteArray();
+        return res;
     }
 
     /**
@@ -396,7 +504,7 @@ public class GPRegistry {
             return mModules;
         }
 
-        void read(byte[] data) throws IOException {
+        void readTLV(byte[] data) throws IOException {
             List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(data);
             List<AID> modules = new ArrayList<>();
             for (TLVPrimitive tlv : tlvs) {
@@ -419,6 +527,18 @@ public class GPRegistry {
                 }
             }
             mModules = modules;
+        }
+
+        public int readLegacy(byte[] data, int off) {
+            return readLegacyCommon(data, off);
+        }
+
+        int readLegacyCommon(byte[] data, int off) {
+            int aidLen = data[off++];
+            mAID = new AID(data, off, aidLen); off += aidLen;
+            mState = data[off++];
+            mPrivileges = new byte[] { data[off++] };
+            return off;
         }
 
         public String toString() {
@@ -490,6 +610,13 @@ public class GPRegistry {
     public static class ELFEntry extends Entry {
         ELFEntry() {
             super(Type.ELF);
+        }
+
+        @Override
+        public int readLegacy(byte[] data, int off) {
+            off = readLegacyCommon(data, off);
+            mModules = new ArrayList<>();
+            return off;
         }
 
         public String toVerboseString() {
