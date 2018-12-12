@@ -66,7 +66,7 @@ public class AID implements Comparable<AID>, VerboseString {
      */
     public AID(byte[] bytes, int offset, int length) {
         if(length < RID_LENGTH) {
-            throw new IllegalArgumentException("AID must be 5 bytes long");
+            throw new IllegalArgumentException("AID must be at least 5 bytes long");
         }
         if(length > AID_MAX_LENGTH) {
             throw new IllegalArgumentException("AID must be at most 16 bytes long");
