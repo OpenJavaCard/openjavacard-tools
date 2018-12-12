@@ -520,7 +520,11 @@ public class GPRegistry {
                         mPrivileges = tlv.getValueBytes();
                         break;
                     case TAG_GP_REGISTRY_MODULE:
-                        modules.add(new AID(tlv.getValueBytes()));
+                        if(this instanceof ELFEntry) {
+                            modules.add(new AID(tlv.getValueBytes()));
+                        } else {
+                            throw new IllegalArgumentException("Module descriptor in non-ELF registry entry");
+                        }
                         break;
                     default:
                         LOG.warn("Unknown TLV in registry entry: " + tlv.toString());
