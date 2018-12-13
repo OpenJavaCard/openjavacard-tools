@@ -30,6 +30,7 @@ import javax.smartcardio.CardException;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class SCPSecurityPolicyTest extends TestCase {
 
+    private SCPParameters SCP00_00 = SCPParameters.decode(0x00, 0x00);
     private SCPParameters SCP01_05 = SCPParameters.decode(0x01, 0x05);
     private SCPParameters SCP01_15 = SCPParameters.decode(0x01, 0x15);
     private SCPParameters SCP02_15 = SCPParameters.decode(0x02, 0x15);
@@ -43,6 +44,18 @@ public class SCPSecurityPolicyTest extends TestCase {
     }
 
     @Test
+    public void testNONEAccept() throws CardException {
+        SCPSecurityPolicy pol = SCPSecurityPolicy.NONE;
+        pol.checkProtocol(SCP00_00);
+        pol.checkProtocol(SCP01_05);
+        pol.checkProtocol(SCP01_15);
+        pol.checkProtocol(SCP02_15);
+        pol.checkProtocol(SCP02_55);
+        pol.checkProtocol(SCP03_30);
+        pol.checkProtocol(SCP03_70);
+    }
+
+    @Test
     public void testCMACAccept() throws CardException {
         SCPSecurityPolicy pol = SCPSecurityPolicy.CMAC;
         pol.checkProtocol(SCP01_05);
@@ -51,6 +64,11 @@ public class SCPSecurityPolicyTest extends TestCase {
         pol.checkProtocol(SCP02_55);
         pol.checkProtocol(SCP03_30);
         pol.checkProtocol(SCP03_70);
+    }
+    @Test(expected = CardException.class)
+    public void testCMACRejectSCP00_00() throws CardException {
+        SCPSecurityPolicy pol = SCPSecurityPolicy.CMAC;
+        pol.checkProtocol(SCP00_00);
     }
 
     @Test
@@ -64,12 +82,22 @@ public class SCPSecurityPolicyTest extends TestCase {
         pol.checkProtocol(SCP03_30);
         pol.checkProtocol(SCP03_70);
     }
+    @Test(expected = CardException.class)
+    public void testCENCRejectSCP00_00() throws CardException {
+        SCPSecurityPolicy pol = SCPSecurityPolicy.CENC;
+        pol.checkProtocol(SCP00_00);
+    }
 
     @Test
     public void testRMACAccept() throws CardException {
         SCPSecurityPolicy pol = SCPSecurityPolicy.RMAC;
         pol.checkProtocol(SCP03_30);
         pol.checkProtocol(SCP03_70);
+    }
+    @Test(expected = CardException.class)
+    public void testRMACRejectSCP00_00() throws CardException {
+        SCPSecurityPolicy pol = SCPSecurityPolicy.RMAC;
+        pol.checkProtocol(SCP00_00);
     }
     @Test(expected = CardException.class)
     public void testRMACRejectSCP01_05() throws CardException {
@@ -101,6 +129,11 @@ public class SCPSecurityPolicyTest extends TestCase {
     public void testRENCAccept() throws CardException {
         SCPSecurityPolicy pol = SCPSecurityPolicy.RENC;
         pol.checkProtocol(SCP03_70);
+    }
+    @Test(expected = CardException.class)
+    public void testRENCRejectSCP00_00() throws CardException {
+        SCPSecurityPolicy pol = SCPSecurityPolicy.RENC;
+        pol.checkProtocol(SCP00_00);
     }
     @Test(expected = CardException.class)
     public void testRENCRejectSCP01_05() throws CardException {
