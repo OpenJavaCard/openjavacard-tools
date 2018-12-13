@@ -314,6 +314,9 @@ public class GPSecureChannel extends CardChannel {
 
         // derive session keys
         switch (mActiveProtocol.scpVersion) {
+            case 0:
+                mSessionKeys = actualKeys;
+                break;
             case 2:
                 byte[] seq02 = Arrays.copyOfRange(init.cardChallenge, 0, 2);
                 LOG.debug("card sequence " + HexUtil.bytesToHex(seq02));
@@ -345,6 +348,9 @@ public class GPSecureChannel extends CardChannel {
 
         // create CardAPDU wrapper
         switch (mActiveProtocol.scpVersion) {
+            case 0:
+                mWrapper = new SCP00Wrapper(mSessionKeys, ((SCP00Parameters) mActiveProtocol));
+                break;
             case 2:
                 mWrapper = new SCP0102Wrapper(mSessionKeys, ((SCP0102Parameters) mActiveProtocol));
                 break;
