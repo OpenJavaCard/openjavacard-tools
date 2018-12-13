@@ -40,70 +40,70 @@ import java.util.Enumeration;
 public abstract class GPCommand implements Runnable {
 
     @Parameter(
-            names = "--reader",
-            description = "Reader to use for the operation"
+            names = "--reader", order = 100,
+            description = "Reader to use"
     )
     protected String reader = null;
 
     @Parameter(
-            names = "--isd",
-            description = "Use specified ISD"
+            names = "--isd", order = 200,
+            description = "AID of the issuer security domain"
     )
     protected AID isd;
 
     @Parameter(
-            names = "--keystore-file",
-            description = "Keystore: file containing keystore"
-    )
-    protected String keystoreFile = null;
-
-    @Parameter(
-            names = "--keystore-type",
-            description = "Keystore: type of keystore"
-    )
-    protected String keystoreType = null;
-
-    @Parameter(
-            names = "--keystore-password",
-            description = "Keystore: password for keystore"
-    )
-    protected String keystorePassword = null;
-
-    @Parameter(
-            names = "--diversification",
+            names = "--scp-diversification", order = 300,
             description = "Use specified key diversification"
     )
-    protected GPKeyDiversification diversification = GPKeyDiversification.NONE;
+    protected GPKeyDiversification scpDiversification = GPKeyDiversification.NONE;
 
     @Parameter(
-            names = "--scp-protocol",
+            names = "--scp-protocol", order = 300,
             description = "Require specified SCP protocol"
     )
     protected String scpProtocol = "00";
 
     @Parameter(
-            names = "--scp-parameters",
+            names = "--scp-parameters", order = 300,
             description = "Require specified SCP parameters"
     )
     protected String scpParameters = "00";
 
     @Parameter(
-            names = "--scp-security",
+            names = "--scp-security", order = 300,
             description = "Require specified SCP security level"
     )
     protected SCPSecurityPolicy scpSecurity = SCPSecurityPolicy.CMAC;
 
     @Parameter(
-            names = "--log-keys",
-            description = "Allow writing keys into the debug log"
+            names = "--keystore-file", order = 400,
+            description = "Keystore: file containing keystore"
     )
-    protected boolean logKeys = false;
+    protected String keystoreFile = null;
 
     @Parameter(
-            names = "--force-protected",
+            names = "--keystore-type", order = 400,
+            description = "Keystore: type of keystore"
+    )
+    protected String keystoreType = null;
+
+    @Parameter(
+            names = "--keystore-password", order = 400,
+            description = "Keystore: password for keystore"
+    )
+    protected String keystorePassword = null;
+
+    @Parameter(
+            names = "--force-protected", order = 800,
             description = "Force operation on protected object"
     )
     protected boolean forceProtected = false;
+
+    @Parameter(
+            names = "--log-keys", order = 900,
+            description = "Allow writing keys into the debug log"
+    )
+    protected boolean logKeys = false;
 
     protected GPContext mContext;
 
@@ -169,8 +169,8 @@ public abstract class GPCommand implements Runnable {
         int protocol = HexUtil.unsigned8(scpProtocol);
         int parameters = HexUtil.unsigned8(scpParameters);
         SCPProtocolPolicy protocolPolicy = new SCPProtocolPolicy(protocol, parameters);
-        os.println("  Key diversification " + diversification);
-        card.setDiversification(diversification);
+        os.println("  Key diversification " + scpDiversification);
+        card.setDiversification(scpDiversification);
         os.println("  Protocol policy " + protocolPolicy);
         card.setProtocolPolicy(protocolPolicy);
         os.println("  Security policy " + scpSecurity);
