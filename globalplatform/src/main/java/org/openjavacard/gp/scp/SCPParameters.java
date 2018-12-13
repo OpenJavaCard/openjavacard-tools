@@ -48,6 +48,8 @@ public abstract class SCPParameters implements VerboseString {
     public static SCPParameters decode(int scpVersion, int scpParameters) {
         // create version-dependent variants
         switch(scpVersion) {
+            case 0:
+                return new SCP00Parameters(scpParameters);
             case 1:
             case 2:
                 return new SCP0102Parameters(scpVersion, scpParameters);
