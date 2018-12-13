@@ -28,7 +28,7 @@ import javax.smartcardio.CardException;
  * These describe what part of card exchanges has to be
  * authenticated and/or encrypted.
  *
- * All existing protocols require CMAC to be enabled.
+ * All defined protocols require CMAC to be enabled.
  *
  * All existing protocols have a linear tower of
  * options in order of increasing security as follows:
@@ -38,14 +38,16 @@ import javax.smartcardio.CardException;
  *  - RENC (implies CMAC, CENC, RMAC)
  */
 public enum SCPSecurityPolicy {
-    /** Minimum supported level */
-    CMAC(false, false, false),
+    /** No security */
+    NONE(false, false, false, false),
+    /** Require CMAC */
+    CMAC(true, false, false, false),
     /** Implies CMAC */
-    CENC(true, false, false),
+    CENC(true, true, false, false),
     /** Implies CMAC, CENC */
-    RMAC(true, true, false),
+    RMAC(true, true, true, false),
     /** Implies CMAC, CENC, RMAC */
-    RENC(true, true, true);
+    RENC(true, true, true, true);
 
     /** True if CMAC is required */
     public final boolean requireCMAC;
@@ -57,8 +59,8 @@ public enum SCPSecurityPolicy {
     public final boolean requireRENC;
 
     /** Internal constructor */
-    SCPSecurityPolicy(boolean reqCENC, boolean reqRMAC, boolean reqRENC) {
-        requireCMAC = true;
+    SCPSecurityPolicy(boolean reqCMAC, boolean reqCENC, boolean reqRMAC, boolean reqRENC) {
+        requireCMAC = reqCMAC;
         requireCENC = reqCENC;
         requireRMAC = reqRMAC;
         requireRENC = reqRENC;
