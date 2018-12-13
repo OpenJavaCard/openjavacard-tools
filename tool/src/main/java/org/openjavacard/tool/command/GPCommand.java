@@ -46,6 +46,12 @@ public abstract class GPCommand implements Runnable {
     protected String reader = null;
 
     @Parameter(
+            names = "--isd",
+            description = "Use specified ISD"
+    )
+    protected AID isd;
+
+    @Parameter(
             names = "--keystore-file",
             description = "Keystore: file containing keystore"
     )
@@ -62,12 +68,6 @@ public abstract class GPCommand implements Runnable {
             description = "Keystore: password for keystore"
     )
     protected String keystorePassword = null;
-
-    @Parameter(
-            names = "--isd",
-            description = "Use specified ISD"
-    )
-    protected AID isd;
 
     @Parameter(
             names = "--diversification",
