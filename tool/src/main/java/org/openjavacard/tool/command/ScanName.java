@@ -40,9 +40,9 @@ import java.util.Arrays;
 
 @Parameters(
         commandNames = "scan-name",
-        commandDescription = "Generic: Scan a card using SELECT BY NAME"
+        commandDescription = "Scanning: Scan a card using SELECT BY NAME"
 )
-public class GenericScanName extends GenericCommand {
+public class ScanName extends GenericCommand {
 
     @Parameter(
             names = "--base",
@@ -75,7 +75,7 @@ public class GenericScanName extends GenericCommand {
     )
     boolean verbose = false;
 
-    public GenericScanName(GenericContext context) {
+    public ScanName(GenericContext context) {
         super(context);
     }
 
