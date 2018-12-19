@@ -114,6 +114,13 @@ public class Tool {
         jc.addCommand(new GPIdentity(mContext));
         jc.addCommand(new GPKeys(mContext));
 
+        jc.addCommand(new PkgAvailable(mContext));
+        jc.addCommand(new PkgInfo(mContext));
+        jc.addCommand(new PkgInit(mContext));
+        jc.addCommand(new PkgInstall(mContext));
+        jc.addCommand(new PkgList(mContext));
+        jc.addCommand(new PkgSearch(mContext));
+
         jc.addCommand(new ScanName(mContext));
 
         return jc;
