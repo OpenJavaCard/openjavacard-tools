@@ -1,6 +1,6 @@
 /*
- * openjavacard-tools: Development tools for JavaCard
- * Copyright (C) 2018 Ingo Albrecht <copyright@promovicz.org>
+ *  GlobalPlatformPro - GlobalPlatform tool
+ *  Copyright (C) 2015-2017 Martin Paljak, martin@martinpaljak.net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
