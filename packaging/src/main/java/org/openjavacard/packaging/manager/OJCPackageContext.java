@@ -20,11 +20,9 @@
 package org.openjavacard.packaging.manager;
 
 import org.openjavacard.iso.AID;
-import org.openjavacard.packaging.model.OJCPackageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 

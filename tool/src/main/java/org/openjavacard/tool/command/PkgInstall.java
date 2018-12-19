@@ -24,7 +24,6 @@ import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.packaging.manager.OJCPackage;
 import org.openjavacard.packaging.manager.OJCPackageManager;
-import org.openjavacard.packaging.model.OJCPackageInfo;
 
 import javax.smartcardio.CardException;
 

@@ -22,7 +22,6 @@ package org.openjavacard.packaging.manager;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPRegistry;
 import org.openjavacard.iso.AID;
-import org.openjavacard.packaging.model.OJCPackageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

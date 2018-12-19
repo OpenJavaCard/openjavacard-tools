@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.openjavacard.cap.base.CapComponent;
 import org.openjavacard.cap.base.CapPackage;
 import org.openjavacard.cap.base.CapPackageReader;
 import org.openjavacard.cap.file.CapFile;

@@ -19,13 +19,11 @@
 
 package org.openjavacard.tool.command;
 
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.packaging.manager.OJCPackageManager;
 
 import javax.smartcardio.CardException;
-import java.io.PrintStream;
 
 @Parameters(
         commandNames = "pkg-init",

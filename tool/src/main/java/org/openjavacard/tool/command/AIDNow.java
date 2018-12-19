@@ -21,9 +21,7 @@ package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.beust.jcommander.converters.EnumConverter;
 import org.openjavacard.iso.AID;
-import org.openjavacard.iso.AIDUsage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,7 +29,6 @@ import java.io.PrintStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.List;
 
 @Parameters(
         commandNames = "aid-now",
