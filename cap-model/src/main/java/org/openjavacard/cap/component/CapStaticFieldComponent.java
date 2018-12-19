@@ -23,15 +23,23 @@ package org.openjavacard.cap.component;
 import org.openjavacard.cap.base.CapComponent;
 import org.openjavacard.cap.base.CapStructureReader;
 import org.openjavacard.cap.file.CapComponentType;
+import org.openjavacard.cap.structure.CapArrayInit;
 import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CapStaticFieldComponent extends CapComponent {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapStaticFieldComponent.class);
+
+    private int mImageSize;
+    private int mReferenceCount;
+    private ArrayList<CapArrayInit> mArrayInits;
+    private int mDefaultValueCount;
+    private byte[] mNondefaultValues;
 
     public CapStaticFieldComponent() {
         super(CapComponentType.StaticField);
@@ -39,10 +47,10 @@ public class CapStaticFieldComponent extends CapComponent {
 
     @Override
     public void read(CapStructureReader reader) throws IOException {
-        int imageSize = reader.readU2();
-        LOG.trace("image size " + imageSize);
-        int referenceCount = reader.readU2();
-        LOG.trace("reference count " + referenceCount);
+        mImageSize = reader.readU2();
+        LOG.trace("image size " + mImageSize);
+        mReferenceCount = reader.readU2();
+        LOG.trace("reference count " + mReferenceCount);
         int arrayInitCount = reader.readU2();
         LOG.trace("array init count " + arrayInitCount);
         for(int i = 0; i < arrayInitCount; i++) {
@@ -53,12 +61,12 @@ public class CapStaticFieldComponent extends CapComponent {
             byte[] arrayData = reader.readBytes(arrayCount);
             LOG.trace("array " + i + " data " + HexUtil.bytesToHex(arrayData));
         }
-        int defaultValueCount = reader.readU2();
-        LOG.trace("default value count " + defaultValueCount);
+        mDefaultValueCount = reader.readU2();
+        LOG.trace("default value count " + mDefaultValueCount);
         int nonDefaultValueCount = reader.readU2();
-        LOG.trace("nondefault value count " + imageSize);
-        byte[] nonDefaultValues = reader.readBytes(nonDefaultValueCount);
-        LOG.trace("nondefault values " + HexUtil.bytesToHex(nonDefaultValues));
+        LOG.trace("nondefault value count " + nonDefaultValueCount);
+        mNondefaultValues = reader.readBytes(nonDefaultValueCount);
+        LOG.trace("nondefault values " + HexUtil.bytesToHex(mNondefaultValues));
     }
 
 }
