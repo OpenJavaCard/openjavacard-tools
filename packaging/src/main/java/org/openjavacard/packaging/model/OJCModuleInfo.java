@@ -1,4 +1,5 @@
 /*
+ * openjavacard-tools: Development tools for JavaCard
  * Copyright (C) 2018 Ingo Albrecht <copyright@promovicz.org>
  *
  * This library is free software; you can redistribute it and/or
