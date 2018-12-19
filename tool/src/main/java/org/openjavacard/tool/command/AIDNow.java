@@ -16,7 +16,7 @@ import java.util.List;
 
 @Parameters(
         commandNames = "aid-now",
-        commandDescription = "Generate a self-assigned AID"
+        commandDescription = "AID: Generate a self-assigned AID"
 )
 public class AIDNow implements Runnable {
 
