@@ -178,6 +178,7 @@ public abstract class GPCommand implements Runnable {
         os.println();
         os.println("CONNECTING");
         card.connect();
+        os.println();
     }
 
     /**
@@ -199,6 +200,7 @@ public abstract class GPCommand implements Runnable {
 
         os.println("DISCONNECTING");
         card.disconnect();
+        os.println();
     }
 
     private KeyStore openKeyStore() {

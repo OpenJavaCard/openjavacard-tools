@@ -48,8 +48,6 @@ public class GPInfo extends GPCommand {
     protected void performOperation(GPContext context, GPCard card) {
         PrintStream os = System.out;
 
-        os.println();
-
         CardTerminal terminal = card.getTerminal();
         os.println("Terminal information:");
         os.println("  Name \"" + terminal.getName() + "\"");

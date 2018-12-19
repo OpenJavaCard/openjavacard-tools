@@ -67,7 +67,6 @@ public class GPList extends GPCommand {
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
-        os.println();
         if (!showAll) {
             if (showSD || showELF || showAPP) {
                 showAll = false;
