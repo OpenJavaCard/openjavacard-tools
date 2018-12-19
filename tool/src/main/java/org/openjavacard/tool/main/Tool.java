@@ -97,12 +97,11 @@ public class Tool {
 
         jc.addCommand(new AIDNow());
 
+        jc.addCommand(new GenericAPDU(mContext));
+
         jc.addCommand(new CapInfo());
         jc.addCommand(new CapSize());
         jc.addCommand(new CapDump());
-
-        jc.addCommand(new GenericAPDU(mContext));
-        jc.addCommand(new GenericScanName(mContext));
 
         jc.addCommand(new GPInfo(mContext));
         jc.addCommand(new GPList(mContext));
@@ -113,6 +112,8 @@ public class Tool {
         jc.addCommand(new GPState(mContext));
         jc.addCommand(new GPIdentity(mContext));
         jc.addCommand(new GPKeys(mContext));
+
+        jc.addCommand(new ScanName(mContext));
 
         return jc;
     }
