@@ -37,7 +37,11 @@ import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.smartcardio.*;
+import javax.smartcardio.Card;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;

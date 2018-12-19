@@ -29,7 +29,12 @@ import org.openjavacard.iso.AID;
 import org.openjavacard.util.HexUtil;
 
 import javax.smartcardio.CardException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;

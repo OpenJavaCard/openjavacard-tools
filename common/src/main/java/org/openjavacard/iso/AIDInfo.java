@@ -19,7 +19,12 @@
 
 package org.openjavacard.iso;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class AIDInfo {
 

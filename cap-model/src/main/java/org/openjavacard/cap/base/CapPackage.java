@@ -20,7 +20,17 @@
 package org.openjavacard.cap.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.openjavacard.cap.component.*;
+import org.openjavacard.cap.component.CapAppletComponent;
+import org.openjavacard.cap.component.CapClassComponent;
+import org.openjavacard.cap.component.CapConstantPoolComponent;
+import org.openjavacard.cap.component.CapDescriptorComponent;
+import org.openjavacard.cap.component.CapDirectoryComponent;
+import org.openjavacard.cap.component.CapExportComponent;
+import org.openjavacard.cap.component.CapHeaderComponent;
+import org.openjavacard.cap.component.CapImportComponent;
+import org.openjavacard.cap.component.CapMethodComponent;
+import org.openjavacard.cap.component.CapReferenceLocationComponent;
+import org.openjavacard.cap.component.CapStaticFieldComponent;
 
 import java.util.ArrayList;
 
