@@ -43,6 +43,7 @@ import org.openjavacard.tool.command.PkgInit;
 import org.openjavacard.tool.command.PkgInstall;
 import org.openjavacard.tool.command.PkgList;
 import org.openjavacard.tool.command.PkgSearch;
+import org.openjavacard.tool.command.ScanFID;
 import org.openjavacard.tool.command.ScanName;
 import org.openjavacard.tool.converter.ConverterFactory;
 import org.slf4j.Logger;
@@ -142,6 +143,7 @@ public class Tool {
         jc.addCommand(new PkgSearch(mContext));
 
         jc.addCommand(new ScanName(mContext));
+        jc.addCommand(new ScanFID(mContext));
 
         return jc;
     }
