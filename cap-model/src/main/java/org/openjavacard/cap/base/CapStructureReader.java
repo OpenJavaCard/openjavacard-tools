@@ -19,15 +19,22 @@
 
 package org.openjavacard.cap.base;
 
+import org.openjavacard.cap.component.CapMethodComponent;
 import org.openjavacard.cap.structure.CapClassRef;
 import org.openjavacard.iso.AID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CapStructureReader {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CapStructureReader.class);
 
     protected final BufferedInputStream mStream;
 
@@ -146,11 +153,21 @@ public class CapStructureReader {
     S readStructure(Class<S> structureClass) throws IOException {
         try {
             S instance = structureClass.newInstance();
-            instance.read(this);
+            readStructure(instance);
             return instance;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IOException(e);
         }
+    }
+
+    public
+    <S extends CapStructure>
+    ArrayList<S> readStructureArray(int count, Class<S> structureClass) throws IOException {
+        ArrayList<S> res = new ArrayList<>();
+        for(int i = 0; i < count; i++) {
+            res.add(readStructure(structureClass));
+        }
+        return res;
     }
 
     public CapClassRef readClassRef() throws IOException {

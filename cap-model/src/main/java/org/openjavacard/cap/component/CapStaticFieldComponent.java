@@ -44,6 +44,26 @@ public class CapStaticFieldComponent extends CapComponent {
         super(CapComponentType.StaticField);
     }
 
+    public int getImageSize() {
+        return mImageSize;
+    }
+
+    public int getReferenceCount() {
+        return mReferenceCount;
+    }
+
+    public ArrayList<CapArrayInit> getArrayInits() {
+        return mArrayInits;
+    }
+
+    public int getDefaultValueCount() {
+        return mDefaultValueCount;
+    }
+
+    public byte[] getNondefaultValues() {
+        return mNondefaultValues;
+    }
+
     @Override
     public void read(CapStructureReader reader) throws IOException {
         mImageSize = reader.readU2();
@@ -52,14 +72,7 @@ public class CapStaticFieldComponent extends CapComponent {
         LOG.trace("reference count " + mReferenceCount);
         int arrayInitCount = reader.readU2();
         LOG.trace("array init count " + arrayInitCount);
-        for(int i = 0; i < arrayInitCount; i++) {
-            int arrayType = reader.readU1();
-            LOG.trace("array " + i + " type " + arrayType);
-            int arrayCount = reader.readU2();
-            LOG.trace("array " + i + " count " + arrayCount);
-            byte[] arrayData = reader.readBytes(arrayCount);
-            LOG.trace("array " + i + " data " + HexUtil.bytesToHex(arrayData));
-        }
+        mArrayInits = reader.readStructureArray(arrayInitCount, CapArrayInit.class);
         mDefaultValueCount = reader.readU2();
         LOG.trace("default value count " + mDefaultValueCount);
         int nonDefaultValueCount = reader.readU2();

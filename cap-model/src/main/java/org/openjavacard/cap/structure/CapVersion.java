@@ -34,16 +34,6 @@ public class CapVersion {
         this.minor = minor;
     }
 
-    @JsonIgnore
-    public boolean isSupported() {
-        if(this.major == 2) {
-            if(this.minor == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public String toString() {
         return major + "." + minor;
     }

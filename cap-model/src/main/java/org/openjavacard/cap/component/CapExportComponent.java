@@ -27,22 +27,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CapExportComponent extends CapComponent {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapExportComponent.class);
 
+    private ArrayList<CapClassExportInfo> mClassExports;
+
     public CapExportComponent() {
         super(CapComponentType.Export);
+    }
+
+    public ArrayList<CapClassExportInfo> getClassExports() {
+        return mClassExports;
     }
 
     @Override
     public void read(CapStructureReader reader) throws IOException {
         int classExportCount = reader.readU1();
         LOG.trace("reading " + classExportCount + " class exports");
-        for(int i = 0; i < classExportCount; i++) {
-            reader.readStructure(CapClassExportInfo.class);
-        }
+        mClassExports = reader.readStructureArray(classExportCount, CapClassExportInfo.class);
     }
 
 }

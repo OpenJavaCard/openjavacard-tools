@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CapClassComponent extends CapComponent {
 
@@ -42,18 +43,16 @@ public class CapClassComponent extends CapComponent {
         super(CapComponentType.Class);
     }
 
-    public ArrayList<CapInterfaceInfo> getInterfaces() {
+    public List<CapInterfaceInfo> getInterfaces() {
         return mInterfaces;
     }
 
-    public ArrayList<CapClassInfo> getClasses() {
+    public List<CapClassInfo> getClasses() {
         return mClasses;
     }
 
     @Override
     public void read(CapStructureReader reader) throws IOException {
-        //int signaturePoolLength = reader.readU2();
-        //LOG.trace("reading " + signaturePoolLength + " bytes of signature pool");
         ArrayList<CapClassInfo> classes = new ArrayList<>();
         ArrayList<CapInterfaceInfo> interfaces = new ArrayList<>();
         while(reader.hasMore()) {
@@ -65,7 +64,9 @@ public class CapClassComponent extends CapComponent {
                 classes.add(reader.readStructure(CapClassInfo.class));
             }
         }
-        LOG.trace("read " + interfaces.size() + " interfaces" + classes.size() + " classes");
+        mInterfaces = interfaces;
+        mClasses = classes;
+        LOG.trace("read " + interfaces.size() + " interfaces " + classes.size() + " classes");
     }
 
 }

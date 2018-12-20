@@ -30,13 +30,31 @@ public class CapClassExportInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapClassExportInfo.class);
 
+    private CapClassRef mClassRef;
+
+    private int[] mStaticFieldOffsets;
+
+    private int[] mStaticMethodOffsets;
+
+    public CapClassRef getClassRef() {
+        return mClassRef;
+    }
+
+    public int[] getStaticFieldOffsets() {
+        return mStaticFieldOffsets;
+    }
+
+    public int[] getStaticMethodOffsets() {
+        return mStaticMethodOffsets;
+    }
+
     public void read(CapStructureReader reader) throws IOException {
-        int classOffset = reader.readU2();
+        mClassRef = reader.readStructure(CapClassRef.class);
         int staticFieldCount = reader.readU1();
         int staticMethodCount = reader.readU1();
-        LOG.trace("classExport offset " + classOffset + " staticFields " + staticFieldCount + " staticMethods " + staticMethodCount);
-        int[] staticFieldOffsets = reader.readU2Array(staticFieldCount);
-        int[] staticMethodOffsets = reader.readU2Array(staticMethodCount);
+        LOG.trace("staticFields " + staticFieldCount + " staticMethods " + staticMethodCount);
+        mStaticFieldOffsets = reader.readU2Array(staticFieldCount);
+        mStaticMethodOffsets = reader.readU2Array(staticMethodCount);
     }
 
 }

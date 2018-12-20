@@ -30,19 +30,61 @@ public class CapMethodDescriptorInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapMethodDescriptorInfo.class);
 
+    private int mToken;
+
+    private int mAccessFlags;
+
+    private int mOffset;
+
+    private int mTypeOffset;
+
+    private int mBytecodeCount;
+
+    private int mExceptionCount;
+
+    private int mExceptionIndex;
+
+    public int getToken() {
+        return mToken;
+    }
+
+    public int getAccessFlags() {
+        return mAccessFlags;
+    }
+
+    public int getOffset() {
+        return mOffset;
+    }
+
+    public int getTypeOffset() {
+        return mTypeOffset;
+    }
+
+    public int getBytecodeCount() {
+        return mBytecodeCount;
+    }
+
+    public int getExceptionCount() {
+        return mExceptionCount;
+    }
+
+    public int getExceptionIndex() {
+        return mExceptionIndex;
+    }
+
     public void read(CapStructureReader reader) throws IOException {
-        int methodToken = reader.readU1();
-        int methodAccessFlags = reader.readU1();
-        int methodOffset = reader.readU2();
-        int methodTypeOffset = reader.readU2();
-        int methodBytecodeCount = reader.readU2();
-        int methodExcCount = reader.readU2();
-        int methodExcIndex = reader.readU2();
-        LOG.trace("method token " + methodToken + " accessFlags " + methodAccessFlags
-                + " offset " + methodOffset + " typeOffset " + methodTypeOffset
-                + " bytecodeCount " + methodBytecodeCount
-                + " exceptionCount " + methodExcCount
-                + " exceptionIndex " + methodExcIndex);
+        mToken = reader.readU1();
+        mAccessFlags = reader.readU1();
+        mOffset = reader.readU2();
+        mTypeOffset = reader.readU2();
+        mBytecodeCount = reader.readU2();
+        mExceptionCount = reader.readU2();
+        mExceptionIndex = reader.readU2();
+        LOG.trace("method token " + mToken + " accessFlags " + mAccessFlags
+                + " offset " + mOffset + " typeOffset " + mTypeOffset
+                + " bytecodeCount " + mBytecodeCount
+                + " exceptionCount " + mExceptionCount
+                + " exceptionIndex " + mExceptionIndex);
     }
 
 }

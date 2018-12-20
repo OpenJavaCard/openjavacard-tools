@@ -47,11 +47,7 @@ public class CapImportComponent extends CapComponent {
     public void read(CapStructureReader reader) throws IOException {
         int importCount = reader.readU1();
         LOG.trace("reading " + importCount + " imports");
-        ArrayList<CapPackageInfo> imports = new ArrayList<>();
-        for(int i = 0; i < importCount; i++) {
-            imports.add(reader.readStructure(CapPackageInfo.class));
-        }
-        mImports = imports;
+        mImports = reader.readStructureArray(importCount, CapPackageInfo.class);
     }
 
 }

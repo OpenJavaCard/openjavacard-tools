@@ -21,14 +21,35 @@ package org.openjavacard.cap.structure;
 
 import org.openjavacard.cap.base.CapStructure;
 import org.openjavacard.cap.base.CapStructureReader;
+import org.openjavacard.cap.component.CapStaticFieldComponent;
+import org.openjavacard.util.HexUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class CapArrayInit extends CapStructure {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CapArrayInit.class);
+
+    private int mType;
+
+    private byte[] mData;
+
+    public int getType() {
+        return mType;
+    }
+
+    public byte[] getData() {
+        return mData;
+    }
+
     @Override
     public void read(CapStructureReader reader) throws IOException {
-
+        mType = reader.readU1();
+        int arrayCount = reader.readU2();
+        mData = reader.readBytes(arrayCount);
+        LOG.trace("array type " + mType + " data " + HexUtil.bytesToHex(mData));
     }
 
 }

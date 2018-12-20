@@ -19,6 +19,7 @@
 
 package org.openjavacard.cap.component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openjavacard.cap.base.CapComponent;
 import org.openjavacard.cap.base.CapStructureReader;
 import org.openjavacard.cap.file.CapComponentType;
@@ -39,17 +40,27 @@ public class CapMethodComponent extends CapComponent {
         super(CapComponentType.Method);
     }
 
+    private ArrayList<CapExceptionHandlerInfo> mExceptionHandlerInfos;
+
+    private byte[] mRawMethodInfo;
+
+    public ArrayList<CapExceptionHandlerInfo> getExceptionHandlerInfos() {
+        return mExceptionHandlerInfos;
+    }
+
+    @JsonIgnore
+    public byte[] getRawMethodInfo() {
+        return mRawMethodInfo;
+    }
+
     @Override
     public void read(CapStructureReader reader) throws IOException {
         int handlerCount = reader.readU1();
         LOG.trace("reading " + handlerCount + " handlers");
-        ArrayList<CapExceptionHandlerInfo> ehis = new ArrayList<>();
-        for(int i = 0; i < handlerCount; i++) {
-            ehis.add(reader.readStructure(CapExceptionHandlerInfo.class));
-        }
+        mExceptionHandlerInfos = reader.readStructureArray(handlerCount, CapExceptionHandlerInfo.class);
         int methodInfoLength = reader.available();
         LOG.trace("method info is " + reader.available() + " bytes");
-        byte[] methodInfo = reader.readBytes(methodInfoLength);
+        mRawMethodInfo = reader.readBytes(methodInfoLength);
     }
 
     public void decodeMethodInfo(CapDescriptorComponent descriptorComponent) {
