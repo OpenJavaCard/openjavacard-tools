@@ -24,7 +24,7 @@ import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
-import org.openjavacard.gp.protocol.GPLifeCycle;
+import org.openjavacard.emv.CPLC;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
@@ -132,7 +132,7 @@ public class GPCard {
      * as well as ISO-specified identifiers for the manufacturers
      * involved in making the card.
      */
-    private GPLifeCycle mCardLifeCycle;
+    private CPLC mCPLC;
     /**
      * Card data
      * <p/>
@@ -248,8 +248,8 @@ public class GPCard {
     }
 
     /** @return ISO lifecycle information of the card, null if not provided by card */
-    public GPLifeCycle getCardLifeCycle() {
-        return mCardLifeCycle;
+    public CPLC getCPLC() {
+        return mCPLC;
     }
     /** @return GlobalPlatform card data of the card, null if not provided by card */
     public GPCardData getCardData() {
@@ -283,8 +283,8 @@ public class GPCard {
      * @return a uniquely identifying string
      */
     public String getLifetimeIdentifier() {
-        if(mCardLifeCycle != null) {
-            return mCardLifeCycle.getLifetimeIdentifier();
+        if(mCPLC != null) {
+            return mCPLC.getLifetimeIdentifier();
         }
         return null;
     }
@@ -430,12 +430,12 @@ public class GPCard {
             }
 
             // get lifecycle data, can be used for identification if present
-            mCardLifeCycle = readCPLC();
-            if (mCardLifeCycle == null) {
+            mCPLC = readCPLC();
+            if (mCPLC == null) {
                 // this is completely normal
                 LOG.debug("card has no lifecycle data");
             } else {
-                LOG.trace("card lifecycle:\n" + mCardLifeCycle.toString());
+                LOG.trace("card lifecycle:\n" + mCPLC.toString());
             }
 
             // get IIN and CIN if uniquely identifiable
@@ -631,12 +631,12 @@ public class GPCard {
      * @return the object
      * @throws CardException on error
      */
-    private GPLifeCycle readCPLC() throws CardException {
+    private CPLC readCPLC() throws CardException {
         LOG.debug("readCPLC()");
-        GPLifeCycle res = null;
+        CPLC res = null;
         byte[] data = readData(GP.GET_DATA_P12_CPLC);
         if(data != null) {
-            res = GPLifeCycle.read(data);
+            res = CPLC.read(data);
         }
         return res;
     }

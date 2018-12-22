@@ -24,7 +24,7 @@ import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
-import org.openjavacard.gp.protocol.GPLifeCycle;
+import org.openjavacard.emv.CPLC;
 import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.util.ATRUtil;
 import org.openjavacard.util.HexUtil;
@@ -76,9 +76,9 @@ public class GPInfo extends GPCommand {
         os.println("  ISD " + card.getISD());
         os.println();
 
-        GPLifeCycle lifeCycle = card.getCardLifeCycle();
+        CPLC lifeCycle = card.getCPLC();
         if (lifeCycle == null) {
-            os.println("Card has no lifecycle data");
+            os.println("Card has no CPLC");
         } else {
             os.println(lifeCycle.toString());
         }

@@ -17,28 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package org.openjavacard.jackson.iso;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.openjavacard.emv.CPLC;
-
-import java.io.IOException;
-
-public class CPLCSerializer extends StdSerializer<CPLC> {
-
-    public CPLCSerializer() {
-        super(CPLC.class);
-    }
-
-    @Override
-    public void serialize(CPLC value, JsonGenerator gen, SerializerProvider provider)
-            throws IOException {
-        gen.writeStartObject();
-        for(CPLC.Field field: CPLC.Field.values()) {
-            gen.writeStringField(field.name(), value.getFieldHex(field));
-        }
-        gen.writeEndObject();
-    }
-}
+/**
+ * Definitions concerning EMV standards
+ */
+package org.openjavacard.emv;

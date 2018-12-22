@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package org.openjavacard.gp.protocol;
+package org.openjavacard.emv;
 
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.HexUtil;
@@ -30,15 +30,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * GlobalPlatform Card Production Life Cycle data
+ * Card Production Life Cycle data
  * <p/>
- * This describes the card and how it has been treated
- * in various phases of production and provisioning.
+ * This describes the card and how it has been treated in various phases of production and provisioning.
+ * <p/>
+ * Many cards intended for EMV use provide this data structure, and it is considered well-known.
+ * <p/>
+ * Supposedly defined in the proprietary "Visa Integrated Circuit Card Specification".
  */
-public class GPLifeCycle {
+public class CPLC {
 
     /**
-     * Definition of fields in an ISO CPLC
+     * Definition of fields in a CPLC
      */
     public enum Field {
         ICFabricator(2),
@@ -75,7 +78,7 @@ public class GPLifeCycle {
     /**
      * Constructor for empty life cycle data objects
      */
-    public GPLifeCycle() {
+    public CPLC() {
         mValues = new LinkedHashMap<>();
     }
 
@@ -83,7 +86,7 @@ public class GPLifeCycle {
      * Constructor for life cycle data objects
      * @param values to populate the object with
      */
-    public GPLifeCycle(Map<Field, byte[]> values) {
+    public CPLC(Map<Field, byte[]> values) {
         LinkedHashMap<Field,byte[]> valueMap = new LinkedHashMap<>();
         for(Field field: Field.values()) {
             valueMap.put(field, values.get(field));
@@ -129,7 +132,7 @@ public class GPLifeCycle {
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("GP Card Production Lifecycle:");
+        sb.append("Card Production Life Cycle:");
         for (Field field : Field.values()) {
             byte[] value = mValues.get(field);
             if (value != null) {
@@ -143,7 +146,7 @@ public class GPLifeCycle {
      * Parse a CPLC from bytes
      * @param buf with data
      */
-    public static GPLifeCycle read(byte[] buf) {
+    public static CPLC read(byte[] buf) {
         return read(buf, 0, buf.length);
     }
 
@@ -153,7 +156,7 @@ public class GPLifeCycle {
      * @param off of data
      * @param len of data
      */
-    public static GPLifeCycle read(byte[] buf, int off, int len) throws IllegalArgumentException {
+    public static CPLC read(byte[] buf, int off, int len) throws IllegalArgumentException {
         try {
             TLVPrimitive tlv = TLVPrimitive.readPrimitive(buf, off, len).asPrimitive(0x9F7F);
             LinkedHashMap<Field, byte[]> values = new LinkedHashMap<>();
@@ -174,7 +177,7 @@ public class GPLifeCycle {
                 throw new IllegalArgumentException("CPLC to long (" + (dataBuf.length - dataOff) + " bytes left)");
             }
             // construct and return instance
-            return new GPLifeCycle(values);
+            return new CPLC(values);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error parsing CPLC TLV", e);
         }
