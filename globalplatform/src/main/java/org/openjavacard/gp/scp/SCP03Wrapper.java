@@ -77,7 +77,7 @@ public class SCP03Wrapper extends SCPWrapper {
         int respLen = command.getNe();
         byte[] data = command.getData();
         // and those fields that get replaced
-        int wrappedCla = cla;
+        int wrappedCla = cla | 0x04;
         int wrappedLen = dataLen;
         byte[] wrappedData = data;
 
