@@ -37,6 +37,7 @@ import org.openjavacard.tool.command.GPList;
 import org.openjavacard.tool.command.GPLoad;
 import org.openjavacard.tool.command.GPState;
 import org.openjavacard.tool.command.GenericAPDU;
+import org.openjavacard.tool.command.GenericReaders;
 import org.openjavacard.tool.command.PkgAvailable;
 import org.openjavacard.tool.command.PkgInfo;
 import org.openjavacard.tool.command.PkgInit;
