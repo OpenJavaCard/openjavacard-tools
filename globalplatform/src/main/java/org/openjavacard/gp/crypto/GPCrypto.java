@@ -81,6 +81,18 @@ public class GPCrypto {
     }
 
     /**
+     * Encrypt using AES-CBC and IV
+     *
+     * @param key
+     * @param text
+     * @return
+     */
+    public static byte[] enc_aes_cbc(GPKey key, byte[] text, byte[] iv) {
+        Key secretKey = key.getSecretKey(GPKeyCipher.AES);
+        return enc(AES_CBC_NOPAD, secretKey, text, 0, text.length, iv);
+    }
+
+    /**
      * Encrypt using DES-ECB
      *
      * @param key

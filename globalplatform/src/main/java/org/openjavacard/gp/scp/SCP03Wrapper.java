@@ -92,7 +92,7 @@ public class SCP03Wrapper extends SCPWrapper {
         }
 
         // perform ENC operation
-        if (mENC && dataLen > 0) {
+        if (mENC && wrappedLen > 0) {
             GPKey encKey = mKeys.getKeyByType(GPKeyType.ENC);
 
             // enc requires mac
@@ -101,10 +101,10 @@ public class SCP03Wrapper extends SCPWrapper {
             }
 
             // perform padding
-            byte[] plainBuf = GPCrypto.pad80(data, 16);
+            byte[] plainBuf = GPCrypto.pad80(wrappedData, 16);
 
             // perform the encryption
-            byte[] encrypted = GPCrypto.enc_aes_cbc(encKey, plainBuf);
+            byte[] encrypted = GPCrypto.enc_aes_cbc(encKey, plainBuf, mICV);
 
             // replace data, adjusting size accordingly
             wrappedLen += encrypted.length - dataLen;
