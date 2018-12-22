@@ -287,21 +287,47 @@ public class GPRegistry {
 
     List<ELFEntry> readEntriesELF() throws CardException {
         LOG.trace("readEntriesELF()");
-        List<ELFEntry> elfEntries;
-        if(mUseLegacy) {
-            elfEntries = readStatusLegacy(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
-        } else {
+        List<ELFEntry> elfEntries = null;
+
+        if(!mUseLegacy) {
+            // try TLV with module information
             try {
                 elfEntries = readStatusTLV(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, ELFEntry.class);
             } catch (SWException e) {
-                if (e.getCode() == ISO7816.SW_FUNC_NOT_SUPPORTED) {
-                    elfEntries = readStatusLegacy(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
-                    mUseLegacy = true;
-                } else {
-                    throw e;
+                switch(e.getCode()) {
+                    case ISO7816.SW_FUNC_NOT_SUPPORTED:
+                    case ISO7816.SW_INCORRECT_P1P2:
+                        break;
+                    default:
+                        throw e;
                 }
             }
+            if(elfEntries != null) {
+                return elfEntries;
+            }
+            // try TLV without module information
+            try {
+                elfEntries = readStatusTLV(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
+            } catch (SWException e) {
+                switch(e.getCode()) {
+                    case ISO7816.SW_FUNC_NOT_SUPPORTED:
+                    case ISO7816.SW_INCORRECT_P1P2:
+                        break;
+                    default:
+                        throw e;
+                }
+            }
+            if(elfEntries != null) {
+                return elfEntries;
+            }
         }
+
+        // TLV did not work - from now on use legacy format
+        mUseLegacy = true;
+
+        // try only the variant without module information
+        elfEntries = readStatusLegacy(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
+
         return elfEntries;
     }
 
