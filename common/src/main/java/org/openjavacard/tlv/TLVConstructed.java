@@ -73,9 +73,9 @@ public class TLVConstructed extends TLV {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("TLV");
+        sb.append("[");
         sb.append(TLVTag.toString(mTag));
-        sb.append("{");
+        sb.append("]{");
         boolean first = true;
         for(TLV tlv: mChildren) {
             if(!first) {

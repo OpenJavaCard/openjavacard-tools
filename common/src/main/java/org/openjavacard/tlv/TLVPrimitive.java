@@ -72,8 +72,7 @@ public class TLVPrimitive extends TLV {
 
     @Override
     public String toString() {
-        return "TLV" + TLVTag.toString(mTag)
-                + ":" + HexUtil.bytesToHex(mData);
+        return "[" + TLVTag.toString(mTag) + "]" + HexUtil.bytesToHex(mData);
     }
 
 }
