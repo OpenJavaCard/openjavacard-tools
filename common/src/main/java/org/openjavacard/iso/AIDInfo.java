@@ -90,11 +90,18 @@ public class AIDInfo {
 
         // OpenJavaCard project (under RID provided by signal interrupt)
         addDescription("D27600017710",   "OpenJavaCard", AIDUsage.PREFIX);
+
         addDescription("D2760001771001", "OpenJavaCard Applications", AIDUsage.PREFIX, AIDUsage.APPLET);
+        addDescription("D276000177100110", "OpenJavaCard Libraries", AIDUsage.PREFIX, AIDUsage.APPLET);
+        addDescription("D27600017710011001", "OpenJavaCard Libraries (Demo applet)", AIDUsage.APPLET);
+        addDescription("D27600017710011020", "OpenJavaCard Libraries (Debug service)", AIDUsage.APPLET);
+        addDescription("D27600017710011021", "OpenJavaCard Libraries (Random service)", AIDUsage.APPLET);
+
         addDescription("D2760001771002", "OpenJavaCard Install Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
-        addDescription("D2760001771003", "OpenJavaCard Library Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
-        addDescription("D2760001771004", "OpenJavaCard Security Domains", AIDUsage.PREFIX, AIDUsage.DOMAIN);
-        addDescription("D27600017710021001", "OpenJavaCard Libraries (demo)", AIDUsage.PREFIX);
+        addDescription("D276000177100210", "OpenJavaCard Libraries", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D27600017710021001", "OpenJavaCard Libraries (Demo applet)", AIDUsage.PACKAGE);
+        addDescription("D27600017710021020", "OpenJavaCard Libraries (Debug service)", AIDUsage.PACKAGE);
+        addDescription("D27600017710021021", "OpenJavaCard Libraries (Random service)", AIDUsage.PACKAGE);
         addDescription("D27600017710021101", "OpenJavaCard NDEF (full plain)", AIDUsage.PACKAGE);
         addDescription("D27600017710021102", "OpenJavaCard NDEF (stub plain)", AIDUsage.PACKAGE);
         addDescription("D27600017710021103", "OpenJavaCard NDEF (tiny plain)", AIDUsage.PACKAGE);
@@ -104,6 +111,18 @@ public class AIDInfo {
         addDescription("D27600017710022001", "OpenJavaCard YKNeo OpenPGP (standard)", AIDUsage.PACKAGE);
         addDescription("D27600017710022101", "OpenJavaCard YKNeo OATH (standard)", AIDUsage.PACKAGE);
         addDescription("D27600017710022201", "OpenJavaCard IsoApplet (standard)", AIDUsage.PACKAGE);
+
+        addDescription("D2760001771003", "OpenJavaCard Library Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D276000177100310", "OpenJavaCard Libraries", AIDUsage.PREFIX, AIDUsage.PACKAGE);
+        addDescription("D27600017710031001", "OpenJavaCard Libraries (BER processing)", AIDUsage.PACKAGE);
+        addDescription("D27600017710031002", "OpenJavaCard Libraries (String processing)", AIDUsage.PACKAGE);
+        addDescription("D27600017710031003", "OpenJavaCard Libraries (Fortuna PRNG)", AIDUsage.PACKAGE);
+        addDescription("D27600017710031004", "OpenJavaCard Libraries (RSA extensions)", AIDUsage.PACKAGE);
+        addDescription("D27600017710031005", "OpenJavaCard Libraries (Debug utilities)", AIDUsage.PACKAGE);
+        addDescription("D27600017710031006", "OpenJavaCard Libraries (Auth framework)", AIDUsage.PACKAGE);
+        addDescription("D27600017710031007", "OpenJavaCard Libraries (Password functions)", AIDUsage.PACKAGE);
+
+        addDescription("D2760001771004", "OpenJavaCard Security Domains", AIDUsage.PREFIX, AIDUsage.DOMAIN);
 
         // signal interrupt
         addDescription("D276000177",   "signal interrupt", AIDUsage.PREFIX);
