@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
 @Parameters(
@@ -54,9 +55,25 @@ public class Script implements Runnable {
                 FileReader fr = new FileReader(script);
                 BufferedReader br = new BufferedReader(fr);
                 for (String line; (line = br.readLine()) != null; ) {
+                    // skip empty lines
+                    if(line.isEmpty() || line.matches("^\\s+$")) {
+                        continue;
+                    }
                     // ignore comments
                     if(line.startsWith("#")) {
                         continue;
+                    }
+                    // eat multilines
+                    if(line.endsWith("\\")) {
+                        while(line.endsWith("\\")) {
+                            line = line.substring(0, line.length() - 1);
+                            String next = br.readLine();
+                            if(next == null) {
+                                break;
+                            } else {
+                                line += next;
+                            }
+                        }
                     }
                     // tokenize the line
                     String[] tokens = line.split("\\s+");
