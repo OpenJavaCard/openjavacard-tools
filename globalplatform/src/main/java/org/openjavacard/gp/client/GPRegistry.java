@@ -526,7 +526,11 @@ public class GPRegistry {
                         }
                         break;
                     default:
-                        LOG.warn("Unknown TLV in registry entry: " + tlv.toString());
+                        if(mAID != null) {
+                            LOG.warn("Unknown tag in registry entry " + mAID + ": " + tlv.toString());
+                        } else {
+                            LOG.warn("Unknown tag in registry entry <unknown>: " + tlv.toString());
+                        }
                 }
             }
             mModules = modules;
