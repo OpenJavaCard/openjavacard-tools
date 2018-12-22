@@ -247,10 +247,11 @@ public class GPCard {
         return mCardCIN;
     }
 
-    /** @return ISO lifecycle information of the card, null if not provided by card */
+    /** @return EMV lifecycle information of the card, null if not provided by card */
     public CPLC getCPLC() {
         return mCPLC;
     }
+
     /** @return GlobalPlatform card data of the card, null if not provided by card */
     public GPCardData getCardData() {
         return mCardData;
