@@ -156,7 +156,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
         // check for length limit
         if (data.length > getMaxSize()) {
-            throw new CardException("Can not wrap: CardAPDU too long");
+            throw new CardException("Cannot wrap command: APDU to long");
         }
 
         // we can return the original command if MAC and ENC are disabled
@@ -274,7 +274,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
             // check for sufficient length
             if (data.length < 8) {
-                throw new CardException("Cannot unwrap response: too short");
+                throw new CardException("Cannot unwrap response: APDU to short");
             }
 
             // extract the MAC value
