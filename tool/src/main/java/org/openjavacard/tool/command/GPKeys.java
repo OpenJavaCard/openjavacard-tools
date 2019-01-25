@@ -59,7 +59,7 @@ public class GPKeys extends GPCommand {
     @Parameter(
             names = "--new-types"
     )
-    String newKeyTypes = "MAC:ENC:KEK";
+    String newKeyTypes = "MASTER";
 
     @Parameter(
             names = "--new-secrets",
@@ -74,7 +74,7 @@ public class GPKeys extends GPCommand {
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
-        GPKeySet newKeys = createNewKeys();
+        GPKeySet newKeys = createKeys(newKeyVersion, newKeyId, newKeyCipher, newKeyTypes, newKeySecrets);
 
         os.println("New " + newKeys);
         os.println();
@@ -84,34 +84,6 @@ public class GPKeys extends GPCommand {
         os.println("Check complete.");
         os.println();
 
-    }
-
-    private GPKeySet createNewKeys() {
-        if(newKeyVersion > 255) {
-            throw new Error("Bad key version");
-        }
-        // XXX this is not comprehensive because of the loop and protocol variations
-        if(newKeyId > 255) {
-            throw new Error("Bad key id");
-        }
-        GPKeySet keys = new GPKeySet("commandline", newKeyVersion);
-        String[] keyTypes = newKeyTypes.split(":");
-        String[] keySecrets = newKeySecrets.split(":");
-        if(keyTypes.length != keySecrets.length) {
-            throw new Error("Must provide an equal number of key types and secrets");
-        }
-        int numKeys = keyTypes.length;
-        for(int i = 0; i < numKeys; i++) {
-            GPKeyType keyType = GPKeyType.valueOf(keyTypes[i]);
-            byte[] keySecret = HexUtil.hexToBytes(keySecrets[i]);
-            byte keyId = (byte)(newKeyId + i);
-            if(keyType == GPKeyType.MASTER) {
-                keyId = 0;
-            }
-            GPKey key = new GPKey(keyType, keyId, newKeyCipher, keySecret);
-            keys.putKey(key);
-        }
-        return keys;
     }
 
 }

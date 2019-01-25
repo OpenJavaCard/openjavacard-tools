@@ -20,9 +20,14 @@
 package org.openjavacard.tool.command;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.validators.PositiveInteger;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
+import org.openjavacard.gp.keys.GPKey;
+import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.gp.keys.GPKeyDiversification;
+import org.openjavacard.gp.keys.GPKeySet;
+import org.openjavacard.gp.keys.GPKeyType;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;
 import org.openjavacard.iso.AID;
@@ -80,19 +85,46 @@ public abstract class GPCommand implements Runnable {
     protected SCPSecurityPolicy scpSecurity = SCPSecurityPolicy.CMAC;
 
     @Parameter(
-            names = "--keystore-file", order = 400,
+            names = "--key-version",
+            validateWith = PositiveInteger.class
+    )
+    int scpKeyVersion = 1;
+
+    @Parameter(
+            names = "--key-id",
+            validateWith = PositiveInteger.class
+    )
+    int scpKeyId = 1;
+
+    @Parameter(
+            names = "--key-cipher"
+    )
+    GPKeyCipher scpKeyCipher = GPKeyCipher.DES3;
+
+    @Parameter(
+            names = "--key-types"
+    )
+    String scpKeyTypes = "MASTER";
+
+    @Parameter(
+            names = "--key-secrets"
+    )
+    String scpKeySecrets;
+
+    @Parameter(
+            names = "--keystore-file", order = 500,
             description = "Keystore: file containing keystore"
     )
     protected String keystoreFile = null;
 
     @Parameter(
-            names = "--keystore-type", order = 400,
+            names = "--keystore-type", order = 500,
             description = "Keystore: type of keystore"
     )
     protected String keystoreType = null;
 
     @Parameter(
-            names = "--keystore-password", order = 400,
+            names = "--keystore-password", order = 500,
             description = "Keystore: password for keystore"
     )
     protected String keystorePassword = null;
@@ -138,25 +170,31 @@ public abstract class GPCommand implements Runnable {
     private GPCard prepareOperation() {
         PrintStream os = System.out;
 
+        GPKeySet keys = GPKeySet.GLOBALPLATFORM;
+
         if(logKeys) {
             mContext.enableKeyLogging();
         }
 
-        if(keystoreFile != null) {
-            os.println("Opening keystore " + keystoreFile);
-            KeyStore ks = openKeyStore();
-            try {
-                Enumeration<String> aliases = ks.aliases();
-                while(aliases.hasMoreElements()) {
-                    String alias = aliases.nextElement();
-                    os.println("Keystore contains " + alias);
+        if(scpKeySecrets != null) {
+            keys = createKeys(scpKeyId, scpKeyVersion, scpKeyCipher, scpKeyTypes, scpKeySecrets);
+        } else {
+            if (keystoreFile != null) {
+                os.println("Opening keystore " + keystoreFile);
+                KeyStore ks = openKeyStore();
+                try {
+                    Enumeration<String> aliases = ks.aliases();
+                    while (aliases.hasMoreElements()) {
+                        String alias = aliases.nextElement();
+                        os.println("Keystore contains " + alias);
+                    }
+                } catch (KeyStoreException e) {
+                    throw new Error("Could not load keystore aliases", e);
                 }
-            } catch (KeyStoreException e) {
-                throw new Error("Could not load keystore aliases", e);
             }
         }
 
-        return mContext.findSingleGPCard(reader, isd);
+        return mContext.findSingleGPCard(reader, isd, keys);
     }
 
     /**
@@ -244,6 +282,34 @@ public abstract class GPCommand implements Runnable {
         }
 
         return ks;
+    }
+
+    protected GPKeySet createKeys(int pKeyVersion, int pKeyId, GPKeyCipher pKeyCipher, String pKeyTypes, String pKeySecrets) {
+        if(pKeyVersion > 255) {
+            throw new Error("Bad key version");
+        }
+        // XXX this is not comprehensive because of the loop and protocol variations
+        if(pKeyId > 255) {
+            throw new Error("Bad key id");
+        }
+        GPKeySet keys = new GPKeySet("commandline", pKeyVersion);
+        String[] keyTypes = pKeyTypes.split(":");
+        String[] keySecrets = pKeySecrets.split(":");
+        if(keyTypes.length != keySecrets.length) {
+            throw new Error("Must provide an equal number of key types and secrets");
+        }
+        int numKeys = keyTypes.length;
+        for(int i = 0; i < numKeys; i++) {
+            GPKeyType keyType = GPKeyType.valueOf(keyTypes[i]);
+            byte[] keySecret = HexUtil.hexToBytes(keySecrets[i]);
+            byte keyId = (byte)(pKeyId + i);
+            if(keyType == GPKeyType.MASTER) {
+                keyId = 0;
+            }
+            GPKey key = new GPKey(keyType, keyId, pKeyCipher, keySecret);
+            keys.putKey(key);
+        }
+        return keys;
     }
 
 }
