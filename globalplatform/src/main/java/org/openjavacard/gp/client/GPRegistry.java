@@ -27,6 +27,7 @@ import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
+import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,13 @@ public class GPRegistry {
     private static final int TAG_GP_REGISTRY_STATE = 0x9F70;
     private static final int TAG_GP_REGISTRY_PRIVILEGES = 0xC500;
     private static final int TAG_GP_REGISTRY_MODULE = 0x8400;
+    private static final int TAG_GP_REGISTRY_PACKAGE = 0xC400;
+    private static final int TAG_GP_REGISTRY_DOMAIN = 0xCC00;
+    private static final int TAG_GP_REGISTRY_VERSION = 0xCE00;
+    private static final int TAG_GP_REGISTRY_IMPLICIT_SELECTION = 0xCF00;
+    private static final byte IMPLICIT_SELECTION_CONTACTLESS = (byte)0x80;
+    private static final byte IMPLICIT_SELECTION_CONTACT = (byte)0x40;
+    private static final byte IMPLICIT_SELECTION_CHANNEL_MASK = (byte)0x1f;
 
     /** Card being operated on */
     private final GPCard mCard;
@@ -507,10 +515,15 @@ public class GPRegistry {
         byte mState;
         byte[] mPrivileges;
         List<AID> mModules;
+        AID mPackage;
+        AID mDomain;
+        byte[] mVersion;
+        List<Byte> mImplicitSelection;
 
         Entry(Type type) {
             mType = type;
             mModules = new ArrayList<>();
+            mImplicitSelection = new ArrayList<>();
         }
 
         public Type getType() {
@@ -528,6 +541,8 @@ public class GPRegistry {
         public List<AID> getModules() {
             return mModules;
         }
+
+        abstract String getStateString();
 
         void readTLV(byte[] data) throws IOException {
             List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(data);
@@ -551,12 +566,25 @@ public class GPRegistry {
                             throw new IllegalArgumentException("Module descriptor in non-ELF registry entry");
                         }
                         break;
+                    case TAG_GP_REGISTRY_PACKAGE:
+                        mPackage = new AID(tlv.getValueBytes());
+                        break;
+                    case TAG_GP_REGISTRY_DOMAIN:
+                        mDomain = new AID(tlv.getValueBytes());
+                        break;
+                    case TAG_GP_REGISTRY_VERSION:
+                        mVersion = tlv.getValueBytes();
+                        break;
+                    case TAG_GP_REGISTRY_IMPLICIT_SELECTION:
+                        mImplicitSelection.add(tlv.getValueBytes()[0]);
+                        break;
                     default:
                         if(mAID != null) {
                             LOG.warn("Unknown tag in registry entry " + mAID + ": " + tlv.toString());
                         } else {
                             LOG.warn("Unknown tag in registry entry <unknown>: " + tlv.toString());
                         }
+                        break;
                 }
             }
             mModules = modules;
@@ -593,6 +621,15 @@ public class GPRegistry {
             return (mPrivileges[0] & GPPrivilege.SECURITY_DOMAIN.privilegeBits) != 0;
         }
 
+        @Override
+        String getStateString() {
+            if(isSSD()) {
+                return GP.domainStateString(mState);
+            } else {
+                return GP.appletStateString(mState);
+            }
+        }
+
         public String toVerboseString() {
             StringBuilder sb = new StringBuilder();
             sb.append(mType.toString());
@@ -607,9 +644,31 @@ public class GPRegistry {
                 }
             }
             sb.append("\n  State: ");
-            sb.append(GP.appletStateString(mState));
+            sb.append(getStateString());
+            if(mDomain != null) {
+                sb.append("\n  Domain: ");
+                sb.append(mDomain.toString());
+            }
+            if(mPackage != null) {
+                sb.append("\n  Package: ");
+                sb.append(mPackage.toString());
+            }
             sb.append("\n  Privileges:");
             sb.append(GPPrivilege.printPrivileges(mPrivileges, "\n    ", ""));
+            if(!mImplicitSelection.isEmpty()) {
+                sb.append("\n  Implicit selection:");
+                for(byte selection: mImplicitSelection) {
+                    int channel = selection & IMPLICIT_SELECTION_CHANNEL_MASK;
+                    sb.append("\n    Channel ");
+                    sb.append(channel);
+                    if((selection & IMPLICIT_SELECTION_CONTACT) != 0) {
+                        sb.append(" [contact]");
+                    }
+                    if((selection & IMPLICIT_SELECTION_CONTACTLESS) != 0) {
+                        sb.append(" [contactless]");
+                    }
+                }
+            }
             return sb.toString();
         }
     }
@@ -619,30 +678,20 @@ public class GPRegistry {
             super(Type.ISD);
         }
 
-        public String toVerboseString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append(mType.toString());
-            sb.append(" ");
-            sb.append(mAID.toString());
-            AIDInfo aidInfo = AIDInfo.get(mAID);
-            if(aidInfo != null) {
-                sb.append("\n  Label: ");
-                sb.append(aidInfo.label);
-                if(aidInfo.protect) {
-                    sb.append(" [protected]");
-                }
-            }
-            sb.append("\n  State: ");
-            sb.append(GP.cardStateString(mState));
-            sb.append("\n  Privileges:");
-            sb.append(GPPrivilege.printPrivileges(mPrivileges, "\n    ", ""));
-            return sb.toString();
+        @Override
+        String getStateString() {
+            return GP.cardStateString(mState);
         }
     }
 
     public static class ELFEntry extends Entry {
         ELFEntry() {
             super(Type.ELF);
+        }
+
+        @Override
+        String getStateString() {
+            return GP.elfStateString(mState);
         }
 
         @Override
@@ -666,8 +715,22 @@ public class GPRegistry {
                 }
             }
             sb.append("\n  State: ");
-            sb.append(GP.elfStateString(mState));
+            sb.append(getStateString());
+            if(mVersion != null) {
+                sb.append("\n  Version: ");
+                for(int i = 0; i < mVersion.length; i++) {
+                    if(i > 0) {
+                        sb.append(".");
+                    }
+                    sb.append(Integer.toString(mVersion[i] & 0xFF));
+                }
+            }
+            if(mDomain != null) {
+                sb.append("\n  Domain: ");
+                sb.append(mDomain.toString());
+            }
             if (mModules != null && !mModules.isEmpty()) {
+                sb.append("\n");
                 for (AID module : mModules) {
                     sb.append("\n  ExM ");
                     sb.append(module.toString());
