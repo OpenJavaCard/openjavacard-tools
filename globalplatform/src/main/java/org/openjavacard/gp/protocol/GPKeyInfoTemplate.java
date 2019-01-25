@@ -59,6 +59,18 @@ public class GPKeyInfoTemplate {
         return new ArrayList<>(mKeyInfos);
     }
 
+    /**
+     * Check if the given GPKeySet matches this template for SCP usage
+     *
+     * Using a keyset requires that it contains all keys described by
+     * the template, that the algorithms of the keys are compatible and
+     * that the key version agrees with the template.
+     *
+     * Mapping of keys is performed by key ID.
+     *
+     * @param keys to check
+     * @return true if usable
+     */
     public boolean matchesKeysetForUsage(GPKeySet keys) {
         for (GPKeyInfo keyInfo : mKeyInfos) {
             GPKey key = keys.getKeyById(keyInfo.getKeyId());
@@ -76,6 +88,18 @@ public class GPKeyInfoTemplate {
         return true;
     }
 
+    /**
+     * Check if the given GPKeySet matches this template for key replacement
+     *
+     * Replacing keys requires that the set contains all keys described in
+     * the template and that their algorithms match. Key versions are not
+     * compared at all.
+     *
+     * Mapping of keys is performed by key ID.
+     *
+     * @param keys to check
+     * @return true if usable
+     */
     public boolean matchesKeysetForReplacement(GPKeySet keys) {
         for (GPKeyInfo keyInfo : mKeyInfos) {
             GPKey key = keys.getKeyById(keyInfo.getKeyId());
@@ -99,7 +123,13 @@ public class GPKeyInfoTemplate {
         return sb.toString();
     }
 
-    /** Parse a Key Information Template from bytes */
+    /**
+     * Parse a Key Information Template from bytes
+     *
+     * @param buf containing the KIT
+     * @return a parsed instance
+     * @exception IOException on parse error
+     */
     public static GPKeyInfoTemplate fromBytes(byte[] buf) throws IOException {
         ArrayList<GPKeyInfo> infos = new ArrayList<>();
         // KIT is a constructed TLV
