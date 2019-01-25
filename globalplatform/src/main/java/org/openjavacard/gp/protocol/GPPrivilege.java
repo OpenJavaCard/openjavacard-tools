@@ -32,7 +32,7 @@ public enum GPPrivilege {
     DELEGATE_MANAGEMENT(0, GP.PRIV1_DELEGATE_MANAGEMENT, "Delegate Management"),
     CARD_LOCK(0, GP.PRIV1_CARD_LOCK, "Card Lock"),
     CARD_TERMINATE(0, GP.PRIV1_CARD_TERMINATE, "Card Terminate"),
-    CARD_RESET(0, GP.PRIV1_CARD_RESET, "Card Reset"),
+    CARD_RESET(0, GP.PRIV1_CARD_RESET, "Card Reset / Default Selected"),
     CVM_MANAGEMENT(0, GP.PRIV1_CVM_MANAGEMENT, "CVM Management"),
     DAP_MANDATORY(0, GP.PRIV1_DAP_MANDATORY, "DAP Mandatory"),
     TRUSTED_PATH(1, GP.PRIV2_TRUSTED_PATH, "Trusted Path"),
