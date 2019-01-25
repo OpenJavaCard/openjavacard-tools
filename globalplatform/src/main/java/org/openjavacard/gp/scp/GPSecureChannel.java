@@ -572,8 +572,9 @@ public class GPSecureChannel extends CardChannel {
     private void performExternalAuthenticate(byte[] hostCryptogram) throws CardException {
         // determine session parameters
         byte authParam = 0;
-        // always enable MAC
-        authParam |= GP.EXTERNAL_AUTHENTICATE_P1_MAC;
+        // even CMAC can be optional for us
+        if (mSecurityPolicy.requireCMAC)
+            authParam |= GP.EXTERNAL_AUTHENTICATE_P1_MAC;
         // ENC, RMAC and RENC are optional
         if (mSecurityPolicy.requireCENC)
             authParam |= GP.EXTERNAL_AUTHENTICATE_P1_ENC;
