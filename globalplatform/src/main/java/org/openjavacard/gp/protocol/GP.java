@@ -50,12 +50,6 @@ public class GP implements ISO7816 {
     public static final byte INS_MANAGE_CHANNEL = (byte) 0x70;
 
     public static final byte INS_GET_DATA = (byte) 0xCA;
-
-    /* use for arbitrary tags */
-    public static final short get_data_p12(int tag) {
-        return (short) tag;
-    }
-
     /* mandatory */
     public static final short GET_DATA_P12_ISSUER_ID_NUMBER = (short) 0x0042;
     public static final short GET_DATA_P12_CARD_IMG_NUMBER = (short) 0x0045;
