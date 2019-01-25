@@ -43,29 +43,29 @@ public class GPKeys extends GPCommand {
             names = "--new-version",
             validateWith = PositiveInteger.class
     )
-    int newKeyVersion = 1;
+    private int newKeyVersion = 1;
 
     @Parameter(
             names = "--new-id",
             validateWith = PositiveInteger.class
     )
-    int newKeyId = 1;
+    private int newKeyId = 1;
 
     @Parameter(
             names = "--new-cipher"
     )
-    GPKeyCipher newKeyCipher = GPKeyCipher.DES3;
+    private GPKeyCipher newKeyCipher = GPKeyCipher.DES3;
 
     @Parameter(
             names = "--new-types"
     )
-    String newKeyTypes = "MASTER";
+    private String newKeyTypes = "MASTER";
 
     @Parameter(
             names = "--new-secrets",
             required = true
     )
-    String newKeySecrets;
+    private String newKeySecrets = null;
 
     public GPKeys(GPContext context) {
         super(context);

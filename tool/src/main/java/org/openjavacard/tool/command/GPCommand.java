@@ -86,62 +86,67 @@ public abstract class GPCommand implements Runnable {
 
     @Parameter(
             names = "--key-version",
+            description = "User-specified keys: key version",
             validateWith = PositiveInteger.class
     )
-    int scpKeyVersion = 1;
+    private int scpKeyVersion = 1;
 
     @Parameter(
             names = "--key-id",
+            description = "User-specified keys: first key ID (0 means any)",
             validateWith = PositiveInteger.class
     )
-    int scpKeyId = 1;
+    private int scpKeyId = 0;
 
     @Parameter(
-            names = "--key-cipher"
+            names = "--key-cipher",
+            description = "User-specified keys: key cipher"
     )
-    GPKeyCipher scpKeyCipher = GPKeyCipher.DES3;
+    private GPKeyCipher scpKeyCipher = GPKeyCipher.DES3;
 
     @Parameter(
-            names = "--key-types"
+            names = "--key-types",
+            description = "User-specified keys: key types (colon-separated)"
     )
-    String scpKeyTypes = "MASTER";
+    private String scpKeyTypes = "MASTER";
 
     @Parameter(
-            names = "--key-secrets"
+            names = "--key-secrets",
+            description = "User-specified keys: secrets (colon-separated)"
     )
-    String scpKeySecrets;
+    private String scpKeySecrets = null;
 
     @Parameter(
             names = "--keystore-file", order = 500,
             description = "Keystore: file containing keystore"
     )
-    protected String keystoreFile = null;
+    private String keystoreFile = null;
 
     @Parameter(
             names = "--keystore-type", order = 500,
             description = "Keystore: type of keystore"
     )
-    protected String keystoreType = null;
+    private String keystoreType = null;
 
     @Parameter(
             names = "--keystore-password", order = 500,
             description = "Keystore: password for keystore"
     )
-    protected String keystorePassword = null;
+    private String keystorePassword = null;
 
     @Parameter(
             names = "--force-protected", order = 800,
             description = "Force operation on protected object"
     )
-    protected boolean forceProtected = false;
+    boolean forceProtected = false;
 
     @Parameter(
             names = "--log-keys", order = 900,
             description = "Allow writing keys into the debug log"
     )
-    protected boolean logKeys = false;
+    private boolean logKeys = false;
 
-    protected GPContext mContext;
+    private GPContext mContext;
 
     public GPCommand(GPContext context) {
         mContext = context;

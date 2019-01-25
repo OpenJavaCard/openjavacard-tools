@@ -37,27 +37,27 @@ public class GPList extends GPCommand {
 
     @Parameter(
             names = {"-a", "--all"},
-            description = "Show all registry entries"
+            description = "Show all registry entries (default)"
     )
-    boolean showAll;
+    private boolean showAll;
 
     @Parameter(
             names = {"--sd"},
-            description = "Show issuer security domain (ISD)"
+            description = "Show security domains (ISD and SSD)"
     )
-    boolean showSD;
+    private boolean showSD;
 
     @Parameter(
             names = {"--elf"},
-            description = "Show executable files (ELF)"
+            description = "Show executable files (ELF and ExM)"
     )
-    boolean showELF;
+    private boolean showELF;
 
     @Parameter(
             names = {"--app"},
             description = "Show applets (APP)"
     )
-    boolean showAPP;
+    private boolean showAPP;
 
     public GPList(GPContext context) {
         super(context);

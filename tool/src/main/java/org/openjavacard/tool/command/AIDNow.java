@@ -40,7 +40,7 @@ public class AIDNow implements Runnable {
             names = "--production",
             description = "Mark the AIDs for production use"
     )
-    boolean production;
+    private boolean production;
 
     @Override
     public void run() {

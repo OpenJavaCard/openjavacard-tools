@@ -46,54 +46,49 @@ public class GPInstall extends GPCommand {
             description = "Module to install",
             required = true
     )
-    AID moduleAID;
+    private AID moduleAID;
 
     @Parameter(
             names = "--package",
-            description = "Package to install",
-            required = false
+            description = "Package to install"
     )
-    AID packageAID;
+    private AID packageAID;
 
     @Parameter(
             names = "--aid",
-            description = "Applet AID to install as",
-            required = false
+            description = "Applet AID to install as"
     )
-    AID appletAID;
+    private AID appletAID;
 
     @Parameter(
             names = "--parameters",
-            description = "Pass the given install parameters to the applet",
-            required = false
+            description = "Pass the given install parameters to the applet"
     )
-    String appletParameters = "";
+    private String appletParameters = "";
 
     @Parameter(
             names = "--privilege",
-            description = "Grant the given privilege to the applet",
-            required = false
+            description = "Grant the given privilege to the applet"
     )
-    List<GPPrivilege> appletPrivileges = new ArrayList<>();
+    private List<GPPrivilege> appletPrivileges = new ArrayList<>();
 
     @Parameter(
             names = "--cap-file",
-            description = "CAP file to load",
-            required = false
+            description = "CAP file to load"
     )
-    List<File> capFiles;
+    private List<File> capFiles;
 
     @Parameter(
             names = "--reload",
             description = "Reload provided packages, replacing old versions"
     )
-    boolean reload;
+    private boolean reload;
 
     @Parameter(
             names = "--reinstall",
             description = "Reinstall the applet, replacing old instances"
     )
-    boolean reinstall;
+    private boolean reinstall;
 
     public GPInstall(GPContext context) {
         super(context);

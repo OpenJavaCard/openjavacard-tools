@@ -35,7 +35,7 @@ public class AIDInfo implements Runnable {
             required = true,
             description = "AID"
     )
-    AID aid;
+    private AID aid;
 
     @Override
     public void run() {

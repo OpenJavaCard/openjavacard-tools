@@ -41,7 +41,7 @@ public class CapSize implements Runnable {
             description = "CAP files to show information about",
             required = true
     )
-    List<File> capFiles;
+    private List<File> capFiles;
 
     @Override
     public void run() {

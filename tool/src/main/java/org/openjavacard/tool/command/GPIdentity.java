@@ -38,19 +38,19 @@ public class GPIdentity extends GPCommand {
             names = "--new-iin",
             description = "New Issuer Identification Number (IIN)"
     )
-    byte[] iin;
+    private byte[] iin;
 
     @Parameter(
             names = "--new-cin",
             description = "New Card Identification Number (CIN)"
     )
-    byte[] cin;
+    private byte[] cin;
 
     @Parameter(
             names = "--new-isd",
             description = "New AID for the ISD of the card"
     )
-    byte[] isd;
+    private byte[] isd;
 
     public GPIdentity(GPContext context) {
         super(context);

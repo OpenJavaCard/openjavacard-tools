@@ -38,14 +38,14 @@ public class GPExtradite extends GPCommand {
             description = "Domain to extradite to",
             required = true
     )
-    AID domainAID;
+    private AID domainAID;
 
     @Parameter(
             names = "--applet",
             description = "Applet to extradite",
             required = true
     )
-    AID appletAID;
+    private AID appletAID;
 
     public GPExtradite(GPContext context) {
         super(context);

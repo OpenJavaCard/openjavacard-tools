@@ -48,19 +48,19 @@ public class GPLoad extends GPCommand {
             description = "CAP files to load",
             required = true
     )
-    List<File> files;
+    private List<File> files;
 
     @Parameter(
             names = "--reload",
             description = "Reload by deleting previous package"
     )
-    boolean reload = false;
+    private boolean reload = false;
 
     @Parameter(
             names = "--lazy",
             description = "Only load if not present"
     )
-    boolean lazy = false;
+    private boolean lazy = false;
 
     public GPLoad(GPContext context) {
         super(context);

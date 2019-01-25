@@ -40,49 +40,49 @@ public class GPState extends GPCommand {
             names = "--confirm-irreversible",
             description = "Confirm an irreversible action"
     )
-    boolean confirmIrreversible = false;
+    private boolean confirmIrreversible = false;
     @Parameter(
             names = "--confirm-destruction",
             description = "Confirm a destructive action"
     )
-    boolean confirmDestruction = false;
+    private boolean confirmDestruction = false;
 
     @Parameter(
             names = "--card-initialized",
             description = "Set card state to INITIALIZED (irreversible)"
     )
-    boolean cardInitialized;
+    private boolean cardInitialized;
     @Parameter(
             names = "--card-secured",
             description = "Set card state to SECURED (irreversible)"
     )
-    boolean cardSecured;
+    private boolean cardSecured;
     @Parameter(
             names = "--card-lock",
             description = "Lock the card (must be SECURED)"
     )
-    boolean cardLock;
+    private boolean cardLock;
     @Parameter(
             names = "--card-unlock",
             description = "Unlock the card (must be LOCKED)"
     )
-    boolean cardUnlock;
+    private boolean cardUnlock;
     @Parameter(
             names = "--card-terminate",
             description = "Terminate the card (destructive)"
     )
-    boolean cardTerminate;
+    private boolean cardTerminate;
 
     @Parameter(
             names = "--applet-lock",
             description = "Lock the indicated applet"
     )
-    List<AID> appLock;
+    private List<AID> appLock;
     @Parameter(
             names = "--applet-unlock",
             description = "Unlock the indicated applet"
     )
-    List<AID> appUnlock;
+    private List<AID> appUnlock;
 
     public GPState(GPContext context) {
         super(context);
