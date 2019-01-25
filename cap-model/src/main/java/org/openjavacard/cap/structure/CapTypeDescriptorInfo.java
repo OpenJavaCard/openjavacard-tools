@@ -40,6 +40,7 @@ public class CapTypeDescriptorInfo extends CapStructure {
 
     public void read(CapStructureReader reader) throws IOException {
         int constantPoolCount = reader.readU2();
+        // XXX process
         int[] constantPoolTypes = reader.readU2Array(constantPoolCount);
         LOG.trace("read " + constantPoolCount + " constant pool types");
         ArrayList<CapTypeDescriptor> typeDescriptors = new ArrayList<>();

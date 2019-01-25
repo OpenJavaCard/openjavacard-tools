@@ -21,6 +21,7 @@ package org.openjavacard.cap.base;
 
 import org.openjavacard.cap.file.CapFileComponent;
 import org.openjavacard.cap.structure.CapClassRef;
+import org.openjavacard.cap.structure.CapMethodRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,13 @@ public class CapComponentReader extends CapStructureReader {
     @Override
     public CapClassRef readClassRef() throws IOException {
         CapClassRef ref = super.readClassRef();
+        // XXX register with packageReader
+        return ref;
+    }
+
+    @Override
+    public CapMethodRef readMethodRef() throws IOException {
+        CapMethodRef ref = super.readMethodRef();
         // XXX register with packageReader
         return ref;
     }

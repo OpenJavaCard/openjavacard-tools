@@ -36,6 +36,8 @@ public class CapDescriptorComponent extends CapComponent {
 
     private ArrayList<CapClassDescriptorInfo> mClassInfos;
 
+    private CapTypeDescriptorInfo mTypeInfo;
+
     public CapDescriptorComponent() {
         super(CapComponentType.Descriptor);
     }
@@ -44,15 +46,14 @@ public class CapDescriptorComponent extends CapComponent {
         return mClassInfos;
     }
 
+    public CapTypeDescriptorInfo getTypeInfo() {
+        return mTypeInfo;
+    }
+
     public void read(CapStructureReader reader) throws IOException {
         int classCount = reader.readU1();
-        LOG.trace("reading " + classCount + " classes");
-        ArrayList<CapClassDescriptorInfo> classes = new ArrayList<>();
-        for(int i = 0; i < classCount; i++) {
-            classes.add(reader.readStructure(CapClassDescriptorInfo.class));
-        }
-        mClassInfos = classes;
-        reader.readStructure(CapTypeDescriptorInfo.class);
+        mClassInfos = reader.readStructureArray(classCount, CapClassDescriptorInfo.class);
+        mTypeInfo = reader.readStructure(CapTypeDescriptorInfo.class);
     }
 
 }
