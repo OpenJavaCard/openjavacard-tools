@@ -102,7 +102,7 @@ public abstract class SCPWrapper {
     /**
      * Encrypt sensitive data
      *
-     * This is used to encrypt toy keys, protecting them
+     * This is used to encrypt secret keys, protecting them
      * with an additional layer of encryption for added security.
      *
      * There are protocol-specific restrictions on the data.
