@@ -54,21 +54,22 @@ public class GPSecureChannel extends CardChannel {
     private static final Logger LOG = LoggerFactory.getLogger(GPSecureChannel.class);
 
     /** Random for generating the host challenge */
-    private SecureRandom mRandom;
+    private final SecureRandom mRandom;
     /** Context for checks */
-    private GPContext mContext;
+    private final GPContext mContext;
     /** Reference to the card for communication */
-    private GPCard mCard;
+    private final GPCard mCard;
     /** Underlying card channel for communication */
-    private CardChannel mChannel;
+    private final CardChannel mChannel;
     /** Initial static keys */
-    private GPKeySet mStaticKeys;
+    private final GPKeySet mStaticKeys;
     /** Key diversification to apply */
-    private GPKeyDiversification mDiversification;
+    private final GPKeyDiversification mDiversification;
     /** Protocol policy in effect */
-    private SCPProtocolPolicy mProtocolPolicy;
+    private final SCPProtocolPolicy mProtocolPolicy;
     /** Security policy in effect */
-    private SCPSecurityPolicy mSecurityPolicy;
+    private final SCPSecurityPolicy mSecurityPolicy;
+
     /** Expected SCP protocol - 0 means ANY */
     private int mExpectedProtocol = 0;
     /** Expected SCP parameters - 0 means ANY */
