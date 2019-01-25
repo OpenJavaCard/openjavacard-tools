@@ -656,7 +656,7 @@ public class GPSecureChannel extends CardChannel {
         final byte[] scp03Sequence;
 
         /**
-         * Parse an INIT UPDATE response
+         * Parse and construct an INIT UPDATE response
          *
          * @param data to be parsed
          */
