@@ -98,6 +98,10 @@ public class GPKeyInfo {
     /**
      * Return true of the given key matches this object
      *
+     * Requirements include a matching key ID and algorithm as well as the key length.
+     *
+     * This function allows for cards to say DES when they mean DES3 because that is common.
+     *
      * @param key to check
      * @return true if key matches
      */
@@ -117,14 +121,20 @@ public class GPKeyInfo {
         GPKeyCipher kiCipher = GPKeyCipher.getCipherForKeyType(keyType);
         GPKeyCipher keyCipher = key.getCipher();
 
-        // check the type unless key is generic
-        if (keyCipher != GPKeyCipher.GENERIC && kiCipher != keyCipher) {
-            return false;
-        }
-
         // check the size of the secret
         if (mKeySizes[0] != key.getLength()) {
             return false;
+        }
+
+        // check the type unless key is generic
+        if (keyCipher != GPKeyCipher.GENERIC) {
+            // exception: some cards say DES but mean DES3.
+            if(kiCipher != GPKeyCipher.DES && keyCipher != GPKeyCipher.DES3) {
+                // actually compare the cipher values
+                if (kiCipher != keyCipher) {
+                    return false;
+                }
+            }
         }
 
         return true;
