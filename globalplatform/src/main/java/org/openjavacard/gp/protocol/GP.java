@@ -61,11 +61,12 @@ public class GP implements ISO7816 {
     public static final short GET_DATA_P12_CARD_IMG_NUMBER = (short) 0x0045;
     public static final short GET_DATA_P12_CARD_DATA = (short) 0x0066;
     public static final short GET_DATA_P12_KEY_INFO_TEMPLATE = (short) 0x00E0;
-    /* optional */
+    /* for SD */
     public static final short GET_DATA_P12_CURRENT_SEC_LEVEL = (short) 0x00D3;
     public static final short GET_DATA_P12_APPLICATION_INFO = (short) 0x2F00;
-    public static final short GET_DATA_P12_EXTENDED_CARD_RES_INFO = (short) 0xFF12;
-    /* when SD has receipt generation privilege */
+    public static final short GET_DATA_P12_EXTENDED_CARD_RES_INFO = (short) 0xFF21;
+    public static final short GET_DATA_P12_DOMAIN_MANAGER_URL = (short) 0x5F50;
+    /* for SD with receipt generation privilege */
     public static final short GET_DATA_P12_CONFIRMATION_COUNTER = (short) 0x00C2;
     /* for SCP02 */
     public static final short GET_DATA_P12_KVN_SEQUENCE_COUNTER = (short) 0x00C1;
@@ -81,6 +82,7 @@ public class GP implements ISO7816 {
     public static final byte INS_DELETE = (byte) 0xE4;
     public static final byte DELETE_P2_DELETE_INDICATED = (byte) 0x00;
     public static final byte DELETE_P2_DELETE_RELATED = (byte) 0x80;
+    public static final byte DELETE_P2_DELETE_DOMAIN = (byte) 0x40;
 
     public static final byte INS_INSTALL = (byte) 0xE6;
     public static final byte INSTALL_P1_LAST_OR_ONLY = (byte)0x00;
@@ -109,15 +111,19 @@ public class GP implements ISO7816 {
     public static final byte GET_STATUS_P1_APP_AND_SD_ONLY = (byte) 0x40;
     public static final byte GET_STATUS_P1_ELF_ONLY = (byte) 0x20;
     public static final byte GET_STATUS_P1_EXM_AND_ELF_ONLY = (byte) 0x10;
+    public static final byte GET_STATUS_P1_EXM_DELETED = (byte) 0x08;
     public static final byte GET_STATUS_P2_GET_FIRST_OR_ALL = (byte) 0x00;
     public static final byte GET_STATUS_P2_GET_NEXT = (byte) 0x01;
     public static final byte GET_STATUS_P2_FORMAT_LEGACY = (byte) 0x00;
     public static final byte GET_STATUS_P2_FORMAT_TLV = (byte) 0x02;
 
+    public static final byte ELF_STATE_DELETED = (byte) 0x00;
     public static final byte ELF_STATE_LOADED = (byte) 0x01;
 
     public static String elfStateString(byte elfState) {
         switch (elfState) {
+            case ELF_STATE_DELETED:
+                return "DELETED";
             case ELF_STATE_LOADED:
                 return "LOADED";
             default:
