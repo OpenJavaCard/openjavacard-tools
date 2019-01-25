@@ -173,11 +173,8 @@ public class GPKey {
     }
 
     public String toString() {
-        String idString = "";
-        if(mId != 0) {
-            idString = " id " + mId;
-        }
-        return "key " + mType + idString + " cipher " + mCipher
+        return "key " + mType + " id " + mId
+                + " cipher " + mCipher
                 + " secret " + HexUtil.bytesToHex(mSecret);
     }
 
