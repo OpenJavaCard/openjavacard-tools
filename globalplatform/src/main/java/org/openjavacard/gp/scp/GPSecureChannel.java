@@ -298,42 +298,8 @@ public class GPSecureChannel extends CardChannel {
         checkAndSelectProtocol(init);
         LOG.debug("protocol " + mActiveProtocol);
 
-        // derivation might replace keys
-        GPKeySet actualKeys = mStaticKeys;
-
-        // check key version
-        int selectedKeyVersion = actualKeys.getKeyVersion();
-        if (selectedKeyVersion > 0 && selectedKeyVersion != init.keyVersion) {
-            throw new CardException("Key version mismatch: host " + selectedKeyVersion + " card " + init.keyVersion);
-        }
-
-        // diversify keys
-        if(mDiversification != GPKeyDiversification.NONE) {
-            LOG.trace("diversification " + mDiversification + " data " + HexUtil.bytesToHex(init.diversificationData));
-            actualKeys = actualKeys.diversify(mDiversification, init.diversificationData);
-            if(mContext.isKeyLoggingEnabled()) {
-                LOG.trace("diversified keys:\n" + actualKeys.toString());
-            }
-        }
-
-        // derive session keys
-        switch (mActiveProtocol.scpVersion) {
-            case 0:
-                mSessionKeys = actualKeys;
-                break;
-            case 2:
-                byte[] seq02 = Arrays.copyOfRange(init.cardChallenge, 0, 2);
-                LOG.debug("card sequence " + HexUtil.bytesToHex(seq02));
-                mSessionKeys = SCP02Derivation.deriveSessionKeys(actualKeys, seq02);
-                break;
-            case 3:
-                byte[] seq03 = init.scp03Sequence;
-                LOG.debug("card sequence " + HexUtil.bytesToHex(seq03));
-                mSessionKeys = SCP03Derivation.deriveSessionKeys(actualKeys, seq03, hostChallenge, init.cardChallenge);
-                break;
-            default:
-                throw new CardException("Unsupported SCP version " + mActiveProtocol);
-        }
+        // derive session keys (including diversification)
+        mSessionKeys = deriveKeys(init, hostChallenge);
 
         // log session keys
         if(mContext.isKeyLoggingEnabled()) {
@@ -351,19 +317,7 @@ public class GPSecureChannel extends CardChannel {
         byte[] hostCryptogram = computeHostCryptogram(hostChallenge, init.cardChallenge);
 
         // create CardAPDU wrapper
-        switch (mActiveProtocol.scpVersion) {
-            case 0:
-                mWrapper = new SCP00Wrapper(mSessionKeys, ((SCP00Parameters) mActiveProtocol));
-                break;
-            case 2:
-                mWrapper = new SCP0102Wrapper(mSessionKeys, ((SCP0102Parameters) mActiveProtocol));
-                break;
-            case 3:
-                mWrapper = new SCP03Wrapper(mSessionKeys, ((SCP03Parameters) mActiveProtocol));
-                break;
-            default:
-                throw new CardException("Unsupported SCP version " + mActiveProtocol);
-        }
+        mWrapper = buildWrapper();
 
         // perform EXTERNAL AUTHENTICATE to authenticate to card
         LOG.debug("performing authentication");
@@ -497,6 +451,83 @@ public class GPSecureChannel extends CardChannel {
 
         // decision to use the protocol
         mActiveProtocol = selected;
+    }
+
+    /**
+     * Derive keys for an SCP session
+     *
+     * This method will first check for any indications of the
+     * keys being the wrong keys, such as by key version mismatch.
+     *
+     * It will then diversify the key if specified and perform
+     * the protocol-specific key derivation, producing a set of session keys.
+     *
+     * @param init response to INIT UPDATE
+     * @param hostChallenge previously generated
+     * @return a set of session keys
+     * @throws CardException on error
+     */
+    private GPKeySet deriveKeys(InitUpdateResponse init, byte[] hostChallenge) throws CardException {
+        // derivation might replace keys
+        GPKeySet keys = mStaticKeys;
+
+        // check key version
+        int selectedKeyVersion = keys.getKeyVersion();
+        if (selectedKeyVersion > 0 && selectedKeyVersion != init.keyVersion) {
+            throw new CardException("Key version mismatch: host " + selectedKeyVersion + " card " + init.keyVersion);
+        }
+
+        // diversify keys
+        if(mDiversification != GPKeyDiversification.NONE) {
+            LOG.trace("diversification " + mDiversification + " data " + HexUtil.bytesToHex(init.diversificationData));
+            keys = keys.diversify(mDiversification, init.diversificationData);
+            if(mContext.isKeyLoggingEnabled()) {
+                LOG.trace("diversified keys:\n" + keys.toString());
+            }
+        }
+
+        // derive session keys
+        switch (mActiveProtocol.scpVersion) {
+            case 0:
+                keys = keys;
+                break;
+            case 2:
+                byte[] seq02 = Arrays.copyOfRange(init.cardChallenge, 0, 2);
+                LOG.debug("card sequence " + HexUtil.bytesToHex(seq02));
+                keys = SCP02Derivation.deriveSessionKeys(keys, seq02);
+                break;
+            case 3:
+                byte[] seq03 = init.scp03Sequence;
+                LOG.debug("card sequence " + HexUtil.bytesToHex(seq03));
+                keys = SCP03Derivation.deriveSessionKeys(keys, seq03, hostChallenge, init.cardChallenge);
+                break;
+            default:
+                throw new CardException("Unsupported SCP version " + mActiveProtocol);
+        }
+
+        return keys;
+    }
+
+    /**
+     * Build an APDU wrapper
+     *
+     * This will construct an APDU wrapper for the active
+     * protocol using the current session keys.
+     *
+     * @return the wrapper
+     * @throws CardException on error
+     */
+    private SCPWrapper buildWrapper() throws CardException {
+        switch (mActiveProtocol.scpVersion) {
+            case 0:
+                return new SCP00Wrapper(mSessionKeys, ((SCP00Parameters) mActiveProtocol));
+            case 2:
+                return new SCP0102Wrapper(mSessionKeys, ((SCP0102Parameters) mActiveProtocol));
+            case 3:
+                return new SCP03Wrapper(mSessionKeys, ((SCP03Parameters) mActiveProtocol));
+            default:
+                throw new CardException("Unsupported SCP version " + mActiveProtocol);
+        }
     }
 
     /**
