@@ -60,11 +60,16 @@ public class GPInfo extends GPCommand {
         os.println("  Class " + scard.getClass().getName());
         os.println();
 
-        os.println("Card identity:");
-        String identifier = card.getLifetimeIdentifier();
-        if(identifier != null) {
-            os.println("  LID " + identifier);
+        CPLC lifeCycle = card.getCPLC();
+        if (lifeCycle == null) {
+            os.println("Card has no CPLC");
+        } else {
+            os.println(lifeCycle.toString());
         }
+        os.println();
+
+        os.println("Card identity:");
+        os.println("  ISD " + card.getISD());
         byte[] iin = card.getCardIIN();
         if(iin != null) {
             os.println("  IIN " + HexUtil.bytesToHex(iin));
@@ -73,14 +78,9 @@ public class GPInfo extends GPCommand {
         if(cin != null) {
             os.println("  CIN " + HexUtil.bytesToHex(cin));
         }
-        os.println("  ISD " + card.getISD());
-        os.println();
-
-        CPLC lifeCycle = card.getCPLC();
-        if (lifeCycle == null) {
-            os.println("Card has no CPLC");
-        } else {
-            os.println(lifeCycle.toString());
+        String identifier = card.getLifetimeIdentifier();
+        if(identifier != null) {
+            os.println("  LID " + identifier);
         }
         os.println();
 
