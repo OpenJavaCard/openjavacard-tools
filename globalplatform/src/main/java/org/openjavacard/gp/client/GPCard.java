@@ -421,6 +421,15 @@ public class GPCard {
                 LOG.trace("static keys:\n" + mKeys.toString());
             }
 
+            // get CPLC, can be used for identification if present
+            mCPLC = readCPLC();
+            if (mCPLC == null) {
+                // this is completely normal
+                LOG.debug("card has no lifecycle data");
+            } else {
+                LOG.trace("card lifecycle:\n" + mCPLC.toString());
+            }
+
             // get card data, needed to determine SCP parameters
             mCardData = readCardData();
             if (mCardData == null) {
@@ -428,15 +437,6 @@ public class GPCard {
                 LOG.debug("card has no card data");
             } else {
                 LOG.trace("card data:\n" + mCardData.toString());
-            }
-
-            // get lifecycle data, can be used for identification if present
-            mCPLC = readCPLC();
-            if (mCPLC == null) {
-                // this is completely normal
-                LOG.debug("card has no lifecycle data");
-            } else {
-                LOG.trace("card lifecycle:\n" + mCPLC.toString());
             }
 
             // get IIN and CIN if uniquely identifiable
