@@ -23,6 +23,8 @@ import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVConstructed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ import java.util.List;
  * <p/>
  */
 public class GPKeyInfoTemplate {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GPKeyInfoTemplate.class);
 
     /** Tag of GP key information templates */
     private static final int TAG_KEY_INFO_TEMPLATE = 0xE000;
@@ -73,15 +77,19 @@ public class GPKeyInfoTemplate {
      */
     public boolean matchesKeysetForUsage(GPKeySet keys) {
         for (GPKeyInfo keyInfo : mKeyInfos) {
+            LOG.trace("checking for " + keyInfo.getKeyId());
             GPKey key = keys.getKeyById(keyInfo.getKeyId());
             if (key == null) {
+                LOG.trace("key not found");
                 return false;
             }
             int keyVersion = keys.getKeyVersion();
             if (keyVersion != 0 && keyInfo.getKeyVersion() != keyVersion) {
+                LOG.trace("wrong key version");
                 return false;
             }
             if (!keyInfo.matchesKey(key)) {
+                LOG.trace("key is incompatible");
                 return false;
             }
         }
