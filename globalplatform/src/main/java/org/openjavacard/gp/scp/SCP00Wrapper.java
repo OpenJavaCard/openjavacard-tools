@@ -25,6 +25,9 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 
+/**
+ * Host-side APDU wrapper for SCP00
+ */
 public class SCP00Wrapper extends SCPWrapper {
 
     public SCP00Wrapper(GPKeySet keys, SCP00Parameters parameters) {
