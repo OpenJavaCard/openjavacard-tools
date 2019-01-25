@@ -20,6 +20,7 @@
 package org.openjavacard.gp.client;
 
 import org.openjavacard.generic.GenericContext;
+import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.iso.AID;
 
 import javax.smartcardio.CardException;
@@ -42,10 +43,10 @@ public class GPContext extends GenericContext {
     }
 
     public GPCard findSingleGPCard(String prefix) {
-        return findSingleGPCard(prefix, null);
+        return findSingleGPCard(prefix, null, GPKeySet.GLOBALPLATFORM);
     }
 
-    public GPCard findSingleGPCard(String prefix, AID sd) {
+    public GPCard findSingleGPCard(String prefix, AID sd, GPKeySet keys) {
         LOG.debug("findSingleCard()");
         GPCard card;
         CardTerminal terminal = findSingleTerminal(prefix);
@@ -59,6 +60,9 @@ public class GPContext extends GenericContext {
             // tell the client if we know the SD AID
             if(sd != null) {
                 card.setISD(sd);
+            }
+            if(keys != null) {
+                card.setKeys(keys);
             }
             // detect GP applet
             //boolean detected = card.detect();
