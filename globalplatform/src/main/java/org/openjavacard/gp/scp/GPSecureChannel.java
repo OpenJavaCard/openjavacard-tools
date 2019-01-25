@@ -620,40 +620,40 @@ public class GPSecureChannel extends CardChannel {
         /**
          * Length of data for SCP01/02
          */
-        public static final int SCP0102_LENGTH = 28;
+        static final int SCP0102_LENGTH = 28;
         /**
          * Length of data for SCP03
          */
-        public static final int SCP03_LENGTH = 32;
+        static final int SCP03_LENGTH = 32;
 
         /**
          * Key diversification data
          */
-        public final byte[] diversificationData;
+        final byte[] diversificationData;
         /**
          * Key version selected by card
          */
-        public final int keyVersion;
+        final int keyVersion;
         /**
          * SCP version selected by card
          */
-        public final int scpProtocol;
+        final int scpProtocol;
         /**
          * SCP parameters selected by card (SCP03 only)
          */
-        public final int scp03Parameters;
+        final int scp03Parameters;
         /**
          * Card challenge for authentication
          */
-        public final byte[] cardChallenge;
+        final byte[] cardChallenge;
         /**
          * Card cryptogram for authentication
          */
-        public final byte[] cardCryptogram;
+        final byte[] cardCryptogram;
         /**
          * Session sequence number for authentication (SCP03 only, others use part of challenge)
          */
-        public final byte[] scp03Sequence;
+        final byte[] scp03Sequence;
 
         /**
          * Parse an INIT UPDATE response
