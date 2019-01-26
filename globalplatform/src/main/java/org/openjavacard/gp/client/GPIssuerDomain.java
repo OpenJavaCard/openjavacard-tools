@@ -345,12 +345,12 @@ public class GPIssuerDomain {
 
     public void lockApplet(AID appletAID) throws CardException {
         LOG.debug("lockApplet()");
-        throw new NotImplementedException();
+        throw new RuntimeException("Not implemented");
     }
 
     public void unlockApplet(AID appletAID) throws CardException {
         LOG.debug("unlockApplet()");
-        throw new NotImplementedException();
+        throw new RuntimeException("Not implemented");
     }
 
     private void performStoreData(byte[] block, byte blockNumber, boolean lastBlock) throws CardException {
