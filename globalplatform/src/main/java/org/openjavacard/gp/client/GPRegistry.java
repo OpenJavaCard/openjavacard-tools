@@ -541,6 +541,8 @@ public class GPRegistry {
             return mModules;
         }
 
+        abstract boolean isLocked();
+
         abstract String getStateString();
 
         void readTLV(byte[] data) throws IOException {
@@ -621,6 +623,15 @@ public class GPRegistry {
         }
 
         @Override
+        boolean isLocked() {
+            if(isSSD()) {
+                return GP.domainLocked(mState);
+            } else {
+                return GP.appletLocked(mState);
+            }
+        }
+
+        @Override
         String getStateString() {
             if(isSSD()) {
                 return GP.domainStateString(mState);
@@ -629,8 +640,17 @@ public class GPRegistry {
             }
         }
 
+        int getAppletSpecificState() {
+            if(isSSD()) {
+                throw new UnsupportedOperationException("Security domains do not have specific state");
+            }
+            return GP.appletStateSpecific(mState);
+        }
+
         public String toVerboseString() {
             StringBuilder sb = new StringBuilder();
+
+            // header line
             sb.append(mType.toString());
             sb.append(" ");
             sb.append(mAID.toString());
@@ -641,19 +661,36 @@ public class GPRegistry {
                 if(aidInfo.protect) {
                     sb.append(" [protected]");
                 }
+                if(isLocked()) {
+                    sb.append(" [locked]");
+                }
             }
+
+            // globalplatform state
             sb.append("\n  State: ");
             sb.append(getStateString());
+            // applet-specific state
+            if(!isSSD()) {
+                int appletState = getAppletSpecificState();
+                if(appletState != 0) {
+                    sb.append("\n  Applet state: ");
+                    sb.append(appletState);
+                }
+            }
+            // security domain tag
             if(mDomain != null) {
                 sb.append("\n  Domain: ");
                 sb.append(mDomain.toString());
             }
+            // package tag
             if(mPackage != null) {
                 sb.append("\n  Package: ");
                 sb.append(mPackage.toString());
             }
+            // privileges
             sb.append("\n  Privileges:");
             sb.append(GPPrivilege.printPrivileges(mPrivileges, "\n    ", ""));
+            // implicit selection tags
             if(!mImplicitSelection.isEmpty()) {
                 sb.append("\n  Implicit selection:");
                 for(byte selection: mImplicitSelection) {
@@ -678,6 +715,11 @@ public class GPRegistry {
         }
 
         @Override
+        boolean isLocked() {
+            return mState == GP.CARD_STATE_LOCKED || mState == GP.CARD_STATE_TERMINATED;
+        }
+
+        @Override
         String getStateString() {
             return GP.cardStateString(mState);
         }
@@ -686,6 +728,11 @@ public class GPRegistry {
     public static class ELFEntry extends Entry {
         ELFEntry() {
             super(Type.ELF);
+        }
+
+        @Override
+        boolean isLocked() {
+            return false;
         }
 
         @Override
@@ -702,6 +749,8 @@ public class GPRegistry {
 
         public String toVerboseString() {
             StringBuilder sb = new StringBuilder();
+
+            // header line
             sb.append(mType.toString());
             sb.append(" ");
             sb.append(mAID.toString());
@@ -713,8 +762,11 @@ public class GPRegistry {
                     sb.append(" [protected]");
                 }
             }
+
+            // globalplatform state
             sb.append("\n  State: ");
             sb.append(getStateString());
+            // version information
             if(mVersion != null) {
                 sb.append("\n  Version: ");
                 for(int i = 0; i < mVersion.length; i++) {
@@ -724,10 +776,12 @@ public class GPRegistry {
                     sb.append(Integer.toString(mVersion[i] & 0xFF));
                 }
             }
+            // security domain tag
             if(mDomain != null) {
                 sb.append("\n  Domain: ");
                 sb.append(mDomain.toString());
             }
+            // module information
             if (mModules != null && !mModules.isEmpty()) {
                 sb.append("\n");
                 for (AID module : mModules) {
