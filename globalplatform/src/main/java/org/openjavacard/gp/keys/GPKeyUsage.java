@@ -19,16 +19,33 @@
 
 package org.openjavacard.gp.keys;
 
+/**
+ * Representation of key usage types
+ * <p/>
+ * This is used to describe and restrict the usage of keys.
+ * <p/>
+ */
 public enum GPKeyUsage {
+    /** Master keys may be used for anything. Used for default keys and single-key scenarios. */
     MASTER(0),
+    /** ENC means use for command and/or response encryption */
     ENC(1),
+    /** MAC means use for command authentication */
     MAC(2),
+    /** KEK means use for encryption of key material */
     KEK(3),
+    /** RMAC means use for response authentication */
     RMAC(4);
 
+    /** Identifier of this usage type during key diversification */
     public final byte diversifyId;
 
+    /**
+     * Internal constructor
+     * @param diversifyId for the usage type
+     */
     GPKeyUsage(int diversifyId) {
         this.diversifyId = (byte)diversifyId;
     }
+
 }

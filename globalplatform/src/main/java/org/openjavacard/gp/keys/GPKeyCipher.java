@@ -22,7 +22,7 @@ package org.openjavacard.gp.keys;
 import org.openjavacard.gp.protocol.GP;
 
 /**
- * Key cipher type
+ * Representation of cipher types
  * <p/>
  * Used to indicate what ciphers a key may be used with.
  */
