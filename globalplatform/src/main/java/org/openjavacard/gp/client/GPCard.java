@@ -589,6 +589,7 @@ public class GPCard {
      * @throws CardException on error
      */
     private byte[] selectFileByName(AID name) throws CardException {
+        LOG.trace("selectFileByName(" + name + ")");
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_ISO,
                 GP.INS_SELECT,
