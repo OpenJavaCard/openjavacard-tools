@@ -76,11 +76,24 @@ public class GPIssuerDomain {
      */
     public void changeIdentity(byte[] iin, byte[] cin, byte[] isd) throws CardException {
         LOG.debug("setting card identity");
+        // log new values
+        if(iin != null) {
+            LOG.trace("new IIN " + HexUtil.bytesToHex(iin));
+        }
+        if(cin != null) {
+            LOG.trace("new CIN " + HexUtil.bytesToHex(cin));
+        }
+        if(isd != null) {
+            LOG.trace("new ISD " + HexUtil.bytesToHex(isd));
+        }
+        // build the request
         StoreDataRequest req = new StoreDataRequest();
         req.cardIIN = iin;
         req.cardCIN = cin;
         req.cardISD = isd;
-        byte[][] blocks = ArrayUtil.splitBlocks(req.toBytes(), 128);
+        // split the request
+        byte[][] blocks = ArrayUtil.splitBlocks(req.toBytes(), 128); // TODO arbitrary
+        // transmit the request as a chain of STORE DATA commands
         for(byte i = 0; i < blocks.length; i++) {
             boolean lastBlock = i == (blocks.length - 1);
             performStoreData(blocks[i], i, lastBlock);
@@ -470,9 +483,9 @@ public class GPIssuerDomain {
     }
 
     private static class StoreDataRequest implements ToBytes {
-        private static final int TAG_ISSUER_IDENTIFICATION_NUMBER = 0x42;
-        private static final int TAG_CARD_IMAGE_NUMBER = 0x45;
-        private static final int TAG_ISD_AID = 0x4F;
+        private static final int TAG_ISSUER_IDENTIFICATION_NUMBER = 0x4200;
+        private static final int TAG_CARD_IMAGE_NUMBER = 0x4500;
+        private static final int TAG_ISD_AID = 0x4F00;
 
         byte[] cardIIN;
         byte[] cardCIN;
