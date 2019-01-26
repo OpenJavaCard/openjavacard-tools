@@ -81,6 +81,11 @@ public class GPKeys extends GPCommand {
         os.println("Check complete.");
         os.println();
 
+        os.println("Uploading keys...");
+        card.getIssuerDomain().replaceKeys(newKeys);
+        os.println("Upload complete.");
+        os.println();
+
     }
 
 }
