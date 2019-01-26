@@ -234,9 +234,10 @@ public class GPIssuerDomain {
         byte keyVersion = (byte)(newKeys.getKeyVersion());
         byte firstKeyId = (byte)(kit.getKeyInfos().get(0).getKeyId());
         List<GPKey> keys = newKeys.getKeys();
-        boolean multipleKeys = (kit.getKeyInfos().size() > 1);
+        int keyCount = kit.getKeyInfos().size();
+        boolean multipleKeys = (keyCount > 1);
         // log about it
-        LOG.debug("replacing " + keys.size() + " keys "
+        LOG.debug("replacing " + keyCount + " keys "
                 + " starting at id " + firstKeyId
                 + " with version " + keyVersion);
         // do a safety check on the keys first
