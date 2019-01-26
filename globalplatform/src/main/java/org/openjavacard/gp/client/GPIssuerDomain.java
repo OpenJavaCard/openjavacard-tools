@@ -36,6 +36,7 @@ import org.openjavacard.util.ReadBytes;
 import org.openjavacard.util.ToBytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
@@ -340,6 +341,16 @@ public class GPIssuerDomain {
     public void terminateCard() throws CardException {
         LOG.debug("terminateCard()");
         performSetStatusISD(mCard.getISD(), GP.CARD_STATE_TERMINATED);
+    }
+
+    public void lockApplet(AID appletAID) throws CardException {
+        LOG.debug("lockApplet()");
+        throw new NotImplementedException();
+    }
+
+    public void unlockApplet(AID appletAID) throws CardException {
+        LOG.debug("unlockApplet()");
+        throw new NotImplementedException();
     }
 
     private void performStoreData(byte[] block, byte blockNumber, boolean lastBlock) throws CardException {

@@ -119,9 +119,11 @@ public class GPState extends GPCommand {
 
         for(AID app: appLock) {
             os.println("Locking applet " + app);
+            isd.lockApplet(app);
         }
         for(AID app: appUnlock) {
             os.println("Unlocking applet " + app);
+            isd.unlockApplet(app);
         }
     }
 
