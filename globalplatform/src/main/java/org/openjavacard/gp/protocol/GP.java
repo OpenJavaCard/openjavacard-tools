@@ -125,11 +125,15 @@ public class GP implements ISO7816 {
         }
     }
 
+    public static final byte APPLET_STATE_MASK = (byte) 0x07;
     public static final byte APPLET_STATE_INSTALLED = (byte) 0x03;
     public static final byte APPLET_STATE_SELECTABLE = (byte) 0x07;
+    public static final byte APPLET_SPECIFIC_MASK = (byte) 0x78;
+    public static final byte APPLET_SPECIFIC_SHIFT = 3;
+    public static final byte APPLET_LOCKED_FLAG = (byte) 0x80;
 
     public static String appletStateString(byte appState) {
-        switch (appState) {
+        switch (appState&APPLET_STATE_MASK) {
             case APPLET_STATE_INSTALLED:
                 return "INSTALLED";
             case APPLET_STATE_SELECTABLE:
@@ -139,12 +143,22 @@ public class GP implements ISO7816 {
         }
     }
 
+    public static int appletStateSpecific(byte appState) {
+        return (appState & APPLET_SPECIFIC_MASK) >> APPLET_SPECIFIC_SHIFT;
+    }
+
+    public static boolean appletLocked(byte appState) {
+        return (appState & APPLET_LOCKED_FLAG) != 0;
+    }
+
+    public static final byte DOMAIN_STATE_MASK = (byte)0x7F;
     public static final byte DOMAIN_STATE_INSTALLED = (byte) 0x03;
     public static final byte DOMAIN_STATE_SELECTABLE = (byte) 0x07;
     public static final byte DOMAIN_STATE_PERSONALIZED = (byte) 0x0F;
+    public static final byte DOMAIN_LOCKED_FLAG = (byte) 0x80;
 
     public static String domainStateString(byte domainState) {
-        switch (domainState) {
+        switch (domainState&DOMAIN_STATE_MASK) {
             case DOMAIN_STATE_INSTALLED:
                 return "INSTALLED";
             case DOMAIN_STATE_SELECTABLE:
@@ -154,6 +168,10 @@ public class GP implements ISO7816 {
             default:
                 return "UNKNOWN" + domainState;
         }
+    }
+
+    public static boolean domainLocked(byte domainState) {
+        return (domainState & DOMAIN_LOCKED_FLAG) != 0;
     }
 
     public static final byte CARD_STATE_OP_READY = (byte) 0x01;
