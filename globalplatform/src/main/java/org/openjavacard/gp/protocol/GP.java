@@ -260,7 +260,7 @@ public class GP implements ISO7816 {
             case KEY_TYPE_EXTENDED_FORMAT:
                 return "EXTENDED-FORMAT";
             default:
-                return "UNKNOWN-" + HexUtil.hex8(keyType & 0xFF);
+                return "UNKNOWN" + HexUtil.hex8(keyType & 0xFF);
         }
     }
 
