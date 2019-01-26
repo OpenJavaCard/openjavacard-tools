@@ -23,7 +23,7 @@ import org.openjavacard.gp.crypto.GPBouncy;
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
-import org.openjavacard.gp.keys.GPKeyType;
+import org.openjavacard.gp.keys.GPKeyUsage;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
@@ -93,7 +93,7 @@ public class SCP03Wrapper extends SCPWrapper {
 
         // perform ENC operation
         if (mENC && wrappedLen > 0) {
-            GPKey encKey = mKeys.getKeyByType(GPKeyType.ENC);
+            GPKey encKey = mKeys.getKeyByUsage(GPKeyUsage.ENC);
 
             // enc requires mac
             if (!mMAC) {
@@ -113,7 +113,7 @@ public class SCP03Wrapper extends SCPWrapper {
 
         // perform MAC operation
         if (mMAC) {
-            GPKey macKey = mKeys.getKeyByType(GPKeyType.MAC);
+            GPKey macKey = mKeys.getKeyByUsage(GPKeyUsage.MAC);
 
             // MAC is computed on length including MAC
             wrappedLen += 8;
@@ -158,7 +158,7 @@ public class SCP03Wrapper extends SCPWrapper {
 
         if (mRMAC) {
             // get the right key
-            GPKey key = mKeys.getKeyByType(GPKeyType.RMAC);
+            GPKey key = mKeys.getKeyByUsage(GPKeyUsage.RMAC);
 
             // get fields
             byte[] data = response.getData();

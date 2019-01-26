@@ -61,12 +61,12 @@ public class GPKeySet {
     private GPKeyDiversification mDiversification;
 
     private final ArrayList<GPKey> mKeys = new ArrayList<>();
-    private final Hashtable<GPKeyType, GPKey> mKeysByType = new Hashtable<>();
+    private final Hashtable<GPKeyUsage, GPKey> mKeysByUsage = new Hashtable<>();
     private final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
 
     private static GPKeySet buildGeneric(String name, byte[] masterKey) {
         GPKeySet keySet = new GPKeySet(name);
-        keySet.putKey(new GPKey(GPKeyType.MASTER, (byte)0, GPKeyCipher.GENERIC, masterKey));
+        keySet.putKey(new GPKey(GPKeyUsage.MASTER, (byte)0, GPKeyCipher.GENERIC, masterKey));
         return keySet;
     }
 
@@ -121,16 +121,16 @@ public class GPKeySet {
     }
 
     /**
-     * Retrieves the key of the given type from the keyset
+     * Retrieves the key of the given usage type from the keyset
      *
-     * @param type of the key
+     * @param usage of the key
      * @return the key or null
      */
-    public GPKey getKeyByType(GPKeyType type) {
-        if(mKeysByType.containsKey(type)) {
-            return mKeysByType.get(type);
+    public GPKey getKeyByUsage(GPKeyUsage usage) {
+        if(mKeysByUsage.containsKey(usage)) {
+            return mKeysByUsage.get(usage);
         } else {
-            return mKeysByType.get(GPKeyType.MASTER);
+            return mKeysByUsage.get(GPKeyUsage.MASTER);
         }
     }
 
@@ -144,7 +144,7 @@ public class GPKeySet {
         if(mKeysById.containsKey(keyId)) {
             return mKeysById.get(keyId);
         } else {
-            return mKeysByType.get(GPKeyType.MASTER);
+            return mKeysByUsage.get(GPKeyUsage.MASTER);
         }
     }
 
@@ -155,8 +155,8 @@ public class GPKeySet {
      */
     public void putKey(GPKey key) {
         int keyId = key.getId();
-        GPKeyType keyType = key.getType();
-        if (mKeysByType.containsKey(keyType)) {
+        GPKeyUsage keyType = key.getUsage();
+        if (mKeysByUsage.containsKey(keyType)) {
             throw new IllegalArgumentException("Key set " + mName + " already has a " + keyType + " key");
         }
         if(keyId != 0) {
@@ -165,14 +165,14 @@ public class GPKeySet {
             }
         }
         mKeys.add(key);
-        mKeysByType.put(keyType, key);
+        mKeysByUsage.put(keyType, key);
         if(keyId != 0) {
             mKeysById.put(keyId, key);
         }
     }
 
-    private static final GPKeyType[] DIVERSIFICATION_KEYS = {
-            GPKeyType.ENC, GPKeyType.MAC, GPKeyType.KEK, GPKeyType.RMAC
+    private static final GPKeyUsage[] DIVERSIFICATION_KEYS = {
+            GPKeyUsage.ENC, GPKeyUsage.MAC, GPKeyUsage.KEK, GPKeyUsage.RMAC
     };
 
     /**
@@ -195,18 +195,18 @@ public class GPKeySet {
         GPKeySet diversifiedKeys = new GPKeySet(diversifiedName, mKeyVersion, diversification);
         switch(diversification) {
             case EMV:
-                for(GPKeyType type: DIVERSIFICATION_KEYS) {
-                    GPKey key = getKeyByType(type);
+                for(GPKeyUsage type: DIVERSIFICATION_KEYS) {
+                    GPKey key = getKeyByUsage(type);
                     if(key != null) {
-                        diversifiedKeys.putKey(diversifyKeyEMV(type, getKeyByType(type), diversificationData));
+                        diversifiedKeys.putKey(diversifyKeyEMV(type, getKeyByUsage(type), diversificationData));
                     }
                 }
                 break;
             case VISA2:
-                for(GPKeyType type: DIVERSIFICATION_KEYS) {
-                    GPKey key = getKeyByType(type);
+                for(GPKeyUsage type: DIVERSIFICATION_KEYS) {
+                    GPKey key = getKeyByUsage(type);
                     if(key != null) {
-                        diversifiedKeys.putKey(diversifyKeyVisa2(type, getKeyByType(type), diversificationData));
+                        diversifiedKeys.putKey(diversifyKeyVisa2(type, getKeyByUsage(type), diversificationData));
                     }
                 }
                 break;
@@ -216,30 +216,30 @@ public class GPKeySet {
         return diversifiedKeys;
     }
 
-    private GPKey diversifyKeyEMV(GPKeyType type, GPKey key, byte[] diversificationData) {
+    private GPKey diversifyKeyEMV(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 4, data, 0, 6);
         data[6] = (byte)0xF0;
-        data[7] = type.diversifyId;
+        data[7] = usage.diversifyId;
         System.arraycopy(diversificationData, 4, data, 8, 6);
         data[14] = (byte)0x0F;
-        data[15] = type.diversifyId;
+        data[15] = usage.diversifyId;
         byte[] dKey = GPCrypto.enc_3des_ecb(key, data);
-        return new GPKey(type, key.getId(), key.getCipher(), dKey);
+        return new GPKey(usage, key.getId(), key.getCipher(), dKey);
     }
 
-    private GPKey diversifyKeyVisa2(GPKeyType type, GPKey key, byte[] diversificationData) {
+    private GPKey diversifyKeyVisa2(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 0, data, 0, 2);
         System.arraycopy(diversificationData, 4, data, 2, 4);
         data[6] = (byte)0xF0;
-        data[7] = type.diversifyId;
+        data[7] = usage.diversifyId;
         System.arraycopy(diversificationData, 0, data, 8, 2);
         System.arraycopy(diversificationData, 4, data, 10, 4);
         data[14] = (byte)0x0F;
-        data[15] = type.diversifyId;
+        data[15] = usage.diversifyId;
         byte[] dKey = GPCrypto.enc_3des_ecb(key, data);
-        return new GPKey(type, key.getId(), key.getCipher(), dKey);
+        return new GPKey(usage, key.getId(), key.getCipher(), dKey);
     }
 
     public String toString() {

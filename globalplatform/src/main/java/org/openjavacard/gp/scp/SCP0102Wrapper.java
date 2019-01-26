@@ -22,7 +22,7 @@ package org.openjavacard.gp.scp;
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
-import org.openjavacard.gp.keys.GPKeyType;
+import org.openjavacard.gp.keys.GPKeyUsage;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
@@ -88,7 +88,7 @@ public class SCP0102Wrapper extends SCPWrapper {
     @Override
     public byte[] encryptSensitiveData(byte[] data) throws CardException {
         byte[] result;
-        GPKey sessionKEK = mKeys.getKeyByType(GPKeyType.KEK);
+        GPKey sessionKEK = mKeys.getKeyByUsage(GPKeyUsage.KEK);
 
         if((data.length % 8) != 0) {
             throw new CardException("SCP01/02 does not allow sensitive data that needs padding");
@@ -166,7 +166,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
         // perform MAC operation
         if (mMAC) {
-            GPKey macKey = mKeys.getKeyByType(GPKeyType.MAC);
+            GPKey macKey = mKeys.getKeyByUsage(GPKeyUsage.MAC);
 
             // determine the IV of the MAC
             if (mICV == null) {
@@ -213,7 +213,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
         // perform ENC operation
         if (mENC && dataLen > 0) {
-            GPKey encKey = mKeys.getKeyByType(GPKeyType.ENC);
+            GPKey encKey = mKeys.getKeyByUsage(GPKeyUsage.ENC);
 
             // enc requires mac
             if (!mMAC) {
@@ -265,7 +265,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
         if (mRMAC) {
             // get the right key
-            GPKey key = mKeys.getKeyByType(GPKeyType.RMAC);
+            GPKey key = mKeys.getKeyByUsage(GPKeyUsage.RMAC);
 
             // get fields
             byte[] data = response.getData();

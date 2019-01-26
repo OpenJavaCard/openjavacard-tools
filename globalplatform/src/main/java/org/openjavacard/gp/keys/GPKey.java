@@ -28,7 +28,7 @@ public class GPKey {
 
     private final byte mId;
 
-    private final GPKeyType mType;
+    private final GPKeyUsage mUsage;
 
     private final GPKeyCipher mCipher;
 
@@ -37,12 +37,12 @@ public class GPKey {
     /**
      * Constructs a key object for the provided data
      *
-     * @param type   of the key object
+     * @param usage  of the key object
      * @param cipher of the key object
      * @param secret the key itself
      */
-    public GPKey(GPKeyType type, byte id, GPKeyCipher cipher, byte[] secret) {
-        mType = type;
+    public GPKey(GPKeyUsage usage, byte id, GPKeyCipher cipher, byte[] secret) {
+        mUsage = usage;
         mId = id;
         mCipher = cipher;
         mSecret = secret.clone();
@@ -59,8 +59,8 @@ public class GPKey {
     /**
      * @return type of this key
      */
-    public GPKeyType getType() {
-        return mType;
+    public GPKeyUsage getUsage() {
+        return mUsage;
     }
 
     /**
@@ -173,7 +173,8 @@ public class GPKey {
     }
 
     public String toString() {
-        return "key " + mType + " id " + mId
+        return "key id " + (mId==0?"any":mId)
+                + " usage " + mUsage
                 + " cipher " + mCipher
                 + " secret " + HexUtil.bytesToHex(mSecret);
     }

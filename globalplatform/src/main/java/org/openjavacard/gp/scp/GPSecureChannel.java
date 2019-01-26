@@ -26,7 +26,7 @@ import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.keys.GPKeySet;
-import org.openjavacard.gp.keys.GPKeyType;
+import org.openjavacard.gp.keys.GPKeyUsage;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SW;
@@ -367,11 +367,11 @@ public class GPSecureChannel extends CardChannel {
         switch(mActiveProtocol.scpVersion) {
             case 2:
                 LOG.trace("computing cryptogram for SCP02");
-                GPKey encKey = mSessionKeys.getKeyByType(GPKeyType.ENC);
+                GPKey encKey = mSessionKeys.getKeyByUsage(GPKeyUsage.ENC);
                 return GPCrypto.mac_3des_nulliv(encKey, cardContext);
             case 3:
                 LOG.trace("computing cryptogram for SCP03");
-                GPKey macKey = mSessionKeys.getKeyByType(GPKeyType.MAC);
+                GPKey macKey = mSessionKeys.getKeyByUsage(GPKeyUsage.MAC);
                 return GPBouncy.scp03_kdf(macKey, (byte)0x00, cardContext, 64);
             default:
                 throw new RuntimeException("Unsupported SCP version " + mActiveProtocol);
@@ -402,11 +402,11 @@ public class GPSecureChannel extends CardChannel {
         switch(mActiveProtocol.scpVersion) {
             case 2:
                 byte[] hostContext02 = ArrayUtil.concatenate(cardChallenge, hostChallenge);
-                GPKey encKey = mSessionKeys.getKeyByType(GPKeyType.ENC);
+                GPKey encKey = mSessionKeys.getKeyByUsage(GPKeyUsage.ENC);
                 return GPCrypto.mac_3des_nulliv(encKey, hostContext02);
             case 3:
                 byte[] hostContext03 = ArrayUtil.concatenate(hostChallenge, cardChallenge);
-                GPKey macKey = mSessionKeys.getKeyByType(GPKeyType.MAC);
+                GPKey macKey = mSessionKeys.getKeyByUsage(GPKeyUsage.MAC);
                 return GPBouncy.scp03_kdf(macKey, (byte)0x01, hostContext03, 64);
             default:
                 throw new RuntimeException("Unsupported SCP version " + mActiveProtocol);

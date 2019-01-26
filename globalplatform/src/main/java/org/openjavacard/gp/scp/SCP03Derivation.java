@@ -23,7 +23,7 @@ import org.openjavacard.gp.crypto.GPBouncy;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.gp.keys.GPKeySet;
-import org.openjavacard.gp.keys.GPKeyType;
+import org.openjavacard.gp.keys.GPKeyUsage;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
 
@@ -35,16 +35,16 @@ import java.util.Hashtable;
 public class SCP03Derivation {
 
     /** All key types in SCP03 */
-    private static final GPKeyType[] KEY_TYPES = {
-            GPKeyType.ENC, GPKeyType.MAC, GPKeyType.KEK, GPKeyType.RMAC
+    private static final GPKeyUsage[] KEYS = {
+            GPKeyUsage.ENC, GPKeyUsage.MAC, GPKeyUsage.KEK, GPKeyUsage.RMAC
     };
 
     /** Key derivation constants */
-    private static final Hashtable<GPKeyType, Byte> DERIVATION_CONSTANTS = new Hashtable<>();
+    private static final Hashtable<GPKeyUsage, Byte> CONSTANTS = new Hashtable<>();
     static {
-        DERIVATION_CONSTANTS.put(GPKeyType.ENC,  (byte)0x04);
-        DERIVATION_CONSTANTS.put(GPKeyType.MAC,  (byte)0x06);
-        DERIVATION_CONSTANTS.put(GPKeyType.RMAC, (byte)0x07);
+        CONSTANTS.put(GPKeyUsage.ENC,  (byte)0x04);
+        CONSTANTS.put(GPKeyUsage.MAC,  (byte)0x06);
+        CONSTANTS.put(GPKeyUsage.RMAC, (byte)0x07);
         // no derivation for the KEK
     }
 
@@ -65,20 +65,20 @@ public class SCP03Derivation {
         // create the new keyset
         GPKeySet derivedSet = new GPKeySet(name, staticKeys.getKeyVersion(), staticKeys.getDiversification());
         // go through all supported key types
-        for (GPKeyType type : KEY_TYPES) {
+        for (GPKeyUsage usage : KEYS) {
             // get the static key for the type
-            GPKey staticKey = staticKeys.getKeyByType(type);
+            GPKey staticKey = staticKeys.getKeyByUsage(usage);
             if(staticKey != null) {
                 GPKey sessionKey;
                 // derive or copy
-                if(DERIVATION_CONSTANTS.containsKey(type)) {
+                if(CONSTANTS.containsKey(usage)) {
                     // perform derivation
-                    byte constant = DERIVATION_CONSTANTS.get(type);
+                    byte constant = CONSTANTS.get(usage);
                     byte[] sessionSecret = GPBouncy.scp03_kdf(staticKey, constant, context, staticKey.getLength() * 8);
-                    sessionKey = new GPKey(type, staticKey.getId(), GPKeyCipher.AES, sessionSecret);
+                    sessionKey = new GPKey(usage, staticKey.getId(), GPKeyCipher.AES, sessionSecret);
                 } else {
                     // copy keys that need no derivation
-                    sessionKey = new GPKey(type, staticKey.getId(), GPKeyCipher.AES, staticKey.getSecret());
+                    sessionKey = new GPKey(usage, staticKey.getId(), GPKeyCipher.AES, staticKey.getSecret());
                 }
                 // add key to new set
                 derivedSet.putKey(sessionKey);

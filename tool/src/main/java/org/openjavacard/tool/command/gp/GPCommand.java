@@ -27,7 +27,7 @@ import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.keys.GPKeySet;
-import org.openjavacard.gp.keys.GPKeyType;
+import org.openjavacard.gp.keys.GPKeyUsage;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;
 import org.openjavacard.iso.AID;
@@ -305,13 +305,13 @@ public abstract class GPCommand implements Runnable {
         }
         int numKeys = typeStrings.length;
         for(int i = 0; i < numKeys; i++) {
-            GPKeyType type = GPKeyType.valueOf(typeStrings[i]);
+            GPKeyUsage usage = GPKeyUsage.valueOf(typeStrings[i]);
             byte[] secret = HexUtil.hexToBytes(secretStrings[i]);
             byte id = (byte)(keyId + i);
-            if(type == GPKeyType.MASTER) {
+            if(usage == GPKeyUsage.MASTER) {
                 id = 0;
             }
-            GPKey key = new GPKey(type, id, cipher, secret);
+            GPKey key = new GPKey(usage, id, cipher, secret);
             keys.putKey(key);
         }
         return keys;
