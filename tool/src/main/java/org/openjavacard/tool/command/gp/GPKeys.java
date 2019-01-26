@@ -59,8 +59,7 @@ public class GPKeys extends GPCommand {
     private String newKeyTypes = "MASTER";
 
     @Parameter(
-            names = "--new-secrets",
-            required = true
+            names = "--new-secrets"
     )
     private String newKeySecrets = null;
 
@@ -72,21 +71,33 @@ public class GPKeys extends GPCommand {
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
 
-        os.println("New " + newKeys);
+        // print the KIT
+        os.println(card.getCardKeyInfo());
         os.println();
 
-        os.println("Checking key compatibility...");
-        card.getCardKeyInfo().checkKeySetForReplacement(newKeys);
-        os.println("Check complete.");
-        os.println();
+        if(context.isKeyLoggingEnabled()) {
+            os.println("Old keys: " + card.getKeys());
+            os.println();
+        }
 
-        os.println("Uploading keys...");
-        card.getIssuerDomain().replaceKeys(newKeys);
-        os.println("Upload complete.");
-        os.println();
+        if(newKeySecrets != null) {
             GPKeySet newKeys = buildKeysFromParameters(newKeyId, newKeyVersion, newKeyCipher, newKeyTypes, newKeySecrets);
 
+            if (context.isKeyLoggingEnabled()) {
+                os.println("New keys: " + newKeys);
+                os.println();
+            }
 
+            os.println("Checking key compatibility...");
+            card.getCardKeyInfo().checkKeySetForReplacement(newKeys);
+            os.println("Check complete.");
+            os.println();
+
+            os.println("Uploading keys...");
+            card.getIssuerDomain().replaceKeys(newKeys);
+            os.println("Upload complete.");
+            os.println();
+        }
     }
 
 }
