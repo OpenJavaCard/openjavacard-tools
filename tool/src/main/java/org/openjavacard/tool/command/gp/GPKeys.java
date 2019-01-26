@@ -71,7 +71,6 @@ public class GPKeys extends GPCommand {
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
-        GPKeySet newKeys = buildKeysFromParameters(newKeyVersion, newKeyId, newKeyCipher, newKeyTypes, newKeySecrets);
 
         os.println("New " + newKeys);
         os.println();
@@ -85,6 +84,8 @@ public class GPKeys extends GPCommand {
         card.getIssuerDomain().replaceKeys(newKeys);
         os.println("Upload complete.");
         os.println();
+            GPKeySet newKeys = buildKeysFromParameters(newKeyId, newKeyVersion, newKeyCipher, newKeyTypes, newKeySecrets);
+
 
     }
 

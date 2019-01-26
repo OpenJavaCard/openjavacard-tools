@@ -289,13 +289,13 @@ public abstract class GPCommand implements Runnable {
         return ks;
     }
 
-    protected GPKeySet buildKeysFromParameters(int keyVersion, int keyId, GPKeyCipher cipher, String types, String secrets) {
-        if(keyVersion > 255) {
-            throw new Error("Bad key version");
-        }
+    protected GPKeySet buildKeysFromParameters(int keyId, int keyVersion, GPKeyCipher cipher, String types, String secrets) {
         // XXX this is not comprehensive because of the loop and protocol variations
         if(keyId > 255) {
             throw new Error("Bad key id");
+        }
+        if(keyVersion > 255) {
+            throw new Error("Bad key version");
         }
         GPKeySet keys = new GPKeySet("commandline", keyVersion);
         String[] typeStrings = types.split(":");
