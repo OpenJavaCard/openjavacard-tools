@@ -466,12 +466,14 @@ public class GPCard {
                 LOG.trace("key information:\n" + mCardKeyInfo.toString());
             }
 
-            // check key against key information
-            if (mCardKeyInfo.matchesKeysetForUsage(mKeys)) {
-                LOG.debug("keys match key information");
-            } else {
-                throw new CardException("Keys do not match key information");
+            // log keys
+            if(mContext.isKeyLoggingEnabled()) {
+                LOG.debug(mKeys.toString());
             }
+
+            // check key against key information
+            LOG.debug("checking key compatibility");
+            mCardKeyInfo.checkKeysetForUsage(mKeys);
 
             // create a secure channel object
             mSecure = new GPSecureChannel(this, mBasic, mKeys, mDiversification, mProtocolPolicy, mSecurityPolicy);

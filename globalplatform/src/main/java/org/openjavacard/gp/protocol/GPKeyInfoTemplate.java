@@ -77,25 +77,24 @@ public class GPKeyInfoTemplate {
      * @param keys to check
      * @return true if usable
      */
-    public boolean matchesKeysetForUsage(GPKeySet keys) {
+    public void checkKeysetForUsage(GPKeySet keys) throws CardException {
+        LOG.trace("checking keyset " + keys.getName());
         for (GPKeyInfo keyInfo : mKeyInfos) {
-            LOG.trace("checking for " + keyInfo.getKeyId());
-            GPKey key = keys.getKeyById(keyInfo.getKeyId());
+            int keyId = keyInfo.getKeyId();
+            LOG.trace("checking key with id " + keyId);
+            GPKey key = keys.getKeyById(keyId);
             if (key == null) {
-                LOG.trace("key not found");
-                return false;
+                throw new CardException("No key found with id " + keyId);
             }
             int keyVersion = keys.getKeyVersion();
             if (keyVersion != 0 && keyInfo.getKeyVersion() != keyVersion) {
-                LOG.trace("wrong key version");
-                return false;
+                throw new CardException("Wrong key version " + keyInfo.getKeyVersion()
+                        + ", expected " + keyVersion);
             }
             if (!keyInfo.matchesKey(key)) {
-                LOG.trace("key is incompatible");
-                return false;
+                throw new CardException("Key is incompatible");
             }
         }
-        return true;
     }
 
     /**
