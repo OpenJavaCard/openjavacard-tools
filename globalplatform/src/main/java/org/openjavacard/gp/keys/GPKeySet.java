@@ -245,7 +245,7 @@ public class GPKeySet {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("keyset \"" + mName + "\"");
-        sb.append(" version " + mKeyVersion);
+        sb.append(" version " + (mKeyVersion==0?"any":mKeyVersion));
         if (mKeys.isEmpty()) {
             sb.append(":\n EMPTY");
         } else {
