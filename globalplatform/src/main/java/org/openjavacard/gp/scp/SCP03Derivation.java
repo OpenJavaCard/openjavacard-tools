@@ -75,10 +75,10 @@ public class SCP03Derivation {
                     // perform derivation
                     byte constant = CONSTANTS.get(usage);
                     byte[] sessionSecret = GPBouncy.scp03_kdf(staticKey, constant, context, staticKey.getLength() * 8);
-                    sessionKey = new GPKey(usage, staticKey.getId(), GPKeyCipher.AES, sessionSecret);
+                    sessionKey = new GPKey(staticKey.getId(), usage, GPKeyCipher.AES, sessionSecret);
                 } else {
                     // copy keys that need no derivation
-                    sessionKey = new GPKey(usage, staticKey.getId(), GPKeyCipher.AES, staticKey.getSecret());
+                    sessionKey = new GPKey(staticKey.getId(), usage, GPKeyCipher.AES, staticKey.getSecret());
                 }
                 // add key to new set
                 derivedSet.putKey(sessionKey);

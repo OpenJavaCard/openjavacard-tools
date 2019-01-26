@@ -311,7 +311,7 @@ public abstract class GPCommand implements Runnable {
             if(usage == GPKeyUsage.MASTER) {
                 id = 0;
             }
-            GPKey key = new GPKey(usage, id, cipher, secret);
+            GPKey key = new GPKey(id, usage, cipher, secret);
             keys.putKey(key);
         }
         return keys;

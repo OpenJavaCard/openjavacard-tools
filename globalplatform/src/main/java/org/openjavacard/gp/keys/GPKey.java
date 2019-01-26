@@ -26,7 +26,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class GPKey {
 
-    private final byte mId;
+    private final int mId;
 
     private final GPKeyUsage mUsage;
 
@@ -37,13 +37,17 @@ public class GPKey {
     /**
      * Constructs a key object for the provided data
      *
-     * @param usage  of the key object
-     * @param cipher of the key object
+     * @param keyId of the key
+     * @param usage  of the key
+     * @param cipher of the key
      * @param secret the key itself
      */
-    public GPKey(GPKeyUsage usage, byte id, GPKeyCipher cipher, byte[] secret) {
+    public GPKey(int keyId, GPKeyUsage usage, GPKeyCipher cipher, byte[] secret) {
+        if(keyId > 255) {
+            throw new IllegalArgumentException("Invalid key id " + keyId);
+        }
+        mId = keyId;
         mUsage = usage;
-        mId = id;
         mCipher = cipher;
         mSecret = secret.clone();
         checkKeyLength();
@@ -52,7 +56,7 @@ public class GPKey {
     /**
      * @return key id of this key
      */
-    public byte getId() {
+    public int getId() {
         return mId;
     }
 

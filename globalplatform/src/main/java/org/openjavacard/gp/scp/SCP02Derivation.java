@@ -77,8 +77,8 @@ public class SCP02Derivation {
                 // derive using DES
                 byte[] derived = GPCrypto.enc_3des_cbc_nulliv(staticKey, buffer);
                 // construct the new key
-                GPKey sessionKey = new GPKey(usage, staticKey.getId(),
-                        GPKeyCipher.DES3, derived);
+                GPKey sessionKey = new GPKey(
+                        staticKey.getId(), usage, GPKeyCipher.DES3, derived);
                 // insert key into new set
                 derivedSet.putKey(sessionKey);
             }

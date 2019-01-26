@@ -66,7 +66,7 @@ public class GPKeySet {
 
     private static GPKeySet buildGeneric(String name, byte[] masterKey) {
         GPKeySet keySet = new GPKeySet(name);
-        keySet.putKey(new GPKey(GPKeyUsage.MASTER, (byte)0, GPKeyCipher.GENERIC, masterKey));
+        keySet.putKey(new GPKey(0, GPKeyUsage.MASTER, GPKeyCipher.GENERIC, masterKey));
         return keySet;
     }
 
@@ -95,6 +95,9 @@ public class GPKeySet {
      * @param diversification of the keyset
      */
     public GPKeySet(String name, int keyVersion, GPKeyDiversification diversification) {
+        if(keyVersion > 255) {
+            throw new IllegalArgumentException("Invalid key version " + keyVersion);
+        }
         mName = name;
         mKeyVersion = keyVersion;
         mDiversification = diversification;
@@ -225,7 +228,7 @@ public class GPKeySet {
         data[14] = (byte)0x0F;
         data[15] = usage.diversifyId;
         byte[] dKey = GPCrypto.enc_3des_ecb(key, data);
-        return new GPKey(usage, key.getId(), key.getCipher(), dKey);
+        return new GPKey(key.getId(), usage, key.getCipher(), dKey);
     }
 
     private GPKey diversifyKeyVisa2(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
@@ -239,7 +242,7 @@ public class GPKeySet {
         data[14] = (byte)0x0F;
         data[15] = usage.diversifyId;
         byte[] dKey = GPCrypto.enc_3des_ecb(key, data);
-        return new GPKey(usage, key.getId(), key.getCipher(), dKey);
+        return new GPKey(key.getId(), usage, key.getCipher(), dKey);
     }
 
     public String toString() {
