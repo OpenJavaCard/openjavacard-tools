@@ -289,29 +289,29 @@ public abstract class GPCommand implements Runnable {
         return ks;
     }
 
-    protected GPKeySet buildKeysFromParameters(int pKeyVersion, int pKeyId, GPKeyCipher pKeyCipher, String pKeyTypes, String pKeySecrets) {
-        if(pKeyVersion > 255) {
+    protected GPKeySet buildKeysFromParameters(int keyVersion, int keyId, GPKeyCipher cipher, String types, String secrets) {
+        if(keyVersion > 255) {
             throw new Error("Bad key version");
         }
         // XXX this is not comprehensive because of the loop and protocol variations
-        if(pKeyId > 255) {
+        if(keyId > 255) {
             throw new Error("Bad key id");
         }
-        GPKeySet keys = new GPKeySet("commandline", pKeyVersion);
-        String[] keyTypes = pKeyTypes.split(":");
-        String[] keySecrets = pKeySecrets.split(":");
-        if(keyTypes.length != keySecrets.length) {
+        GPKeySet keys = new GPKeySet("commandline", keyVersion);
+        String[] typeStrings = types.split(":");
+        String[] secretStrings = secrets.split(":");
+        if(typeStrings.length != secretStrings.length) {
             throw new Error("Must provide an equal number of key types and secrets");
         }
-        int numKeys = keyTypes.length;
+        int numKeys = typeStrings.length;
         for(int i = 0; i < numKeys; i++) {
-            GPKeyType keyType = GPKeyType.valueOf(keyTypes[i]);
-            byte[] keySecret = HexUtil.hexToBytes(keySecrets[i]);
-            byte keyId = (byte)(pKeyId + i);
-            if(keyType == GPKeyType.MASTER) {
-                keyId = 0;
+            GPKeyType type = GPKeyType.valueOf(typeStrings[i]);
+            byte[] secret = HexUtil.hexToBytes(secretStrings[i]);
+            byte id = (byte)(keyId + i);
+            if(type == GPKeyType.MASTER) {
+                id = 0;
             }
-            GPKey key = new GPKey(keyType, keyId, pKeyCipher, keySecret);
+            GPKey key = new GPKey(type, id, cipher, secret);
             keys.putKey(key);
         }
         return keys;
