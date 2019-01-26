@@ -344,11 +344,21 @@ public class GPIssuerDomain {
         performSetStatusISD(mCard.getISD(), GP.CARD_STATE_TERMINATED);
     }
 
+    /**
+     * Lock the specified applet
+     * @param appletAID of the applet
+     * @throws CardException on error
+     */
     public void lockApplet(AID appletAID) throws CardException {
         LOG.debug("lockApplet()");
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * Unlock the specified applet
+     * @param appletAID of the applet
+     * @throws CardException on error
+     */
     public void unlockApplet(AID appletAID) throws CardException {
         LOG.debug("unlockApplet()");
         throw new RuntimeException("Not implemented");

@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Client for GlobalPlatform registry functionality
  * <p/>
- * The registry is the on-card database metadata about:
+ * The registry is the on-card database for metadata about:
  * <ul>
  * <li>Security domains (ISD and SSD)</li>
  * <li>Executable load files (ELF) - equivalent to a JavaCard package</li>
