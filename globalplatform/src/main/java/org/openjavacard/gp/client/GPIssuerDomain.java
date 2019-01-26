@@ -25,13 +25,16 @@ import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPKeyInfo;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.scp.GPSecureChannel;
+import org.openjavacard.gp.structure.GPInstallForInstallRequest;
+import org.openjavacard.gp.structure.GPInstallForInstallResponse;
+import org.openjavacard.gp.structure.GPInstallForLoadRequest;
+import org.openjavacard.gp.structure.GPInstallForLoadResponse;
+import org.openjavacard.gp.structure.GPStoreDataRequest;
 import org.openjavacard.iso.AID;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
-import org.openjavacard.util.ReadBytes;
-import org.openjavacard.util.ToBytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +42,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -480,154 +482,6 @@ public class GPIssuerDomain {
         GPInstallForInstallResponse response = new GPInstallForInstallResponse();
         response.readBytes(responseAPDU.getData());
         return response;
-    }
-
-    public static class GPStoreDataRequest implements ToBytes {
-        private static final int TAG_ISSUER_IDENTIFICATION_NUMBER = 0x4200;
-        private static final int TAG_CARD_IMAGE_NUMBER = 0x4500;
-        private static final int TAG_ISD_AID = 0x4F00;
-
-        byte[] cardIIN;
-        byte[] cardCIN;
-        byte[] cardISD;
-
-        @Override
-        public byte[] toBytes() {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try {
-                if(cardIIN != null) {
-                    bos.write(new TLVPrimitive(TAG_ISSUER_IDENTIFICATION_NUMBER, cardIIN).getEncoded());
-                }
-                if(cardCIN != null) {
-                    bos.write(new TLVPrimitive(TAG_CARD_IMAGE_NUMBER, cardCIN).getEncoded());
-                }
-                if(cardISD != null) {
-                    bos.write(new TLVPrimitive(TAG_ISD_AID, cardISD).getEncoded());
-                }
-            } catch (IOException e) {
-                throw new Error("Error serializing INSTALL [for  LOAD] request", e);
-            }
-            return bos.toByteArray();
-        }
-    }
-
-    public static class GPInstallForLoadRequest implements ToBytes {
-        AID packageAID;
-        AID sdAID;
-        byte[] loadHash;
-        byte[] loadParameters;
-        byte[] loadToken;
-
-        @Override
-        public byte[] toBytes() {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try {
-                if(packageAID == null) {
-                    throw new IOException("Load file AID is mandatory");
-                } else {
-                    bos.write(packageAID.getLength());
-                    bos.write(packageAID.getBytes());
-                }
-                if(sdAID == null) {
-                    bos.write(0);
-                } else {
-                    bos.write(sdAID.getLength());
-                    bos.write(sdAID.getBytes());
-                }
-                if(loadHash == null) {
-                    bos.write(0);
-                } else {
-                    bos.write(loadHash.length);
-                    bos.write(loadHash);
-                }
-                if(loadParameters == null) {
-                    bos.write(0);
-                } else {
-                    bos.write(loadParameters.length);
-                    bos.write(loadParameters);
-                }
-                if(loadToken == null) {
-                    bos.write(0);
-                } else {
-                    bos.write(loadToken.length);
-                    bos.write(loadToken);
-                }
-            } catch (IOException e) {
-                throw new Error("Error serializing INSTALL [for  LOAD] request", e);
-            }
-            return bos.toByteArray();
-        }
-    }
-
-    public static class GPInstallForLoadResponse implements ReadBytes {
-
-        @Override
-        public void readBytes(byte[] bytes) {
-        }
-    }
-
-    public static class GPInstallForInstallRequest implements ToBytes {
-        AID packageAID;
-        AID moduleAID;
-        AID appletAID;
-        byte[] privileges;
-        byte[] installParameters;
-        byte[] installToken;
-
-        @Override
-        public byte[] toBytes() {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try {
-                if(packageAID == null) {
-                    throw new IOException("Package AID is mandatory");
-                } else {
-                    bos.write(packageAID.getLength());
-                    bos.write(packageAID.getBytes());
-                }
-                if(moduleAID == null) {
-                    throw new IOException("Module AID is mandatory");
-                } else {
-                    bos.write(moduleAID.getLength());
-                    bos.write(moduleAID.getBytes());
-                }
-                if(appletAID == null) {
-                    throw new IOException("Applet AID is mandatory");
-                } else {
-                    bos.write(appletAID.getLength());
-                    bos.write(appletAID.getBytes());
-                }
-                if(privileges == null) {
-                    throw new IOException("Privileges are mandatory");
-                } else {
-                    bos.write(privileges.length);
-                    bos.write(privileges);
-                }
-                if(installParameters == null) {
-                    bos.write(new byte[] { (byte)0x02, (byte)0xC9, (byte)0x00 });
-                } else {
-                    bos.write(installParameters.length + 2);
-                    bos.write((byte)0xC9);
-                    bos.write(installParameters.length);
-                    bos.write(installParameters);
-                }
-                if(installToken == null) {
-                    bos.write(0);
-                } else {
-                    bos.write(installToken.length);
-                    bos.write(installToken);
-                }
-            } catch (IOException e) {
-                throw new Error("Error serializing INSTALL [for INSTALL] request", e);
-            }
-            return bos.toByteArray();
-        }
-    }
-
-    public static class GPInstallForInstallResponse implements ReadBytes {
-
-        @Override
-        public void readBytes(byte[] bytes) {
-        }
     }
 
 }
