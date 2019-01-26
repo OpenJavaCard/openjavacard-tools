@@ -28,6 +28,7 @@ import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyUsage;
 import org.openjavacard.gp.protocol.GP;
+import org.openjavacard.gp.structure.GPInitUpdateResponse;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SW;
 import org.openjavacard.iso.SWException;
@@ -294,7 +295,7 @@ public class GPSecureChannel extends CardChannel {
         LOG.debug("key id " + keyId + " version " + keyVersion);
 
         // perform INITIALIZE UPDATE, exchanging challenges
-        InitUpdateResponse init = performInitializeUpdate(keyVersion, keyId, hostChallenge);
+        GPInitUpdateResponse init = performInitializeUpdate(keyVersion, keyId, hostChallenge);
 
         // check and select the protocol to be used
         checkAndSelectProtocol(init);
@@ -421,7 +422,7 @@ public class GPSecureChannel extends CardChannel {
      * @param init response given by the card
      * @throws CardException when communication is denied
      */
-    private void checkAndSelectProtocol(InitUpdateResponse init) throws CardException {
+    private void checkAndSelectProtocol(GPInitUpdateResponse init) throws CardException {
         // determine and check SCP protocol
         int scpProto = init.scpProtocol;
         if (mExpectedProtocol != 0 && scpProto != mExpectedProtocol) {
@@ -469,7 +470,7 @@ public class GPSecureChannel extends CardChannel {
      * @return a set of session keys
      * @throws CardException on error
      */
-    private GPKeySet deriveKeys(InitUpdateResponse init, byte[] hostChallenge) throws CardException {
+    private GPKeySet deriveKeys(GPInitUpdateResponse init, byte[] hostChallenge) throws CardException {
         // derivation might replace keys
         GPKeySet keys = mStaticKeys;
 
@@ -543,7 +544,7 @@ public class GPSecureChannel extends CardChannel {
      * @return a decoded response to the command
      * @throws CardException on error
      */
-    private InitUpdateResponse performInitializeUpdate(byte keyVersion, byte keyId, byte[] hostChallenge) throws CardException {
+    private GPInitUpdateResponse performInitializeUpdate(byte keyVersion, byte keyId, byte[] hostChallenge) throws CardException {
         // build the command
         CommandAPDU initCommand = APDUUtil.buildCommand(
                 GP.CLA_GP,
@@ -558,7 +559,7 @@ public class GPSecureChannel extends CardChannel {
         checkResponse(initResponse);
         // parse the response
         byte[] responseData = initResponse.getData();
-        InitUpdateResponse response = new InitUpdateResponse(responseData);
+        GPInitUpdateResponse response = new GPInitUpdateResponse(responseData);
         // return the parsed response
         return response;
     }
@@ -609,130 +610,6 @@ public class GPSecureChannel extends CardChannel {
         int sw = response.getSW();
         if (sw != ISO7816.SW_NO_ERROR) {
             throw new SWException("Error in secure channel authentication", sw);
-        }
-    }
-
-    /**
-     * Parsed response to an INIT UPDATE command
-     * <p/>
-     * This is somewhat magic because the structure differs
-     * slightly between SCP versions, so total size can differ.
-     */
-    private class InitUpdateResponse {
-
-        /**
-         * Length of data for SCP01/02
-         */
-        static final int SCP0102_LENGTH = 28;
-        /**
-         * Length of data for SCP03
-         */
-        static final int SCP03_LENGTH = 32;
-
-        /**
-         * Key diversification data
-         */
-        final byte[] diversificationData;
-        /**
-         * Key version selected by card
-         */
-        final int keyVersion;
-        /**
-         * SCP version selected by card
-         */
-        final int scpProtocol;
-        /**
-         * SCP parameters selected by card (SCP03 only)
-         */
-        final int scp03Parameters;
-        /**
-         * Card challenge for authentication
-         */
-        final byte[] cardChallenge;
-        /**
-         * Card cryptogram for authentication
-         */
-        final byte[] cardCryptogram;
-        /**
-         * Session sequence number for authentication (SCP03 only, others use part of challenge)
-         */
-        final byte[] scp03Sequence;
-
-        /**
-         * Parse and construct an INIT UPDATE response
-         *
-         * @param data to be parsed
-         */
-        InitUpdateResponse(byte[] data) {
-            int offset = 0;
-            int length = data.length;
-
-            // check for possible lengths
-            if (length != SCP0102_LENGTH && length != SCP03_LENGTH) {
-                throw new IllegalArgumentException("Invalid INIT UPDATE response length " + length);
-            }
-
-            // key diversification data
-            diversificationData = Arrays.copyOfRange(data, offset, offset + 10);
-            offset += diversificationData.length;
-
-            // key version that the card uses
-            keyVersion = data[offset++] & 0xFF;
-
-            // SCP protocol version
-            scpProtocol = data[offset++] & 0xFF;
-
-            // SCP03 has protocol parameters here
-            if (scpProtocol == 3) {
-                scp03Parameters = data[offset++] & 0xFF;
-            } else {
-                scp03Parameters = 0;
-            }
-
-            // card challenge for authentication
-            cardChallenge = Arrays.copyOfRange(data, offset, offset + 8);
-            offset += cardChallenge.length;
-
-            // card cryptogram for authentication
-            cardCryptogram = Arrays.copyOfRange(data, offset, offset + 8);
-            offset += cardCryptogram.length;
-
-            // SCP03 has its sequence number here
-            if (scpProtocol == 3) {
-                scp03Sequence = Arrays.copyOfRange(data, offset, offset + 3);
-                offset += scp03Sequence.length;
-            } else {
-                scp03Sequence = null;
-            }
-
-            // check that we have consumed everything
-            if (offset != length) {
-                throw new IllegalArgumentException("BUG: INIT UPDATE response length mismatch");
-            }
-        }
-
-        public String toString() {
-            StringBuffer sb = new StringBuffer();
-            sb.append("INIT UPDATE response:");
-            sb.append("\n scpVersion ");
-            sb.append(HexUtil.hex8(scpProtocol));
-            if (scpProtocol == 3) {
-                sb.append("\n scp03Parameters ");
-                sb.append(HexUtil.hex8(scp03Parameters));
-            }
-            sb.append("\n keyVersion ");
-            sb.append(HexUtil.hex8(keyVersion));
-            sb.append("\n cardChallenge ");
-            sb.append(HexUtil.bytesToHex(cardChallenge));
-            sb.append("\n cardCryptogram ");
-            sb.append(HexUtil.bytesToHex(cardCryptogram));
-            sb.append("\n diversificationData ");
-            sb.append(HexUtil.bytesToHex(diversificationData));
-            if (scpProtocol == 3) {
-                sb.append("\n scp03Sequence ");
-                sb.append(HexUtil.bytesToHex(scp03Sequence));
-            }
-            return sb.toString();
         }
     }
 
