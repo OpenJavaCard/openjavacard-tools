@@ -282,17 +282,17 @@ public class GPRegistry {
         }
     }
 
-    List<ISDEntry> readEntriesISD() throws CardException {
+    private List<ISDEntry> readEntriesISD() throws CardException {
         LOG.trace("readEntriesISD()");
         return readStatusGeneric(GP.GET_STATUS_P1_ISD_ONLY, ISDEntry.class);
     }
 
-    List<AppEntry> readEntriesAppAndSSD() throws CardException {
+    private List<AppEntry> readEntriesAppAndSSD() throws CardException {
         LOG.trace("readEntriesAppAndSSD()");
         return readStatusGeneric(GP.GET_STATUS_P1_APP_AND_SD_ONLY, AppEntry.class);
     }
 
-    List<ELFEntry> readEntriesELF() throws CardException {
+    private List<ELFEntry> readEntriesELF() throws CardException {
         LOG.trace("readEntriesELF()");
         List<ELFEntry> elfEntries = null;
 
