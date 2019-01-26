@@ -86,10 +86,10 @@ public abstract class GPCommand implements Runnable {
 
     @Parameter(
             names = "--key-version",
-            description = "User-specified keys: key version",
+            description = "User-specified keys: key version (0 means any)",
             validateWith = PositiveInteger.class
     )
-    private int scpKeyVersion = 1;
+    private int scpKeyVersion = 0;
 
     @Parameter(
             names = "--key-id",
@@ -102,7 +102,7 @@ public abstract class GPCommand implements Runnable {
             names = "--key-cipher",
             description = "User-specified keys: key cipher"
     )
-    private GPKeyCipher scpKeyCipher = GPKeyCipher.DES3;
+    private GPKeyCipher scpKeyCipher = GPKeyCipher.GENERIC;
 
     @Parameter(
             names = "--key-types",

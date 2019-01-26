@@ -32,7 +32,7 @@ import java.io.PrintStream;
 
 @Parameters(
         commandNames = "gp-keys",
-        commandDescription = "GlobalPlatform: set card security keys"
+        commandDescription = "GlobalPlatform: show or change security keys"
 )
 public class GPKeys extends GPCommand {
 
@@ -51,7 +51,7 @@ public class GPKeys extends GPCommand {
     @Parameter(
             names = "--new-cipher"
     )
-    private GPKeyCipher newKeyCipher = GPKeyCipher.DES3;
+    private GPKeyCipher newKeyCipher = GPKeyCipher.GENERIC;
 
     @Parameter(
             names = "--new-types"
