@@ -87,7 +87,7 @@ public class GPIssuerDomain {
             LOG.trace("new ISD " + HexUtil.bytesToHex(isd));
         }
         // build the request
-        StoreDataRequest req = new StoreDataRequest();
+        GPStoreDataRequest req = new GPStoreDataRequest();
         req.cardIIN = iin;
         req.cardCIN = cin;
         req.cardISD = isd;
@@ -111,10 +111,10 @@ public class GPIssuerDomain {
     public void loadFile(GPLoadFile file) throws CardException {
         LOG.debug("loading package " + file.getPackageAID());
         // prepare parameters
-        InstallForLoadRequest request = new InstallForLoadRequest();
+        GPInstallForLoadRequest request = new GPInstallForLoadRequest();
         request.packageAID = file.getPackageAID();
         // perform INSTALL [for LOAD]
-        InstallForLoadResponse response = performInstallForLoad(request);
+        GPInstallForLoadResponse response = performInstallForLoad(request);
         // load blocks using LOAD
         List<byte[]> blocks = file.getBlocks();
         int count = blocks.size();
@@ -165,14 +165,14 @@ public class GPIssuerDomain {
             LOG.debug("using parameters " + HexUtil.bytesToHex(appletParams));
         }
         // prepare parameters
-        InstallForInstallRequest request = new InstallForInstallRequest();
+        GPInstallForInstallRequest request = new GPInstallForInstallRequest();
         request.packageAID = packageAID;
         request.moduleAID = moduleAID;
         request.appletAID = appletAID;
         request.privileges = appletPrivs;
         request.installParameters = appletParams;
         // perform the request
-        InstallForInstallResponse response = performInstallForInstall(request);
+        GPInstallForInstallResponse response = performInstallForInstall(request);
         // finish up
         LOG.debug("install complete");
     }
@@ -452,7 +452,7 @@ public class GPIssuerDomain {
         mCard.transactSecureAndCheck(command);
     }
 
-    private InstallForLoadResponse performInstallForLoad(InstallForLoadRequest request) throws CardException {
+    private GPInstallForLoadResponse performInstallForLoad(GPInstallForLoadRequest request) throws CardException {
         LOG.trace("performInstallForLoad()");
         byte[] requestBytes = request.toBytes();
         CommandAPDU command = APDUUtil.buildCommand(
@@ -462,12 +462,12 @@ public class GPIssuerDomain {
                 GP.INSTALL_P2_NO_INFORMATION,
                 requestBytes);
         ResponseAPDU responseAPDU = mCard.transactSecureAndCheck(command);
-        InstallForLoadResponse response = new InstallForLoadResponse();
+        GPInstallForLoadResponse response = new GPInstallForLoadResponse();
         response.readBytes(responseAPDU.getData());
         return response;
     }
 
-    private InstallForInstallResponse performInstallForInstall(InstallForInstallRequest request) throws CardException {
+    private GPInstallForInstallResponse performInstallForInstall(GPInstallForInstallRequest request) throws CardException {
         LOG.trace("performInstallForInstall()");
         byte[] requestBytes = request.toBytes();
         CommandAPDU command = APDUUtil.buildCommand(
@@ -477,12 +477,12 @@ public class GPIssuerDomain {
                 GP.INSTALL_P2_NO_INFORMATION,
                 requestBytes);
         ResponseAPDU responseAPDU = mCard.transactSecureAndCheck(command);
-        InstallForInstallResponse response = new InstallForInstallResponse();
+        GPInstallForInstallResponse response = new GPInstallForInstallResponse();
         response.readBytes(responseAPDU.getData());
         return response;
     }
 
-    private static class StoreDataRequest implements ToBytes {
+    public static class GPStoreDataRequest implements ToBytes {
         private static final int TAG_ISSUER_IDENTIFICATION_NUMBER = 0x4200;
         private static final int TAG_CARD_IMAGE_NUMBER = 0x4500;
         private static final int TAG_ISD_AID = 0x4F00;
@@ -511,7 +511,7 @@ public class GPIssuerDomain {
         }
     }
 
-    private static class InstallForLoadRequest implements ToBytes {
+    public static class GPInstallForLoadRequest implements ToBytes {
         AID packageAID;
         AID sdAID;
         byte[] loadHash;
@@ -559,14 +559,14 @@ public class GPIssuerDomain {
         }
     }
 
-    private static class InstallForLoadResponse implements ReadBytes {
+    public static class GPInstallForLoadResponse implements ReadBytes {
 
         @Override
         public void readBytes(byte[] bytes) {
         }
     }
 
-    private static class InstallForInstallRequest implements ToBytes {
+    public static class GPInstallForInstallRequest implements ToBytes {
         AID packageAID;
         AID moduleAID;
         AID appletAID;
@@ -623,7 +623,7 @@ public class GPIssuerDomain {
         }
     }
 
-    private static class InstallForInstallResponse implements ReadBytes {
+    public static class GPInstallForInstallResponse implements ReadBytes {
 
         @Override
         public void readBytes(byte[] bytes) {
