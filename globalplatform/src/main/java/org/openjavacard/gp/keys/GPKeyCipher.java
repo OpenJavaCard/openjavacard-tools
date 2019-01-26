@@ -46,7 +46,7 @@ public enum GPKeyCipher {
      * @param keyType to interpret
      * @return cipher corresponding to type
      */
-    public static GPKeyCipher getCipherForKeyType(byte keyType) {
+    public static GPKeyCipher getCipherForKeyType(int keyType) {
         switch (keyType) {
             case GP.KEY_TYPE_DES:
             case GP.KEY_TYPE_DES_CBC:

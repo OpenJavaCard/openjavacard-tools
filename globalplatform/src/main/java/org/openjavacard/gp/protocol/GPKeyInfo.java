@@ -117,7 +117,7 @@ public class GPKeyInfo {
         }
 
         // check the cipher
-        byte keyType = (byte) (mKeyTypes[0] & 0xFF);
+        int keyType = mKeyTypes[0];
         GPKeyCipher kiCipher = GPKeyCipher.getCipherForKeyType(keyType);
         GPKeyCipher keyCipher = key.getCipher();
 
@@ -155,7 +155,7 @@ public class GPKeyInfo {
                 sb.append(", ");
             }
             sb.append("type ");
-            sb.append(GP.keyTypeString((byte) (mKeyTypes[i] & 0xFF)));
+            sb.append(GP.keyTypeString(mKeyTypes[i]));
             sb.append(" size ");
             sb.append(mKeySizes[i]);
         }

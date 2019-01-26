@@ -179,26 +179,31 @@ public class GP implements ISO7816 {
         }
     }
 
-    public static final byte KEY_TYPE_DES = (byte) 0x80;
-    public static final byte KEY_TYPE_3DES_CBC = (byte) 0x82;
-    public static final byte KEY_TYPE_DES_ECB = (byte) 0x83;
-    public static final byte KEY_TYPE_DES_CBC = (byte) 0x84;
-    public static final byte KEY_TYPE_TLS_PSK = (byte) 0x85;
-    public static final byte KEY_TYPE_AES = (byte) 0x88;
-    public static final byte KEY_TYPE_HMAC_SHA1 = (byte) 0x90;
-    public static final byte KEY_TYPE_HMAC_SHA1_160 = (byte) 0x91;
-    public static final byte KEY_TYPE_RSA_PUBLIC_EXPONENT_CLEARTEXT = (byte) 0xA0;
-    public static final byte KEY_TYPE_RSA_MODULUS_CLEARTEXT = (byte) 0xA1;
-    public static final byte KEY_TYPE_RSA_MODULUS = (byte) 0xA2;
-    public static final byte KEY_TYPE_RSA_PRIVATE_EXPONENT_D = (byte) 0xA3;
-    public static final byte KEY_TYPE_RSA_CHINESE_P = (byte) 0xA4;
-    public static final byte KEY_TYPE_RSA_CHINESE_Q = (byte) 0xA5;
-    public static final byte KEY_TYPE_RSA_CHINESE_PQ = (byte) 0xA6;
-    public static final byte KEY_TYPE_RSA_CHINESE_DPI = (byte) 0xA7;
-    public static final byte KEY_TYPE_RSA_CHINESE_DQI = (byte) 0xA8;
-    public static final byte KEY_TYPE_EXTENDED_FORMAT = (byte) 0xFF;
+    public static final int KEY_TYPE_DES = 0x80;
+    public static final int KEY_TYPE_3DES_CBC = 0x82;
+    public static final int KEY_TYPE_DES_ECB = 0x83;
+    public static final int KEY_TYPE_DES_CBC = 0x84;
+    public static final int KEY_TYPE_TLS_PSK = 0x85;
+    public static final int KEY_TYPE_AES = 0x88;
+    public static final int KEY_TYPE_HMAC_SHA1 = 0x90;
+    public static final int KEY_TYPE_HMAC_SHA1_160 = 0x91;
+    public static final int KEY_TYPE_RSA_PUBLIC_EXPONENT_CLEARTEXT = 0xA0;
+    public static final int KEY_TYPE_RSA_MODULUS_CLEARTEXT = 0xA1;
+    public static final int KEY_TYPE_RSA_MODULUS = 0xA2;
+    public static final int KEY_TYPE_RSA_PRIVATE_EXPONENT_D = 0xA3;
+    public static final int KEY_TYPE_RSA_CHINESE_P = 0xA4;
+    public static final int KEY_TYPE_RSA_CHINESE_Q = 0xA5;
+    public static final int KEY_TYPE_RSA_CHINESE_PQ = 0xA6;
+    public static final int KEY_TYPE_RSA_CHINESE_DPI = 0xA7;
+    public static final int KEY_TYPE_RSA_CHINESE_DQI = 0xA8;
+    public static final int KEY_TYPE_EXTENDED_FORMAT = 0xFF;
 
-    public static String keyTypeString(byte keyType) {
+    public static int keyTypeTag(int keyType) {
+        // key types should be usable as one-byte tags
+        return keyType << 8;
+    }
+
+    public static String keyTypeString(int keyType) {
         switch (keyType) {
             case KEY_TYPE_DES:
                 return "DES";
@@ -237,7 +242,7 @@ public class GP implements ISO7816 {
             case KEY_TYPE_EXTENDED_FORMAT:
                 return "EXTENDED-FORMAT";
             default:
-                return "UNKNOWN" + HexUtil.hex8(keyType);
+                return "UNKNOWN-" + HexUtil.hex8(keyType & 0xFF);
         }
     }
 
