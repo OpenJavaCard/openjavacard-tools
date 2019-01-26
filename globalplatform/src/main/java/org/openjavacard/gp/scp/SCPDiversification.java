@@ -25,7 +25,7 @@ import org.openjavacard.gp.keys.GPKeyUsage;
 
 public class SCPDiversification {
 
-    public static final GPKey diversifyKeyEMV(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
+    public static GPKey diversifyKeyEMV(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 4, data, 0, 6);
         data[6] = (byte)0xF0;
@@ -37,7 +37,7 @@ public class SCPDiversification {
         return new GPKey(key.getId(), usage, key.getCipher(), dKey);
     }
 
-    public static final GPKey diversifyKeyVisa2(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
+    public static GPKey diversifyKeyVisa2(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 0, data, 0, 2);
         System.arraycopy(diversificationData, 4, data, 2, 4);
