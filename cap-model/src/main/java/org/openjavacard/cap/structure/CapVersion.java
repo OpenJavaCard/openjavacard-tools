@@ -19,8 +19,6 @@
 
 package org.openjavacard.cap.structure;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class CapVersion {
 
     public static final CapVersion CAP21 = new CapVersion(2, 1);

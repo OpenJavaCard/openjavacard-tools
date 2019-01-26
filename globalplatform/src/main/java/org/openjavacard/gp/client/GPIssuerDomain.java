@@ -19,7 +19,6 @@
 
 package org.openjavacard.gp.client;
 
-import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;
@@ -27,7 +26,6 @@ import org.openjavacard.gp.protocol.GPKeyInfo;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.iso.AID;
-import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.ArrayUtil;
@@ -36,15 +34,12 @@ import org.openjavacard.util.ReadBytes;
 import org.openjavacard.util.ToBytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 /**

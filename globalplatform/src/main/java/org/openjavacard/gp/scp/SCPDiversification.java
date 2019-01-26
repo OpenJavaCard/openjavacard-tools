@@ -21,10 +21,7 @@ package org.openjavacard.gp.scp;
 
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
-import org.openjavacard.gp.keys.GPKeyDiversification;
-import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyUsage;
-import org.openjavacard.util.HexUtil;
 
 public class SCPDiversification {
 

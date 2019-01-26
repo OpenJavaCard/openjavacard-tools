@@ -20,11 +20,11 @@
 package org.openjavacard.tool.command.gp;
 
 import com.beust.jcommander.Parameters;
+import org.openjavacard.emv.CPLC;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
-import org.openjavacard.emv.CPLC;
 import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.util.ATRUtil;
 import org.openjavacard.util.HexUtil;

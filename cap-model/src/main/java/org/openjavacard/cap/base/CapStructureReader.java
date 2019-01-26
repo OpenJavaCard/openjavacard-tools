@@ -19,7 +19,6 @@
 
 package org.openjavacard.cap.base;
 
-import org.openjavacard.cap.component.CapMethodComponent;
 import org.openjavacard.cap.structure.CapClassRef;
 import org.openjavacard.cap.structure.CapMethodRef;
 import org.openjavacard.iso.AID;
@@ -31,7 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CapStructureReader {
 

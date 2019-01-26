@@ -19,26 +19,10 @@
 
 package org.openjavacard.tool.command.generic;
 
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.generic.GenericCard;
 import org.openjavacard.generic.GenericContext;
-import org.openjavacard.iso.ISO7816;
-import org.openjavacard.iso.SWException;
-import org.openjavacard.tool.converter.HexByteConverter;
-import org.openjavacard.tool.converter.HexShortConverter;
-import org.openjavacard.util.APDUUtil;
 
-import javax.smartcardio.CardChannel;
-import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 

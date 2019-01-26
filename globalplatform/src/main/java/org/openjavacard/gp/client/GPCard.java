@@ -19,12 +19,12 @@
 
 package org.openjavacard.gp.client;
 
+import org.openjavacard.emv.CPLC;
 import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
-import org.openjavacard.emv.CPLC;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
