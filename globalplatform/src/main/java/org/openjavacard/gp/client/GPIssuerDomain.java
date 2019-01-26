@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.smartcardio.Card;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
@@ -232,7 +233,7 @@ public class GPIssuerDomain {
         boolean logKeys = mCard.getContext().isKeyLoggingEnabled();
         // determine various bits of information
         GPKeyInfoTemplate kit = mCard.getCardKeyInfo();
-        byte keyVersion = (byte)(newKeys.getKeyVersion());
+        int keyVersion = newKeys.getKeyVersion();
         byte firstKeyId = (byte)(kit.getKeyInfos().get(0).getKeyId());
         List<GPKey> keys = newKeys.getKeys();
         int keyCount = kit.getKeyInfos().size();
@@ -244,7 +245,7 @@ public class GPIssuerDomain {
         // do a safety check on the keys first
         kit.checkKeySetForReplacement(newKeys);
         // build a key block for the set
-        byte[] data = buildKeyBlock(kit, keyVersion, newKeys);
+        byte[] data = buildKeyBlock(kit, newKeys);
         // log the encrypted key block
         if(logKeys) {
             LOG.trace("key block " + HexUtil.bytesToHex(data) + " length " + data.length);
@@ -253,20 +254,24 @@ public class GPIssuerDomain {
         performPutKey(firstKeyId, keyVersion, data, multipleKeys);
     }
 
-    private byte[] buildKeyBlock(GPKeyInfoTemplate keyInfoTemplate, byte keyVersion, GPKeySet keys) throws CardException {
-        LOG.debug("building key block for version " + keyVersion);
+    private byte[] buildKeyBlock(GPKeyInfoTemplate keyInfoTemplate, GPKeySet newKeys)
+            throws CardException {
+        int keyVersion = newKeys.getKeyVersion();
+        LOG.trace("building format 1 key block for key version " + keyVersion);
         boolean logKeys = mCard.getContext().isKeyLoggingEnabled();
+        // need the secure channel for key encryption
         GPSecureChannel secureChannel = mCard.getSecureChannel();
+        // start building the key block
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // first the common version
+        // first common key version
         bos.write(keyVersion);
         // then the keys
         for(GPKeyInfo keyInfo: keyInfoTemplate.getKeyInfos()) {
             int keyId = keyInfo.getKeyId();
             LOG.trace("template " + keyInfo);
-            GPKey key = keys.getKeyById(keyId);
+            GPKey key = newKeys.getKeyById(keyId);
             LOG.trace("found " + key);
-            // encrypt the key secret
+            // encrypt the secret
             byte[] secret = key.getSecret();
             byte[] encrypted = secureChannel.encryptSensitiveData(secret);
             if (logKeys) {
@@ -274,7 +279,7 @@ public class GPIssuerDomain {
                 LOG.trace("encrypted secret " + HexUtil.bytesToHex(encrypted));
             }
             // compute the key check value
-            byte[] kcv = GPCrypto.kcv_3des(key);
+            byte[] kcv = key.getCheckValue();
             if (logKeys) {
                 LOG.trace("key check value " + HexUtil.bytesToHex(kcv));
             }
@@ -290,6 +295,7 @@ public class GPIssuerDomain {
             bos.write(kcv.length);
             bos.write(kcv, 0, kcv.length);
         }
+        // return the whole block
         return bos.toByteArray();
     }
 
@@ -401,11 +407,11 @@ public class GPIssuerDomain {
         mCard.transactSecureAndCheck(command);
     }
 
-    private void performPutKey(byte keyId, byte keyVersion, byte[] keyData, boolean multipleKeys) throws CardException {
+    private void performPutKey(int keyId, int keyVersion, byte[] keyData, boolean multipleKeys) throws CardException {
         LOG.trace("performPutKey()");
         boolean moreCommands = false;
-        byte p1 = (byte)(keyVersion | (moreCommands?0x80:0x00));
-        byte p2 = (byte)(keyId | (multipleKeys?0x80:0x00));
+        byte p1 = (byte)((keyVersion & 0x7F) | (moreCommands?0x80:0x00));
+        byte p2 = (byte)((keyId & 0x7F) | (multipleKeys?0x80:0x00));
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_PUT_KEY,
