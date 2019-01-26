@@ -29,6 +29,7 @@ import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;
+import org.openjavacard.gp.wrapper.GPSecureWrapper;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
@@ -162,7 +163,7 @@ public class GPCard {
      * objects such as installed applets and security
      * domains.
      */
-    private final GPRegistry mRegistry;
+    private GPRegistry mRegistry;
     /**
      * Issuer domain access object
      * <p/>
@@ -170,7 +171,7 @@ public class GPCard {
      * with the ISD to perform the various operations
      * that it enables.
      */
-    private final GPIssuerDomain mIssuerDomain;
+    private GPIssuerDomain mIssuerDomain;
     /**
      * True when we are connected to an ISD
      * <p/>
@@ -193,8 +194,6 @@ public class GPCard {
         mDiversification = GPKeyDiversification.NONE;
         mProtocolPolicy = SCPProtocolPolicy.PERMISSIVE;
         mSecurityPolicy = SCPSecurityPolicy.CMAC;
-        mRegistry = new GPRegistry(this);
-        mIssuerDomain = new GPIssuerDomain(this);
     }
 
     /** @return the context of this client */
@@ -496,8 +495,10 @@ public class GPCard {
             // try to open the secure channel
             mSecure.open();
 
-            // mark registry dirty
-            mRegistry.dirty();
+            GPSecureWrapper secureWrapper = new GPSecureWrapper(this, mSecure);
+
+            mIssuerDomain = new GPIssuerDomain(this, secureWrapper);
+            mRegistry = new GPRegistry(this, secureWrapper);
 
             // mark as connected
             mIsConnected = true;

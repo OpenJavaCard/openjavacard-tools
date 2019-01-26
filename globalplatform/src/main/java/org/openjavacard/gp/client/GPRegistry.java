@@ -21,6 +21,7 @@ package org.openjavacard.gp.client;
 
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPPrivilege;
+import org.openjavacard.gp.wrapper.GPSecureWrapper;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.AIDInfo;
 import org.openjavacard.iso.ISO7816;
@@ -70,11 +71,14 @@ public class GPRegistry {
     /** Card being operated on */
     private final GPCard mCard;
 
-    /** Flag to indicate use of the legacy entry format */
-    private boolean mUseLegacy;
+    /** Secure command wrapper */
+    private final GPSecureWrapper mWrapper;
 
     /** True if data needs refreshing */
     private boolean mDirty;
+
+    /** Flag to indicate use of the legacy entry format */
+    private boolean mUseLegacy;
 
     /** List of all registry entries */
     private ArrayList<Entry> mAllEntries = new ArrayList<>();
@@ -93,8 +97,9 @@ public class GPRegistry {
      * Main constructor
      * @param card to operate on
      */
-    GPRegistry(GPCard card) {
+    GPRegistry(GPCard card, GPSecureWrapper wrapper) {
         mCard = card;
+        mWrapper = wrapper;
         mDirty = true;
     }
 
@@ -382,7 +387,7 @@ public class GPRegistry {
     private <E extends Entry>
     List<E> readStatusLegacy(byte p1Subset, Class<E> clazz) throws CardException {
         byte format = GP.GET_STATUS_P2_FORMAT_LEGACY;
-        List<byte[]> chunks = readStatus(p1Subset, format);
+        List<byte[]> chunks = mWrapper.performReadStatus(p1Subset, format);
         List<E> res = new ArrayList<>();
         for (byte[] chunk: chunks) {
             int off = 0;
@@ -411,7 +416,7 @@ public class GPRegistry {
     private <E extends Entry>
     List<E> readStatusTLV(byte p1Subset, Class<E> clazz) throws CardException {
         byte format = GP.GET_STATUS_P2_FORMAT_TLV;
-        List<byte[]> chunks = readStatus(p1Subset, format);
+        List<byte[]> chunks = mWrapper.performReadStatus(p1Subset, format);
         List<E> res = new ArrayList<>();
         try {
             for (byte[] chunk : chunks) {
@@ -429,72 +434,6 @@ public class GPRegistry {
         } catch (IOException e) {
             throw new Error("Error parsing TLV", e);
         }
-        return res;
-    }
-
-    /**
-     * Perform a GlobalPlatform READ STATUS operation
-     * <p/>
-     * Convenience form. XXX: document
-     * <p/>
-     * @param p1Subset
-     * @param p2Format
-     * @return data retrieved
-     * @throws CardException on error
-     */
-    private List<byte[]> readStatus(byte p1Subset, byte p2Format) throws CardException {
-        byte[] criteria = {0x4F, 0x00}; // XXX !?
-        return readStatus(p1Subset, p2Format, criteria);
-    }
-
-    /**
-     * Perform a GlobalPlatform SET STATUS operation
-     *
-     * @param p1Subset
-     * @param p2Format
-     * @param criteria
-     * @return data retrieved
-     * @throws CardException on error
-     */
-    private ArrayList<byte[]> readStatus(byte p1Subset, byte p2Format, byte[] criteria) throws CardException {
-        ArrayList<byte[]> res = new ArrayList<>();
-        boolean first = true;
-        do {
-            // determine first/next parameter
-            byte getParam = GP.GET_STATUS_P2_GET_NEXT;
-            if (first) {
-                getParam = GP.GET_STATUS_P2_GET_FIRST_OR_ALL;
-            }
-            first = false;
-            // build the command
-            CommandAPDU command = APDUUtil.buildCommand(
-                    GP.CLA_GP,
-                    GP.INS_GET_STATUS,
-                    p1Subset, (byte) (getParam | p2Format), criteria);
-            // run the command
-            ResponseAPDU response = mCard.transactSecure(command);
-            // get SW and data
-            int sw = response.getSW();
-            byte[] data = response.getData();
-            // append data, no matter the SW
-            if (data != null && data.length > 0) {
-                res.add(data);
-            }
-            // continue if SW says that we should
-            //   XXX extract this constant
-            if (sw == 0x6310) {
-                continue;
-            }
-            // check for various cases of "empty"
-            //   XXX rethink this loop
-            if (sw == ISO7816.SW_NO_ERROR
-                    || sw == ISO7816.SW_FILE_NOT_FOUND
-                    || sw == ISO7816.SW_REFERENCED_DATA_NOT_FOUND) {
-                break;
-            } else {
-                throw new SWException("Error in GET STATUS", sw);
-            }
-        } while (true);
         return res;
     }
 

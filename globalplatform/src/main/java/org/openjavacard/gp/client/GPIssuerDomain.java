@@ -30,6 +30,7 @@ import org.openjavacard.gp.structure.GPInstallForInstallResponse;
 import org.openjavacard.gp.structure.GPInstallForLoadRequest;
 import org.openjavacard.gp.structure.GPInstallForLoadResponse;
 import org.openjavacard.gp.structure.GPStoreDataRequest;
+import org.openjavacard.gp.wrapper.GPSecureWrapper;
 import org.openjavacard.iso.AID;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
@@ -53,15 +54,12 @@ public class GPIssuerDomain {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPIssuerDomain.class);
 
-    private final GPCard mCard;
+    private GPCard mCard;
+    private GPSecureWrapper mWrapper;
 
-    /**
-     * Main constructor
-     *
-     * @param card to operate on
-     */
-    GPIssuerDomain(GPCard card) {
+    public GPIssuerDomain(GPCard card, GPSecureWrapper wrapper) {
         mCard = card;
+        mWrapper = wrapper;
     }
 
     /**
@@ -98,7 +96,7 @@ public class GPIssuerDomain {
         // transmit the request as a chain of STORE DATA commands
         for(byte i = 0; i < blocks.length; i++) {
             boolean lastBlock = i == (blocks.length - 1);
-            performStoreData(blocks[i], i, lastBlock);
+            mWrapper.performStoreData(blocks[i], i, lastBlock);
         }
     }
 
@@ -116,7 +114,7 @@ public class GPIssuerDomain {
         GPInstallForLoadRequest request = new GPInstallForLoadRequest();
         request.packageAID = file.getPackageAID();
         // perform INSTALL [for LOAD]
-        GPInstallForLoadResponse response = performInstallForLoad(request);
+        GPInstallForLoadResponse response = mWrapper.performInstallForLoad(request);
         // load blocks using LOAD
         List<byte[]> blocks = file.getBlocks();
         int count = blocks.size();
@@ -124,7 +122,7 @@ public class GPIssuerDomain {
         for(int i = 0; i < count; i++) {
             byte[] data = blocks.get(i);
             LOG.debug("loading block " + (i+1) + "/" + count + ", " + data.length + " bytes");
-            performLoad(data, i, i == last);
+            mWrapper.performLoad(data, i, i == last);
         }
         // finish up
         LOG.debug("load complete");
@@ -174,7 +172,7 @@ public class GPIssuerDomain {
         request.privileges = appletPrivs;
         request.installParameters = appletParams;
         // perform the request
-        GPInstallForInstallResponse response = performInstallForInstall(request);
+        GPInstallForInstallResponse response = mWrapper.performInstallForInstall(request);
         // finish up
         LOG.debug("install complete");
     }
@@ -261,7 +259,7 @@ public class GPIssuerDomain {
             LOG.trace("key block " + HexUtil.bytesToHex(data) + " length " + data.length);
         }
         // upload the key block
-        performPutKey(firstKeyId, keyVersion, data, multipleKeys);
+        mWrapper.performPutKey(firstKeyId, keyVersion, data, multipleKeys);
     }
 
     private byte[] buildKeyBlock(GPKeyInfoTemplate keyInfoTemplate, GPKeySet newKeys)
@@ -316,7 +314,7 @@ public class GPIssuerDomain {
      */
     public void cardInitialized() throws CardException {
         LOG.debug("cardInitialized()");
-        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_INITIALIZED);
+        mWrapper.performSetStatusISD(mCard.getISD(), GP.CARD_STATE_INITIALIZED);
     }
 
     /**
@@ -326,7 +324,7 @@ public class GPIssuerDomain {
      */
     public void cardSecured() throws CardException {
         LOG.debug("cardSecured()");
-        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_SECURED);
+        mWrapper.performSetStatusISD(mCard.getISD(), GP.CARD_STATE_SECURED);
     }
 
     /**
@@ -336,7 +334,7 @@ public class GPIssuerDomain {
      */
     public void lockCard() throws CardException {
         LOG.debug("cardInitialized()");
-        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_LOCKED);
+        mWrapper.performSetStatusISD(mCard.getISD(), GP.CARD_STATE_LOCKED);
     }
 
     /**
@@ -346,7 +344,7 @@ public class GPIssuerDomain {
      */
     public void unlockCard() throws CardException {
         LOG.debug("unlockCard()");
-        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_SECURED);
+        mWrapper.performSetStatusISD(mCard.getISD(), GP.CARD_STATE_SECURED);
     }
 
     /**
@@ -356,7 +354,7 @@ public class GPIssuerDomain {
      */
     public void terminateCard() throws CardException {
         LOG.debug("terminateCard()");
-        performSetStatusISD(mCard.getISD(), GP.CARD_STATE_TERMINATED);
+        mWrapper.performSetStatusISD(mCard.getISD(), GP.CARD_STATE_TERMINATED);
     }
 
     /**
@@ -377,111 +375,6 @@ public class GPIssuerDomain {
     public void unlockApplet(AID appletAID) throws CardException {
         LOG.debug("unlockApplet()");
         throw new RuntimeException("Not implemented");
-    }
-
-    private void performStoreData(byte[] block, byte blockNumber, boolean lastBlock) throws CardException {
-        LOG.trace("performStoreData()");
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_STORE_DATA,
-                lastBlock ? GP.STORE_DATA_P1_LAST_BLOCK : GP.STORE_DATA_P1_MORE_BLOCKS,
-                blockNumber,
-                block
-        );
-        mCard.transactSecureAndCheck(command);
-    }
-
-    private void performSetStatusISD(AID aid, byte state) throws CardException {
-        LOG.trace("performSetStatusISD()");
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_SET_STATUS,
-                GP.SET_STATUS_FOR_ISD,
-                state,
-                aid.getBytes()
-        );
-        mCard.transactSecureAndCheck(command);
-    }
-
-    private void performSetStatusApp(AID aid, byte state) throws CardException {
-        LOG.trace("performSetStatusApp()");
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_SET_STATUS,
-                GP.SET_STATUS_FOR_SSD_OR_APP,
-                state,
-                aid.getBytes()
-        );
-        mCard.transactSecureAndCheck(command);
-    }
-
-    private void performSetStatusDomain(AID aid, byte state) throws CardException {
-        LOG.trace("performSetStatusDomain()");
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_SET_STATUS,
-                GP.SET_STATUS_FOR_SD_AND_APPS,
-                state,
-                aid.getBytes()
-        );
-        mCard.transactSecureAndCheck(command);
-    }
-
-    private void performPutKey(int keyId, int keyVersion, byte[] keyData, boolean multipleKeys) throws CardException {
-        LOG.trace("performPutKey()");
-        boolean moreCommands = false;
-        byte p1 = (byte)((keyVersion & 0x7F) | (moreCommands?0x80:0x00));
-        byte p2 = (byte)((keyId & 0x7F) | (multipleKeys?0x80:0x00));
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_PUT_KEY,
-                p1, p2,
-                keyData
-        );
-        mCard.transactSecureAndCheck(command);
-    }
-
-    private void performLoad(byte[] blockData, int blockNumber, boolean lastBlock) throws CardException {
-        LOG.trace("performLoad()");
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_LOAD,
-                lastBlock ? GP.LOAD_P1_LAST_BLOCK
-                          : GP.LOAD_P1_MORE_BLOCKS,
-                (byte)blockNumber,
-                blockData
-        );
-        mCard.transactSecureAndCheck(command);
-    }
-
-    private GPInstallForLoadResponse performInstallForLoad(GPInstallForLoadRequest request) throws CardException {
-        LOG.trace("performInstallForLoad()");
-        byte[] requestBytes = request.toBytes();
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_INSTALL,
-                GP.INSTALL_P1_FOR_LOAD,
-                GP.INSTALL_P2_NO_INFORMATION,
-                requestBytes);
-        ResponseAPDU responseAPDU = mCard.transactSecureAndCheck(command);
-        GPInstallForLoadResponse response = new GPInstallForLoadResponse();
-        response.readBytes(responseAPDU.getData());
-        return response;
-    }
-
-    private GPInstallForInstallResponse performInstallForInstall(GPInstallForInstallRequest request) throws CardException {
-        LOG.trace("performInstallForInstall()");
-        byte[] requestBytes = request.toBytes();
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_INSTALL,
-                (byte)(GP.INSTALL_P1_FOR_INSTALL|GP.INSTALL_P1_FOR_MAKE_SELECTABLE),
-                GP.INSTALL_P2_NO_INFORMATION,
-                requestBytes);
-        ResponseAPDU responseAPDU = mCard.transactSecureAndCheck(command);
-        GPInstallForInstallResponse response = new GPInstallForInstallResponse();
-        response.readBytes(responseAPDU.getData());
-        return response;
     }
 
 }

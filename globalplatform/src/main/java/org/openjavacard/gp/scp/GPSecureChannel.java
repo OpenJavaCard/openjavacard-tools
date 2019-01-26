@@ -239,15 +239,22 @@ public class GPSecureChannel extends CardChannel {
             throw new CardException("Secure channel is not connected");
         }
 
-        // log the command
-        if(traceEnabled) {
-            LOG.trace("apdu > " + APDUUtil.toString(command));
-        }
-
         // wrap the command (sign, encrypt)
         CommandAPDU wrappedCommand = mWrapper.wrap(command);
+
+        // log the command
+        if(traceEnabled) {
+            LOG.trace("wrapped > " + APDUUtil.toString(wrappedCommand));
+        }
+
         // send the wrapped command
-        ResponseAPDU wrappedResponse = mCard.transmit(mChannel, wrappedCommand);
+        ResponseAPDU wrappedResponse = mChannel.transmit(wrappedCommand);
+
+        // log the response
+        if(traceEnabled) {
+            LOG.trace("wrapped < " + APDUUtil.toString(wrappedResponse));
+        }
+
         // unwrap the response, but not if it is an error
         int sw = wrappedResponse.getSW();
         ResponseAPDU response = wrappedResponse;
@@ -260,11 +267,6 @@ public class GPSecureChannel extends CardChannel {
             if (dataLen > 0) {
                 throw new CardException("Card sent data in an error response");
             }
-        }
-
-        // log the response
-        if(traceEnabled) {
-            LOG.trace("apdu < " + APDUUtil.toString(response));
         }
 
         return response;
