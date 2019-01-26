@@ -51,16 +51,18 @@ public abstract class TLV {
                 + dataLength;
     }
 
-    public byte[] getEncoded() throws IOException {
+    public byte[] getEncoded() {
         int valueLength = getValueLength();
         byte[] valueBytes = getValueBytes();
+        byte[] tagBytes = TLVTag.tagBytes(mTag);
+        byte[] lengthBytes = TLVLength.lengthBytes(valueLength);
         if(valueBytes.length != valueLength) {
             throw new InternalError("Value length inconsistent");
         }
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(TLVTag.tagBytes(mTag));
-        bos.write(TLVLength.lengthBytes(valueLength));
-        bos.write(valueBytes);
+        bos.write(tagBytes, 0, tagBytes.length);
+        bos.write(lengthBytes, 0, lengthBytes.length);
+        bos.write(valueBytes, 0, valueBytes.length);
         return bos.toByteArray();
     }
 
