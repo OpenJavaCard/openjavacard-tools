@@ -19,6 +19,7 @@
 
 package org.openjavacard.gp.keys;
 
+import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.util.HexUtil;
 
 import javax.crypto.SecretKey;
@@ -86,6 +87,22 @@ public class GPKey {
      */
     public int getLength() {
         return mSecret.length;
+    }
+
+    /**
+     * Return the key check value (KCV) for the key
+     *
+     * The algorithm used depends on the cipher of the key.
+     *
+     * @return the KCV
+     */
+    public byte[] getCheckValue() {
+        switch(mCipher) {
+            case DES3:
+                return GPCrypto.kcv_3des(this);
+            default:
+                throw new UnsupportedOperationException("Cannot generate KCV for cipher " + mCipher);
+        }
     }
 
     /**
