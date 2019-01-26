@@ -19,12 +19,15 @@
 
 package org.openjavacard.gp.client;
 
+import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.protocol.GP;
+import org.openjavacard.gp.protocol.GPKeyInfo;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.ArrayUtil;
@@ -39,6 +42,7 @@ import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
@@ -212,67 +216,77 @@ public class GPIssuerDomain {
     }
 
     /**
-     * Check compatibility of keys
-     * <p/>
-     * This can and should be used to check keys before uploading
-     * them to the card. It verifies if the given keys comply with
-     * the GPKeyInfoTemplate supplied by the card.
-     * <p/>
-     * Service methods in this library will perform this check
-     * automatically. This method is provided for use in client
-     * application logic.
-     * <p/>
-     * @param newKeys to check
-     * @throws CardException on error
-     */
-    public void checkKeys(GPKeySet newKeys) throws CardException {
-        GPKeyInfoTemplate keyInfo = mCard.getCardKeyInfo();
-        if(!keyInfo.matchesKeysetForReplacement(newKeys)) {
-            throw new CardException("Keys inappropriate for card");
-        }
-    }
-
-    /**
      * Replace secure messaging keys
      * <p/>
      * This will irreversibly replace the secure messaging keys.
      * <p/>
      * Compatibility of the keys will be checked before the operation.
      * <p/>
+     * This method is only suitable for replacing the whole set of required keys in one pass.
+     * <p/>
      * @param newKeys to set
      * @throws CardException on error
      */
     public void replaceKeys(GPKeySet newKeys) throws CardException {
-        // do a safety check on the keys first
-        checkKeys(newKeys);
-        // check that we have keys (paranoid?)
+        boolean logKeys = mCard.getContext().isKeyLoggingEnabled();
+        // determine various bits of information
+        GPKeyInfoTemplate kit = mCard.getCardKeyInfo();
+        byte keyVersion = (byte)(newKeys.getKeyVersion());
+        byte firstKeyId = (byte)(kit.getKeyInfos().get(0).getKeyId());
         List<GPKey> keys = newKeys.getKeys();
-        if(keys.isEmpty()) {
-            throw new CardException("No keys provided");
-        }
-        // determine various parameters
-        byte keyVersion = (byte)newKeys.getKeyVersion();
-        boolean multipleKeys = keys.size() > 1;
-        GPKey firstKey = keys.get(0);
-        byte firstKeyId = firstKey.getId();
+        boolean multipleKeys = (kit.getKeyInfos().size() > 1);
+        // log about it
+        LOG.debug("replacing " + keys.size() + " keys "
+                + " starting at id " + firstKeyId
+                + " with version " + keyVersion);
+        // do a safety check on the keys first
+        kit.checkKeySetForReplacement(newKeys);
         // build a key block for the set
-        byte[] data = buildKeyBlock(keyVersion, keys);
+        byte[] data = buildKeyBlock(kit, keyVersion, newKeys);
+        // log the encrypted key block
+        if(logKeys) {
+            LOG.trace("key block " + HexUtil.bytesToHex(data) + " length " + data.length);
+        }
         // upload the key block
-        //performPutKey(firstKeyId, keyVersion, data, multipleKeys);
+        performPutKey(firstKeyId, keyVersion, data, multipleKeys);
     }
 
-    private byte[] buildKeyBlock(byte keyVersion, List<GPKey> keys) throws CardException {
+    private byte[] buildKeyBlock(GPKeyInfoTemplate keyInfoTemplate, byte keyVersion, GPKeySet keys) throws CardException {
+        LOG.debug("building key block for version " + keyVersion);
+        boolean logKeys = mCard.getContext().isKeyLoggingEnabled();
         GPSecureChannel secureChannel = mCard.getSecureChannel();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // first the common version
         bos.write(keyVersion);
         // then the keys
-        for(GPKey key: keys) {
-            // encrypt the key
+        for(GPKeyInfo keyInfo: keyInfoTemplate.getKeyInfos()) {
+            int keyId = keyInfo.getKeyId();
+            LOG.trace("template " + keyInfo);
+            GPKey key = keys.getKeyById(keyId);
+            LOG.trace("found " + key);
+            // encrypt the key secret
             byte[] secret = key.getSecret();
             byte[] encrypted = secureChannel.encryptSensitiveData(secret);
-            // add the encrypted data
-            bos.write(encrypted, 0, encrypted.length);
+            if (logKeys) {
+                LOG.trace("plain secret " + HexUtil.bytesToHex(secret));
+                LOG.trace("encrypted secret " + HexUtil.bytesToHex(encrypted));
+            }
+            // compute the key check value
+            byte[] kcv = GPCrypto.kcv_3des(key);
+            if (logKeys) {
+                LOG.trace("key check value " + HexUtil.bytesToHex(kcv));
+            }
+            // encode the key as TLV
+            int keyType = keyInfo.getKeyTypes()[0];
+            TLVPrimitive tlv = new TLVPrimitive(GP.keyTypeTag(keyType), encrypted);
+            if(logKeys) {
+                LOG.trace("encoded " + tlv);
+            }
+            byte[] wrapped = tlv.getEncoded();
+            // encode key and check value
+            bos.write(wrapped, 0, wrapped.length);
+            bos.write(kcv.length);
+            bos.write(kcv, 0, kcv.length);
         }
         return bos.toByteArray();
     }

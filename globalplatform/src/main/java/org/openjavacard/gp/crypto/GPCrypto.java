@@ -68,6 +68,11 @@ public class GPCrypto {
         return key.getSecretKey(cipher);
     }
 
+    public static byte[] kcv_3des(GPKey key) {
+        byte[] encrypted = enc_3des_ecb(key, ZEROES_8);
+        return Arrays.copyOf(encrypted, 3);
+    }
+
     /**
      * Encrypt using AES-CBC
      *

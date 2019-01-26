@@ -26,8 +26,10 @@ import org.openjavacard.tlv.TLVConstructed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.smartcardio.CardException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -106,19 +108,27 @@ public class GPKeyInfoTemplate {
      * Mapping of keys is performed by key ID.
      *
      * @param keys to check
-     * @return true if usable
      */
-    public boolean matchesKeysetForReplacement(GPKeySet keys) {
+    public void checkKeySetForReplacement(GPKeySet keys) throws CardException {
+        HashSet<GPKey> keysUsed = new HashSet<>();
+        // try to satisfy each key info
         for (GPKeyInfo keyInfo : mKeyInfos) {
-            GPKey key = keys.getKeyById(keyInfo.getKeyId());
+            int keyId = keyInfo.getKeyId();
+            GPKey key = keys.getKeyById(keyId);
             if (key == null) {
-                return false;
+                throw new CardException("Could not find key with id " + keyId);
             }
             if (!keyInfo.matchesKey(key)) {
-                return false;
+                throw new CardException("Key with id " + keyId + " is incompatible");
+            }
+            keysUsed.add(key);
+        }
+        // check that all keys are used
+        for(GPKey key: keys.getKeys()) {
+            if(!keysUsed.contains(key)) {
+                throw new CardException("Key not used by card template: " + key);
             }
         }
-        return true;
     }
 
     public String toString() {

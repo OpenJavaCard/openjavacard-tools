@@ -26,6 +26,7 @@ import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.gp.keys.GPKeySet;
+import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -77,7 +78,7 @@ public class GPKeys extends GPCommand {
         os.println();
 
         os.println("Checking key compatibility...");
-        card.getIssuerDomain().checkKeys(newKeys);
+        card.getCardKeyInfo().checkKeySetForReplacement(newKeys);
         os.println("Check complete.");
         os.println();
 
