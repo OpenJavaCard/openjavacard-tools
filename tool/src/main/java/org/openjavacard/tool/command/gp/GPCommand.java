@@ -182,7 +182,7 @@ public abstract class GPCommand implements Runnable {
         }
 
         if(scpKeySecrets != null) {
-            keys = createKeys(scpKeyId, scpKeyVersion, scpKeyCipher, scpKeyTypes, scpKeySecrets);
+            keys = buildKeysFromParameters(scpKeyId, scpKeyVersion, scpKeyCipher, scpKeyTypes, scpKeySecrets);
         } else {
             if (keystoreFile != null) {
                 os.println("Opening keystore " + keystoreFile);
@@ -289,7 +289,7 @@ public abstract class GPCommand implements Runnable {
         return ks;
     }
 
-    protected GPKeySet createKeys(int pKeyVersion, int pKeyId, GPKeyCipher pKeyCipher, String pKeyTypes, String pKeySecrets) {
+    protected GPKeySet buildKeysFromParameters(int pKeyVersion, int pKeyId, GPKeyCipher pKeyCipher, String pKeyTypes, String pKeySecrets) {
         if(pKeyVersion > 255) {
             throw new Error("Bad key version");
         }

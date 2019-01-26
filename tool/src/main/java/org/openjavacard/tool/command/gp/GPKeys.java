@@ -26,7 +26,6 @@ import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.gp.keys.GPKeySet;
-import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -72,7 +71,7 @@ public class GPKeys extends GPCommand {
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
-        GPKeySet newKeys = createKeys(newKeyVersion, newKeyId, newKeyCipher, newKeyTypes, newKeySecrets);
+        GPKeySet newKeys = buildKeysFromParameters(newKeyVersion, newKeyId, newKeyCipher, newKeyTypes, newKeySecrets);
 
         os.println("New " + newKeys);
         os.println();
