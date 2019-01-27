@@ -28,6 +28,7 @@ import org.openjavacard.gp.structure.GPInitUpdateResponse;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
+import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
@@ -132,6 +133,7 @@ public class GPBasicWrapper {
      * @throws CardException on error
      */
     public GPInitUpdateResponse performInitializeUpdate(byte keyVersion, byte keyId, byte[] hostChallenge) throws CardException {
+        LOG.trace("performInitializeUpdate()");
         // build the command
         CommandAPDU initCommand = APDUUtil.buildCommand(
                 GP.CLA_GP,
@@ -141,9 +143,7 @@ public class GPBasicWrapper {
                 hostChallenge
         );
         // and transmit it on the underlying channel
-        ResponseAPDU initResponse = mCard.transmit(mChannel, initCommand);
-        // check for errors
-        checkResponse(initResponse);
+        ResponseAPDU initResponse = transactAndCheck(initCommand);
         // parse the response
         byte[] responseData = initResponse.getData();
         GPInitUpdateResponse response = new GPInitUpdateResponse(responseData);
