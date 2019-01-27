@@ -33,13 +33,15 @@ import org.openjavacard.util.HexUtil;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class SCP02DerivationTest extends TestCase {
 
+    SCP0102Parameters SCP02_15 = (SCP0102Parameters)SCPParameters.decode(0x02, 0x15);
+
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(SCP02DerivationTest.class);
     }
 
     @Test
     public void testDeriveSCP02_0000() {
-        GPKeySet derived = SCP02Derivation.deriveSessionKeys(GPKeySet.GLOBALPLATFORM, HexUtil.hexToBytes("0000"));
+        GPKeySet derived = SCP02Derivation.deriveSessionKeys(SCP02_15, GPKeySet.GLOBALPLATFORM, HexUtil.hexToBytes("0000"));
         Assert.assertEquals(0, derived.getKeyVersion());
         GPKey encKey = derived.getKeyByUsage(GPKeyUsage.ENC);
         Assert.assertEquals(GPKeyCipher.DES3, encKey.getCipher());
@@ -54,7 +56,7 @@ public class SCP02DerivationTest extends TestCase {
 
     @Test
     public void testDeriveSCP02_0001() {
-        GPKeySet derived = SCP02Derivation.deriveSessionKeys(GPKeySet.GLOBALPLATFORM,HexUtil.hexToBytes("0001"));
+        GPKeySet derived = SCP02Derivation.deriveSessionKeys(SCP02_15, GPKeySet.GLOBALPLATFORM,HexUtil.hexToBytes("0001"));
         Assert.assertEquals(0, derived.getKeyVersion());
         GPKey encKey = derived.getKeyByUsage(GPKeyUsage.ENC);
         Assert.assertEquals(GPKeyCipher.DES3, encKey.getCipher());
@@ -69,7 +71,7 @@ public class SCP02DerivationTest extends TestCase {
 
     @Test
     public void testDeriveSCP02_007F() {
-        GPKeySet derived = SCP02Derivation.deriveSessionKeys(GPKeySet.GLOBALPLATFORM,HexUtil.hexToBytes("007F"));
+        GPKeySet derived = SCP02Derivation.deriveSessionKeys(SCP02_15, GPKeySet.GLOBALPLATFORM,HexUtil.hexToBytes("007F"));
         Assert.assertEquals(0, derived.getKeyVersion());
         GPKey encKey = derived.getKeyByUsage(GPKeyUsage.ENC);
         Assert.assertEquals(GPKeyCipher.DES3, encKey.getCipher());
@@ -84,7 +86,7 @@ public class SCP02DerivationTest extends TestCase {
 
     @Test
     public void testDeriveSCP02_FFFF() {
-        GPKeySet derived = SCP02Derivation.deriveSessionKeys(GPKeySet.GLOBALPLATFORM,HexUtil.hexToBytes("FFFF"));
+        GPKeySet derived = SCP02Derivation.deriveSessionKeys(SCP02_15, GPKeySet.GLOBALPLATFORM,HexUtil.hexToBytes("FFFF"));
         Assert.assertEquals(0, derived.getKeyVersion());
         GPKey encKey = derived.getKeyByUsage(GPKeyUsage.ENC);
         Assert.assertEquals(GPKeyCipher.DES3, encKey.getCipher());
