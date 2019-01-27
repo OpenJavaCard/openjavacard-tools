@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 

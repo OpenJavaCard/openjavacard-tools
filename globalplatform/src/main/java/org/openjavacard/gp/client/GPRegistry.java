@@ -27,14 +27,11 @@ import org.openjavacard.iso.AIDInfo;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
 import org.openjavacard.tlv.TLVPrimitive;
-import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
