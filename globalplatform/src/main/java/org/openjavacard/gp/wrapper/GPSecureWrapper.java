@@ -37,29 +37,25 @@ import javax.smartcardio.ResponseAPDU;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GPSecureWrapper extends GPWrapper {
+public class GPSecureWrapper extends GPBasicWrapper {
 
-    protected GPSecureChannel mSecure;
+    private GPSecureChannel mSecure;
 
     public GPSecureWrapper(GPCard card, GPSecureChannel channel) {
         super(card, channel);
         mSecure = channel;
     }
 
-    protected ResponseAPDU transactSecureAndCheck(CommandAPDU command) throws CardException {
+    @Override
+    public ResponseAPDU transmitRaw(CommandAPDU command) throws CardException {
         if (!mSecure.isEstablished()) {
             throw new CardException("Secure channel not available");
         }
-        ResponseAPDU response = transmitRaw(command);
-        checkResponse(response);
-        return response;
+        return super.transmitRaw(command);
     }
 
-    protected ResponseAPDU transactSecure(CommandAPDU command) throws CardException {
-        if (mSecure == null || !mSecure.isEstablished()) {
-            throw new CardException("Secure channel not available");
-        }
-        return transmitRaw(command);
+    private ResponseAPDU transactSecureAndCheck(CommandAPDU command) throws CardException {
+        return transactAndCheck(command);
     }
 
     /**

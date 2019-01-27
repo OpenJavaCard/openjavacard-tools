@@ -29,6 +29,7 @@ import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyUsage;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.structure.GPInitUpdateResponse;
+import org.openjavacard.gp.wrapper.GPBasicWrapper;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SW;
 import org.openjavacard.iso.SWException;
@@ -60,7 +61,9 @@ public class GPSecureChannel extends CardChannel {
     private final GPContext mContext;
     /** Reference to the card for communication */
     private final GPCard mCard;
-    /** Underlying card channel for communication */
+    /** Underlying channel wrapper for communication */
+    private final GPBasicWrapper mBasicWrapper;
+    /** Underlying card channel */
     private final CardChannel mChannel;
     /** Initial static keys */
     private final GPKeySet mStaticKeys;
@@ -90,19 +93,20 @@ public class GPSecureChannel extends CardChannel {
      * Objects are not intended to be reconfigured.
      *
      * @param card this channel is for
-     * @param channel to communicate on
+     * @param basicWrapper to communicate through
      * @param keys to use
      * @param protocolPolicy to conform to
      * @param securityPolicy to conform to
      */
-    public GPSecureChannel(GPCard card, CardChannel channel,
+    public GPSecureChannel(GPCard card, GPBasicWrapper basicWrapper,
                            GPKeySet keys, GPKeyDiversification diversification,
                            SCPProtocolPolicy protocolPolicy,
                            SCPSecurityPolicy securityPolicy) {
         mRandom = new SecureRandom();
         mContext = card.getContext();
         mCard = card;
-        mChannel = channel;
+        mBasicWrapper = basicWrapper;
+        mChannel = mBasicWrapper.getChannel();
         mStaticKeys = keys;
         mDiversification = diversification;
         mProtocolPolicy = protocolPolicy;
@@ -234,28 +238,14 @@ public class GPSecureChannel extends CardChannel {
      */
     private ResponseAPDU transmitInternal(CommandAPDU command) throws CardException {
         boolean traceEnabled = LOG.isTraceEnabled();
-
         // bug out if the channel is not open
         if (mWrapper == null) {
             throw new CardException("Secure channel is not connected");
         }
-
         // wrap the command (sign, encrypt)
         CommandAPDU wrappedCommand = mWrapper.wrap(command);
-
-        // log the command
-        if(traceEnabled) {
-            LOG.trace("wrapped > " + APDUUtil.toString(wrappedCommand));
-        }
-
         // send the wrapped command
-        ResponseAPDU wrappedResponse = mChannel.transmit(wrappedCommand);
-
-        // log the response
-        if(traceEnabled) {
-            LOG.trace("wrapped < " + APDUUtil.toString(wrappedResponse));
-        }
-
+        ResponseAPDU wrappedResponse = mBasicWrapper.transmitRaw(wrappedCommand);
         // unwrap the response, but not if it is an error
         int sw = wrappedResponse.getSW();
         ResponseAPDU response = wrappedResponse;
@@ -269,7 +259,7 @@ public class GPSecureChannel extends CardChannel {
                 throw new CardException("Card sent data in an error response");
             }
         }
-
+        // return unwrapped response
         return response;
     }
 
@@ -295,7 +285,7 @@ public class GPSecureChannel extends CardChannel {
         LOG.debug("key id " + keyId + " version " + keyVersion);
 
         // perform INITIALIZE UPDATE, exchanging challenges
-        GPInitUpdateResponse init = performInitializeUpdate(keyVersion, keyId, hostChallenge);
+        GPInitUpdateResponse init = mBasicWrapper.performInitializeUpdate(keyVersion, keyId, hostChallenge);
 
         // check and select the protocol to be used
         checkAndSelectProtocol(init);
@@ -531,37 +521,6 @@ public class GPSecureChannel extends CardChannel {
             default:
                 throw new CardException("Unsupported SCP version " + mActiveProtocol);
         }
-    }
-
-    /**
-     * Assemble and transact an INITIALIZE UPDATE command
-     *
-     * The command will be sent on the underlying unencrypted channel.
-     *
-     * @param keyVersion    to indicate
-     * @param keyId         to indicate
-     * @param hostChallenge to send
-     * @return a decoded response to the command
-     * @throws CardException on error
-     */
-    private GPInitUpdateResponse performInitializeUpdate(byte keyVersion, byte keyId, byte[] hostChallenge) throws CardException {
-        // build the command
-        CommandAPDU initCommand = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_INITIALIZE_UPDATE,
-                keyVersion,
-                keyId,
-                hostChallenge
-        );
-        // and transmit it on the underlying channel
-        ResponseAPDU initResponse = mCard.transmit(mChannel, initCommand);
-        // check for errors
-        checkResponse(initResponse);
-        // parse the response
-        byte[] responseData = initResponse.getData();
-        GPInitUpdateResponse response = new GPInitUpdateResponse(responseData);
-        // return the parsed response
-        return response;
     }
 
     /**

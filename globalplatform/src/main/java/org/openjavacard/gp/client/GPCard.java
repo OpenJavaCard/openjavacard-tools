@@ -22,13 +22,13 @@ package org.openjavacard.gp.client;
 import org.openjavacard.emv.CPLC;
 import org.openjavacard.gp.keys.GPKeyDiversification;
 import org.openjavacard.gp.keys.GPKeySet;
-import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.scp.GPSecureChannel;
 import org.openjavacard.gp.scp.SCPParameters;
 import org.openjavacard.gp.scp.SCPProtocolPolicy;
 import org.openjavacard.gp.scp.SCPSecurityPolicy;
+import org.openjavacard.gp.wrapper.GPBasicWrapper;
 import org.openjavacard.gp.wrapper.GPSecureWrapper;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
@@ -44,7 +44,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
-import java.io.IOException;
 
 /**
  * Service object for a GlobalPlatform card
@@ -85,7 +84,7 @@ public class GPCard {
     private Card mCard;
     /**
      * SmartcardIO basic channel */
-    private CardChannel mBasic;
+    private CardChannel mBasicChannel;
     /**
      * AID of the ISD
      * <p/>
@@ -151,11 +150,19 @@ public class GPCard {
      */
     private GPKeyInfoTemplate mCardKeyInfo;
     /**
+     * Our GP plain command wrapper
+     */
+    private GPBasicWrapper mBasicWrapper;
+    /**
+     * Our GP secure command wrapper
+     */
+    private GPSecureWrapper mSecureWrapper;
+    /**
      * Our SCP secure channel
      * <p/>
      * Created when secure session starts.
      */
-    private GPSecureChannel mSecure;
+    private GPSecureChannel mSecureChannel;
     /**
      * Registry instance
      * <p/>
@@ -231,10 +238,10 @@ public class GPCard {
 
     /** @return the active security protocol */
     public SCPParameters getProtocol() {
-        if (mSecure == null || !mSecure.isEstablished()) {
+        if (mSecureChannel == null || !mSecureChannel.isEstablished()) {
             return null;
         }
-        return mSecure.getActiveProtocol();
+        return mSecureChannel.getActiveProtocol();
     }
 
     /** @return the issuer identification number (IIN) of the card, null if not provided by card */
@@ -262,7 +269,7 @@ public class GPCard {
 
     /** @return secure channel client */
     public GPSecureChannel getSecureChannel() {
-        return mSecure;
+        return mSecureChannel;
     }
     /** @return registry client */
     public GPRegistry getRegistry() {
@@ -407,13 +414,15 @@ public class GPCard {
             // connect to the card
             ensureConnectedToCard();
 
+            mBasicWrapper = new GPBasicWrapper(this, mBasicChannel);
+
             // check for ISD and detect if needed
             if (mISD == null && !detect(true)) {
                 throw new CardException("Could not determine ISD");
             }
 
             // select the ISD
-            selectFileByName(mISD);
+            mBasicWrapper.selectFileByName(mISD);
 
             // log static keys
             if(mContext.isKeyLoggingEnabled()) {
@@ -421,7 +430,7 @@ public class GPCard {
             }
 
             // get CPLC, can be used for identification if present
-            mCPLC = readCPLC();
+            mCPLC = mBasicWrapper.readCPLC();
             if (mCPLC == null) {
                 // this is completely normal
                 LOG.debug("card has no lifecycle data");
@@ -430,7 +439,7 @@ public class GPCard {
             }
 
             // get card data, needed to determine SCP parameters
-            mCardData = readCardData();
+            mCardData = mBasicWrapper.readCardData();
             if (mCardData == null) {
                 // this is normal for SCP01
                 LOG.debug("card has no card data");
@@ -440,13 +449,13 @@ public class GPCard {
 
             // get IIN and CIN if uniquely identifiable
             if(mCardData != null && mCardData.isUniquelyIdentifiable()) {
-                mCardIIN = readCardIIN();
+                mCardIIN = mBasicWrapper.readCardIIN();
                 if (mCardIIN == null) {
                     LOG.debug("card has no IIN");
                 } else {
                     LOG.debug("card IIN: " + HexUtil.bytesToHex(mCardIIN));
                 }
-                mCardCIN = readCardCIN();
+                mCardCIN = mBasicWrapper.readCardCIN();
                 if (mCardCIN == null) {
                     LOG.debug("card has no CIN");
                 } else {
@@ -458,16 +467,11 @@ public class GPCard {
             }
 
             // get key information, which must be present
-            mCardKeyInfo = readKeyInfo();
+            mCardKeyInfo = mBasicWrapper.readKeyInfo();
             if (mCardKeyInfo == null) {
                 throw new CardException("Card returned no key information template");
             } else {
                 LOG.trace("key information:\n" + mCardKeyInfo.toString());
-            }
-
-            // log keys
-            if(mContext.isKeyLoggingEnabled()) {
-                LOG.debug(mKeys.toString());
             }
 
             // check key against key information
@@ -475,11 +479,11 @@ public class GPCard {
             mCardKeyInfo.checkKeysetForUsage(mKeys);
 
             // create a secure channel object
-            mSecure = new GPSecureChannel(this, mBasic, mKeys, mDiversification, mProtocolPolicy, mSecurityPolicy);
+            mSecureChannel = new GPSecureChannel(this, mBasicWrapper, mKeys, mDiversification, mProtocolPolicy, mSecurityPolicy);
 
             // set protocol expectation of secure channel
             if (mCardData != null) {
-                mSecure.expectProtocol(
+                mSecureChannel.expectProtocol(
                         mCardData.getSecurityProtocol(),
                         mCardData.getSecurityParameters());
             } else {
@@ -488,17 +492,17 @@ public class GPCard {
                 if(version == 0 || parameters == 0) {
                     throw new CardException("Card has sent no card data. Must specify SCP protocol and parameters.");
                 } else {
-                    mSecure.expectProtocol(version, parameters);
+                    mSecureChannel.expectProtocol(version, parameters);
                 }
             }
 
             // try to open the secure channel
-            mSecure.open();
+            mSecureChannel.open();
 
-            GPSecureWrapper secureWrapper = new GPSecureWrapper(this, mSecure);
+            mSecureWrapper = new GPSecureWrapper(this, mSecureChannel);
 
-            mIssuerDomain = new GPIssuerDomain(this, secureWrapper);
-            mRegistry = new GPRegistry(this, secureWrapper);
+            mIssuerDomain = new GPIssuerDomain(this, mSecureWrapper);
+            mRegistry = new GPRegistry(this, mSecureWrapper);
 
             // mark as connected
             mIsConnected = true;
@@ -516,14 +520,14 @@ public class GPCard {
      */
     public void disconnect() throws CardException {
         // tear down the secure channel
-        if (mSecure != null) {
-            mSecure.close();
-            mSecure = null;
+        if (mSecureChannel != null) {
+            mSecureChannel.close();
+            mSecureChannel = null;
         }
         // tear down the basic channel
-        if(mBasic != null) {
-            //mBasic.close();
-            mBasic = null;
+        if(mBasicChannel != null) {
+            //mBasicChannel.close();
+            mBasicChannel = null;
         }
         // disconnect and reset the card
         if (mCard != null) {
@@ -550,7 +554,7 @@ public class GPCard {
             mCard.beginExclusive();
 
             // get the basic channel
-            mBasic = mCard.getBasicChannel();
+            mBasicChannel = mCard.getBasicChannel();
         }
     }
 
@@ -565,7 +569,7 @@ public class GPCard {
         if(isd == null) {
             for (AID name : PROBE_AIDS) {
                 try {
-                    selectFileByName(name);
+                    mBasicWrapper.selectFileByName(name);
                     isd = name;
                     break;
                 } catch (SWException e) {
@@ -580,141 +584,6 @@ public class GPCard {
             }
         }
         return isd;
-    }
-
-    /**
-     * Perform an ISO SELECT FILE BY NAME operation
-     *
-     * @param name in the form of an AID
-     * @return response data
-     * @throws CardException on error
-     */
-    private byte[] selectFileByName(AID name) throws CardException {
-        LOG.trace("selectFileByName(" + name + ")");
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_ISO,
-                GP.INS_SELECT,
-                GP.SELECT_P1_BY_NAME,
-                GP.SELECT_P2_FIRST_OR_ONLY,
-                name.getBytes()
-        );
-        return transactPlainAndCheck(command).getData();
-    }
-
-    /**
-     * Perform a GlobalPlatform GET DATA operation
-     *
-     * @param p1p2 selecting the data
-     * @return data retrieved
-     * @throws CardException on error
-     */
-    private byte[] readData(short p1p2) throws CardException {
-        LOG.trace("readData(" + HexUtil.hex16(p1p2) + ")");
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_GET_DATA,
-                p1p2
-        );
-        byte[] response = null;
-        try {
-            response = transactPlainAndCheck(command).getData();
-        } catch (SWException e) {
-            switch (e.getCode()) {
-                case ISO7816.SW_FILE_NOT_FOUND:
-                case ISO7816.SW_REFERENCED_DATA_NOT_FOUND:
-                    break;
-                default:
-                    throw e;
-            }
-        }
-        return response;
-    }
-
-    /**
-     * Read the ISO life cycle data object
-     *
-     * @return the object
-     * @throws CardException on error
-     */
-    private CPLC readCPLC() throws CardException {
-        LOG.debug("readCPLC()");
-        CPLC res = null;
-        byte[] data = readData(GP.GET_DATA_P12_CPLC);
-        if(data != null) {
-            res = CPLC.read(data);
-        }
-        return res;
-    }
-
-    /**
-     * Read the GlobalPlatform card data object
-     *
-     * @return the object
-     * @throws CardException on error
-     */
-    private GPCardData readCardData() throws CardException {
-        LOG.debug("readCardData()");
-        GPCardData res = null;
-        byte[] data = readData(GP.GET_DATA_P12_CARD_DATA);
-        if (data != null) {
-            try {
-                res = GPCardData.fromBytes(data);
-            } catch (IOException e) {
-                throw new CardException("Error parsing card data", e);
-            }
-        }
-        return res;
-    }
-
-    /**
-     * Read the cards Issuer Identification Number (IIN)
-     *
-     * @return the IIN
-     * @throws CardException on error
-     */
-    private byte[] readCardIIN() throws CardException {
-        LOG.debug("readCardIIN()");
-        return readData(GP.GET_DATA_P12_ISSUER_ID_NUMBER);
-    }
-
-    /**
-     * Read the cards Card Image Number (CIN)
-     *
-     * @return the CIN
-     * @throws CardException on error
-     */
-    private byte[] readCardCIN() throws CardException {
-        LOG.debug("readCardCIN()");
-        return readData(GP.GET_DATA_P12_CARD_IMG_NUMBER);
-    }
-
-    /**
-     * Read the GlobalPlatform Application Information object
-     *
-     * @return the object
-     * @throws CardException on error
-     */
-    private byte[] readApplicationInfo() throws CardException {
-        LOG.debug("readApplicationInfo()");
-        return readData(GP.GET_DATA_P12_APPLICATION_INFO);
-    }
-
-    /**
-     * Read the GlobalPlatform Key Information object
-     *
-     * @return the object
-     * @throws CardException on error
-     */
-    private GPKeyInfoTemplate readKeyInfo() throws CardException {
-        LOG.debug("readKeyInfo()");
-        GPKeyInfoTemplate res;
-        byte[] data = readData(GP.GET_DATA_P12_KEY_INFO_TEMPLATE);
-        try {
-            res = GPKeyInfoTemplate.fromBytes(data);
-        } catch (IOException e) {
-            throw new CardException("Error parsing key info", e);
-        }
-        return res;
     }
 
     /**
@@ -738,38 +607,10 @@ public class GPCard {
      * @throws CardException for terminal and card errors
      */
     public ResponseAPDU transactSecure(CommandAPDU command) throws CardException {
-        if (mSecure == null || !mSecure.isEstablished()) {
+        if (mSecureChannel == null || !mSecureChannel.isEstablished()) {
             throw new CardException("Secure channel not available");
         }
-        return mSecure.transmit(command);
-    }
-
-    /**
-     * Perform an APDU exchange WITH OPTIONAL SECURITY and check the result for errors
-     *
-     * @param command to execute
-     * @return response to command
-     * @throws CardException for terminal and card errors
-     */
-    public ResponseAPDU transactPlainAndCheck(CommandAPDU command) throws CardException {
-        ResponseAPDU response = transactPlain(command);
-        checkResponse(response);
-        return response;
-    }
-
-    /**
-     * Perform an APDU exchange WITH OPTIONAL SECURITY
-     *
-     * @param command to execute
-     * @return response to command
-     * @throws CardException for terminal and card errors
-     */
-    public ResponseAPDU transactPlain(CommandAPDU command) throws CardException {
-        if (mSecure != null && mSecure.isEstablished()) {
-            return mSecure.transmit(command);
-        } else {
-            return transmit(mBasic, command);
-        }
+        return mSecureChannel.transmit(command);
     }
 
     /**
