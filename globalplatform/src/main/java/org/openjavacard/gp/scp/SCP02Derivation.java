@@ -58,7 +58,7 @@ public class SCP02Derivation {
      * @param sequence for derivation
      * @return keyset containing session keys
      */
-    public static GPKeySet deriveSessionKeys(GPKeySet staticKeys, byte[] sequence) {
+    public static GPKeySet deriveSessionKeys(SCP0102Parameters parameters, GPKeySet staticKeys, byte[] sequence) {
         // synthesize a name for the new keyset
         String name = staticKeys.getName() + "-SCP02:" + HexUtil.bytesToHex(sequence);
         // create the new set
@@ -68,6 +68,10 @@ public class SCP02Derivation {
         System.arraycopy(sequence, 0, buffer, 2, 2);
         // go through all keys
         for (GPKeyUsage usage : KEYS) {
+            // skip RMAC if not supported
+            if(usage == GPKeyUsage.RMAC && !parameters.rmacSupport) {
+                continue;
+            }
             // get the static base key
             GPKey staticKey = staticKeys.getKeyByUsage(usage);
             if(staticKey != null) {

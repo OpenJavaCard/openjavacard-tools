@@ -482,12 +482,11 @@ public class GPSecureChannel extends CardChannel {
         // derive session keys
         switch (mActiveProtocol.scpVersion) {
             case 0:
-                keys = keys;
                 break;
             case 2:
                 byte[] seq02 = Arrays.copyOfRange(init.cardChallenge, 0, 2);
                 LOG.debug("card sequence " + HexUtil.bytesToHex(seq02));
-                keys = SCP02Derivation.deriveSessionKeys(keys, seq02);
+                keys = SCP02Derivation.deriveSessionKeys((SCP0102Parameters)mActiveProtocol, keys, seq02);
                 break;
             case 3:
                 byte[] seq03 = init.scp03Sequence;
