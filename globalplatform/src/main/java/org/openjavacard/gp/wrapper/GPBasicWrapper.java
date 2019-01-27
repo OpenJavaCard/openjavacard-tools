@@ -216,6 +216,8 @@ public class GPBasicWrapper {
         return res;
     }
 
+    private final static int TAG_ISSUER_ID_NUMBER = 0x4200;
+
     /**
      * Read the cards Issuer Identification Number (IIN)
      *
@@ -224,8 +226,21 @@ public class GPBasicWrapper {
      */
     public byte[] readCardIIN() throws CardException {
         LOG.trace("readCardIIN()");
-        return readData(GP.GET_DATA_P12_ISSUER_ID_NUMBER);
+        byte[] data = readData(GP.GET_DATA_P12_ISSUER_ID_NUMBER);
+        if(data == null) {
+            return null;
+        } else {
+            try {
+                return TLVPrimitive.readPrimitive(data)
+                        .asPrimitive(TAG_ISSUER_ID_NUMBER)
+                        .getValueBytes();
+            } catch (IOException e) {
+                throw new CardException("Error parsing IIN TLV", e);
+            }
+        }
     }
+
+    private final static int TAG_CARD_IMG_NUMBER = 0x4500;
 
     /**
      * Read the cards Card Image Number (CIN)
@@ -235,7 +250,18 @@ public class GPBasicWrapper {
      */
     public byte[] readCardCIN() throws CardException {
         LOG.trace("readCardCIN()");
-        return readData(GP.GET_DATA_P12_CARD_IMG_NUMBER);
+        byte[] data = readData(GP.GET_DATA_P12_CARD_IMG_NUMBER);
+        if(data == null) {
+            return null;
+        } else {
+            try {
+                return TLVPrimitive.readPrimitive(data)
+                        .asPrimitive(TAG_CARD_IMG_NUMBER)
+                        .getValueBytes();
+            } catch (IOException e) {
+                throw new CardException("Error parsing CIN TLV", e);
+            }
+        }
     }
 
     /**
