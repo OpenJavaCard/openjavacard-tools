@@ -110,7 +110,9 @@ public class TLVReader {
 
     private byte[] readBytes(int length) throws IOException {
         byte[] data = new byte[length];
-        readBytesInto(data);
+        if(length > 0) {
+            readBytesInto(data);
+        }
         return data;
     }
 
