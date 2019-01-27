@@ -54,6 +54,10 @@ public class GPSecureWrapper extends GPBasicWrapper {
         return super.transmitRaw(command);
     }
 
+    private ResponseAPDU transactSecure(CommandAPDU command) throws CardException {
+        return transact(command);
+    }
+
     private ResponseAPDU transactSecureAndCheck(CommandAPDU command) throws CardException {
         return transactAndCheck(command);
     }
@@ -99,7 +103,7 @@ public class GPSecureWrapper extends GPBasicWrapper {
                     GP.INS_GET_STATUS,
                     p1Subset, (byte) (getParam | p2Format), criteria);
             // run the command
-            ResponseAPDU response = transactSecureAndCheck(command);
+            ResponseAPDU response = transactSecure(command);
             // get SW and data
             int sw = response.getSW();
             byte[] data = response.getData();

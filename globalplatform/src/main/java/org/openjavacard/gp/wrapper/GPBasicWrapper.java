@@ -91,6 +91,10 @@ public class GPBasicWrapper {
         }
     }
 
+    protected ResponseAPDU transact(CommandAPDU command) throws CardException {
+        return transmitRaw(command);
+    }
+
     protected ResponseAPDU transactAndCheck(CommandAPDU command) throws CardException {
         ResponseAPDU response = transmitRaw(command);
         checkResponse(response);
