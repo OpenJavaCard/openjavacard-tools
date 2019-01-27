@@ -285,7 +285,7 @@ public class GPSecureChannel extends CardChannel {
         LOG.debug("key id " + keyId + " version " + keyVersion);
 
         // perform INITIALIZE UPDATE, exchanging challenges
-        GPInitUpdateResponse init = mBasicWrapper.performInitializeUpdate(keyVersion, keyId, hostChallenge);
+        GPInitUpdateResponse init = performInitializeUpdate(keyVersion, keyId, hostChallenge);
 
         // check and select the protocol to be used
         checkAndSelectProtocol(init);
@@ -523,6 +523,38 @@ public class GPSecureChannel extends CardChannel {
     }
 
     /**
+     * Assemble and transact an INITIALIZE UPDATE command
+     *
+     * The command will be sent on the underlying unencrypted channel.
+     *
+     * @param keyVersion    to indicate
+     * @param keyId         to indicate
+     * @param hostChallenge to send
+     * @return a decoded response to the command
+     * @throws CardException on error
+     */
+    private GPInitUpdateResponse performInitializeUpdate(byte keyVersion, byte keyId, byte[] hostChallenge) throws CardException {
+        LOG.trace("performInitializeUpdate()");
+        // build the command
+        CommandAPDU initCommand = APDUUtil.buildCommand(
+                GP.CLA_GP,
+                GP.INS_INITIALIZE_UPDATE,
+                keyVersion,
+                keyId,
+                hostChallenge
+        );
+        // and transmit it on the underlying channel
+        ResponseAPDU initResponse = mBasicWrapper.transmitRaw(initCommand);
+        // check the response
+        checkResponse(initResponse);
+        // parse the response
+        byte[] responseData = initResponse.getData();
+        GPInitUpdateResponse response = new GPInitUpdateResponse(responseData);
+        // return the parsed response
+        return response;
+    }
+
+    /**
      * Assemble and transact an EXTERNAL AUTHENTICATE command
      *
      * The command will be sent on the encrypted secure channel.
@@ -531,6 +563,7 @@ public class GPSecureChannel extends CardChannel {
      * @throws CardException on error
      */
     private void performExternalAuthenticate(byte[] hostCryptogram) throws CardException {
+        LOG.trace("performExternalAuthenticate()");
         // determine session parameters
         byte authParam = 0;
         // even CMAC can be optional for us

@@ -122,36 +122,6 @@ public class GPBasicWrapper {
     }
 
     /**
-     * Assemble and transact an INITIALIZE UPDATE command
-     *
-     * The command will be sent on the underlying unencrypted channel.
-     *
-     * @param keyVersion    to indicate
-     * @param keyId         to indicate
-     * @param hostChallenge to send
-     * @return a decoded response to the command
-     * @throws CardException on error
-     */
-    public GPInitUpdateResponse performInitializeUpdate(byte keyVersion, byte keyId, byte[] hostChallenge) throws CardException {
-        LOG.trace("performInitializeUpdate()");
-        // build the command
-        CommandAPDU initCommand = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_INITIALIZE_UPDATE,
-                keyVersion,
-                keyId,
-                hostChallenge
-        );
-        // and transmit it on the underlying channel
-        ResponseAPDU initResponse = transactAndCheck(initCommand);
-        // parse the response
-        byte[] responseData = initResponse.getData();
-        GPInitUpdateResponse response = new GPInitUpdateResponse(responseData);
-        // return the parsed response
-        return response;
-    }
-
-    /**
      * Perform a GlobalPlatform GET DATA operation
      *
      * @param p1p2 selecting the data
