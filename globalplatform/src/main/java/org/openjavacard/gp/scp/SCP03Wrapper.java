@@ -63,7 +63,26 @@ public class SCP03Wrapper extends SCPWrapper {
 
     @Override
     public byte[] encryptSensitiveData(byte[] data) throws CardException {
-        throw new Error("Not implemented");
+        // the DEK is static but contained in session keys
+        GPKey dek = mKeys.getKeyByUsage(GPKeyUsage.KEK);
+
+        // check size
+        if((data.length % 16) != 0) {
+            throw new CardException("SCP03 does not allow sensitive data that needs padding");
+        }
+
+        // perform encryption
+        byte[] encrypted = GPCrypto.enc_aes_cbc_nulliv(dek, data);
+
+        // prepend a length byte
+        byte[] result = new byte[encrypted.length + 1];
+        result[0] = (byte)encrypted.length;
+        for(int i = 0; i < encrypted.length; i++) {
+            result[i+1] = encrypted[i];
+        }
+
+        // return result
+        return result;
     }
 
     @Override

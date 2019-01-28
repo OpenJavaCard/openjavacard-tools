@@ -80,9 +80,8 @@ public class GPCrypto {
      * @param text
      * @return
      */
-    public static byte[] enc_aes_cbc(GPKey key, byte[] text) {
-        Key secretKey = key.getSecretKey(GPKeyCipher.AES);
-        return enc(AES_CBC_NOPAD, secretKey, text, 0, text.length, null);
+    public static byte[] enc_aes_cbc_nulliv(GPKey key, byte[] text) {
+        return enc_aes_cbc(key, text, ZEROES_16);
     }
 
     /**
