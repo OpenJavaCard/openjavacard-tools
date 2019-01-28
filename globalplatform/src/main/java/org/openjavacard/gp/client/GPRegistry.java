@@ -278,8 +278,8 @@ public class GPRegistry {
             try {
                 update();
             } catch (CardException e) {
-                LOG.error("Error updating registry", e);
                 mDirty = true;
+                throw new RuntimeException("Error updating registry", e);
             }
         }
     }
