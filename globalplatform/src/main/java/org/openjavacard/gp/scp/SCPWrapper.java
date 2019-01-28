@@ -30,9 +30,6 @@ import javax.smartcardio.ResponseAPDU;
  * <p/>
  * These objects can wrap and unwrap APDUs to be sent to the card
  * or received back, encrypting and authenticating them as configured.
- * <p/>
- * NOTE This has not been thought through yet for SCP03, SCP10 and others.
- * Some stuff may have to move to implement them nicely.
  */
 public abstract class SCPWrapper {
 
