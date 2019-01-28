@@ -212,12 +212,13 @@ public class SCP03Wrapper extends SCPWrapper {
 
             // complete MAC context with response
             ByteArrayOutputStream rmac = new ByteArrayOutputStream();
+            rmac.write(mICV, 0, mICV.length);
             rmac.write(data, 0, data.length - 8);
             rmac.write(sw1);
             rmac.write(sw2);
 
             // perform MAC computation
-            byte[] macResult = GPCrypto.mac_aes(key, rmac.toByteArray(), mICV);
+            byte[] macResult = GPBouncy.scp03_mac(key, rmac.toByteArray(), 128);
             byte[] myMAC = Arrays.copyOfRange(macResult, 0, 8);
 
             // compare MAC values
