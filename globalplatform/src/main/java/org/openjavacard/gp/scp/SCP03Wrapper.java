@@ -29,6 +29,8 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -39,11 +41,18 @@ public class SCP03Wrapper extends SCPWrapper {
     private SCP03Parameters mSCP;
 
     /**
-     * IV for all cryptographic operations
+     * ICV for MAC operations
      *
      * The first half of this is used as the C-MAC.
      */
     private byte[] mICV = new byte[16];
+
+    /**
+     * Counter for ENC operations
+     *
+     * Used to generate the ENC key.
+     */
+    private long mCTR = 1;
 
     SCP03Wrapper(GPKeySet keys, SCP03Parameters parameters) {
         super(keys);
@@ -114,20 +123,29 @@ public class SCP03Wrapper extends SCPWrapper {
         if (mENC && wrappedLen > 0) {
             GPKey encKey = mKeys.getKeyByUsage(GPKeyUsage.ENC);
 
-            // enc requires mac
-            if (!mMAC) {
-                throw new UnsupportedOperationException("Can not wrap: ENC without MAC");
-            }
+            // build counter
+            ByteBuffer ctrBuf = ByteBuffer.allocate(16);
+            ctrBuf.put(new byte[]{0,0,0,0,0,0,0,0});
+            ctrBuf.putLong(mCTR);
+            byte[] ctr = ctrBuf.array();
+
+            // generate ICV
+            byte[] icv = GPCrypto.enc_aes_ecb(encKey, ctr);
 
             // perform padding
             byte[] plainBuf = GPCrypto.pad80(wrappedData, 16);
 
             // perform the encryption
-            byte[] encrypted = GPCrypto.enc_aes_cbc(encKey, plainBuf, mICV);
+            byte[] encrypted = GPCrypto.enc_aes_cbc(encKey, plainBuf, icv);
 
             // replace data, adjusting size accordingly
             wrappedLen += encrypted.length - dataLen;
             wrappedData = encrypted;
+        }
+
+        // increment encryption counter even if no data
+        if(mENC) {
+            mCTR++;
         }
 
         // perform MAC operation
