@@ -49,8 +49,13 @@ public class GPCrypto {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     };
+    private static final byte[] ONES_16 = new byte[]{
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
+    };
 
 
+    private static final String AES_ECB_NOPAD = "AES/ECB/NoPadding";
     private static final String AES_CBC_NOPAD = "AES/CBC/NoPadding";
 
     private static final String DES_ECB_NOPAD = "DES/ECB/NoPadding";
@@ -71,6 +76,23 @@ public class GPCrypto {
     public static byte[] kcv_3des(GPKey key) {
         byte[] encrypted = enc_3des_ecb(key, ZEROES_8);
         return Arrays.copyOf(encrypted, 3);
+    }
+
+    public static byte[] kcv_aes(GPKey key) {
+        byte[] encrypted = enc_aes_ecb(key, ONES_16);
+        return Arrays.copyOf(encrypted, 3);
+    }
+
+    /**
+     * Encrypt using AES-CBC
+     *
+     * @param key
+     * @param text
+     * @return
+     */
+    public static byte[] enc_aes_ecb(GPKey key, byte[] text) {
+        Key secretKey = key.getSecretKey(GPKeyCipher.AES);
+        return enc(AES_ECB_NOPAD, secretKey, text, 0, text.length, null);
     }
 
     /**

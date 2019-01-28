@@ -100,6 +100,8 @@ public class GPKey {
         switch(mCipher) {
             case DES3:
                 return GPCrypto.kcv_3des(this);
+            case AES:
+                return GPCrypto.kcv_aes(this);
             default:
                 throw new UnsupportedOperationException("Cannot generate KCV for cipher " + mCipher);
         }
