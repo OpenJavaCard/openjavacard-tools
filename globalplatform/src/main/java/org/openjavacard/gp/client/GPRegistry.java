@@ -284,16 +284,35 @@ public class GPRegistry {
         }
     }
 
+    /**
+     * Read ISD entries using GET STATUS
+     * @return entries found
+     * @throws CardException
+     */
     private List<ISDEntry> readEntriesISD() throws CardException {
         LOG.trace("readEntriesISD()");
         return readStatusGeneric(GP.GET_STATUS_P1_ISD_ONLY, ISDEntry.class);
     }
 
+    /**
+     * Read Application and SSD entries using GET STATUS
+     * @return entries found
+     * @throws CardException
+     */
     private List<AppEntry> readEntriesAppAndSSD() throws CardException {
         LOG.trace("readEntriesAppAndSSD()");
         return readStatusGeneric(GP.GET_STATUS_P1_APP_AND_SD_ONLY, AppEntry.class);
     }
 
+    /**
+     * Read ELF entries using GET STATUS
+     * <p/>
+     * The case of ELFs is special because TLV format offers optional ExM information,
+     * which some cards do not provide. We therefore have an additional fallback here.
+     * <p/>
+     * @return entries found
+     * @throws CardException
+     */
     private List<ELFEntry> readEntriesELF() throws CardException {
         LOG.trace("readEntriesELF()");
         List<ELFEntry> elfEntries = null;
@@ -373,7 +392,7 @@ public class GPRegistry {
     }
 
     /**
-     * Perform GET STATUS and parse the result as legacy data
+     * Perform GET STATUS using legacy format
      *
      * @param p1Subset subset parameter
      * @param clazz to instantiate
@@ -402,7 +421,7 @@ public class GPRegistry {
     }
 
     /**
-     * Perform GET STATUS and parse the result as TLV
+     * Perform GET STATUS using TLV format
      *
      * @param p1Subset subset parameter
      * @param clazz to instantiate
