@@ -161,48 +161,6 @@ public class GPKeySet {
         }
     }
 
-    private static final GPKeyUsage[] DIVERSIFICATION_KEYS = {
-            GPKeyUsage.ENC, GPKeyUsage.MAC, GPKeyUsage.KEK, GPKeyUsage.RMAC
-    };
-
-    /**
-     * Perform key diversification on the keyset
-     * <p/>
-     * Will generate and return a new set of diversified keys.
-     * <p/>
-     * @param diversification function to be used
-     * @param diversificationData for diversification
-     * @return keyset containing the diversified keys
-     */
-    public GPKeySet diversify(GPKeyDiversification diversification, byte[] diversificationData) {
-        if (mDiversification != GPKeyDiversification.NONE) {
-            throw new IllegalArgumentException("Cannot diversify a diversified keyset");
-        }
-        if(diversification == GPKeyDiversification.NONE) {
-            return this;
-        }
-        String diversifiedName = mName + "-" + diversification.name() + ":" + HexUtil.bytesToHex(diversificationData);
-        GPKeySet diversifiedKeys = new GPKeySet(diversifiedName, mKeyVersion, diversification);
-        for(GPKeyUsage type: DIVERSIFICATION_KEYS) {
-            GPKey key = getKeyByUsage(type);
-            if(key != null) {
-                GPKey diversifiedKey;
-                switch (diversification) {
-                    case EMV:
-                        diversifiedKey = SCPDiversification.diversifyKeyEMV(type, key, diversificationData);
-                        break;
-                    case VISA2:
-                        diversifiedKey = SCPDiversification.diversifyKeyVisa2(type, key, diversificationData);
-                        break;
-                    default:
-                        throw new RuntimeException("Unsupported diversification " + diversification);
-                }
-                diversifiedKeys.putKey(diversifiedKey);
-            }
-        }
-        return diversifiedKeys;
-    }
-
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("keyset \"" + mName + "\"");

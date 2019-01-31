@@ -473,7 +473,7 @@ public class GPSecureChannel extends CardChannel {
         // diversify keys
         if(mDiversification != GPKeyDiversification.NONE) {
             LOG.trace("diversification " + mDiversification + " data " + HexUtil.bytesToHex(init.diversificationData));
-            keys = keys.diversify(mDiversification, init.diversificationData);
+            keys = SCPDiversification.diversify(keys, mDiversification, init.diversificationData);
             if(mContext.isKeyLoggingEnabled()) {
                 LOG.trace("diversified keys:\n" + keys.toString());
             }

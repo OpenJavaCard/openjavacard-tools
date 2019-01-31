@@ -21,11 +21,47 @@ package org.openjavacard.gp.scp;
 
 import org.openjavacard.gp.crypto.GPCrypto;
 import org.openjavacard.gp.keys.GPKey;
+import org.openjavacard.gp.keys.GPKeyDiversification;
+import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyUsage;
+import org.openjavacard.util.HexUtil;
 
 public class SCPDiversification {
 
-    public static GPKey diversifyKeyEMV(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
+    private static final GPKeyUsage[] DIVERSIFICATION_KEYS = {
+            GPKeyUsage.ENC, GPKeyUsage.MAC, GPKeyUsage.KEK, GPKeyUsage.RMAC
+    };
+
+    public static GPKeySet diversify(GPKeySet keys, GPKeyDiversification diversification, byte[] diversificationData) {
+        if (keys.getDiversification() != GPKeyDiversification.NONE) {
+            throw new IllegalArgumentException("Cannot diversify a diversified keyset");
+        }
+        if(diversification == GPKeyDiversification.NONE) {
+            throw new IllegalArgumentException("No need to diversify for diversification NONE");
+        }
+        String diversifiedName = keys.getName() + "-" + diversification.name() + ":" + HexUtil.bytesToHex(diversificationData);
+        GPKeySet diversifiedKeys = new GPKeySet(diversifiedName, keys.getKeyVersion(), diversification);
+        for(GPKeyUsage type: DIVERSIFICATION_KEYS) {
+            GPKey key = keys.getKeyByUsage(type);
+            if(key != null) {
+                GPKey diversifiedKey;
+                switch (diversification) {
+                    case EMV:
+                        diversifiedKey = SCPDiversification.diversifyKeyEMV(type, key, diversificationData);
+                        break;
+                    case VISA2:
+                        diversifiedKey = SCPDiversification.diversifyKeyVisa2(type, key, diversificationData);
+                        break;
+                    default:
+                        throw new RuntimeException("Unsupported diversification " + diversification);
+                }
+                diversifiedKeys.putKey(diversifiedKey);
+            }
+        }
+        return diversifiedKeys;
+    }
+
+    private static GPKey diversifyKeyEMV(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 4, data, 0, 6);
         data[6] = (byte)0xF0;
@@ -37,7 +73,7 @@ public class SCPDiversification {
         return new GPKey(key.getId(), usage, key.getCipher(), dKey);
     }
 
-    public static GPKey diversifyKeyVisa2(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
+    private static GPKey diversifyKeyVisa2(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 0, data, 0, 2);
         System.arraycopy(diversificationData, 4, data, 2, 4);

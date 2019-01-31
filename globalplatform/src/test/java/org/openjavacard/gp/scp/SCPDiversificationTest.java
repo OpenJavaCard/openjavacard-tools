@@ -1,6 +1,6 @@
 /*
  * openjavacard-tools: Development tools for JavaCard
- * Copyright (C) 2018 Ingo Albrecht <copyright@promovicz.org>
+ * Copyright (C) 2019 Ingo Albrecht <copyright@promovicz.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,25 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package org.openjavacard.gp.keys;
+package org.openjavacard.gp.scp;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.openjavacard.gp.keys.GPKey;
+import org.openjavacard.gp.keys.GPKeyDiversification;
+import org.openjavacard.gp.keys.GPKeySet;
+import org.openjavacard.gp.keys.GPKeyUsage;
 import org.openjavacard.util.HexUtil;
 
 @RunWith(BlockJUnit4ClassRunner.class)
-public class GPKeySetTest extends TestCase {
+public class SCPDiversificationTest extends TestCase {
 
     public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(GPKeySetTest.class);
+        return new junit.framework.JUnit4TestAdapter(SCPDiversificationTest.class);
     }
 
     @Test
     public void testDiversifyEMV_00000000000000000000() {
-        GPKeySet diversified = GPKeySet.GLOBALPLATFORM.diversify(GPKeyDiversification.EMV,
+        GPKeySet diversified = SCPDiversification.diversify(
+                GPKeySet.GLOBALPLATFORM,
+                GPKeyDiversification.EMV,
                 HexUtil.hexToBytes("00000000000000000000"));
         Assert.assertEquals(0, diversified.getKeyVersion());
         GPKey encKey = diversified.getKeyByUsage(GPKeyUsage.ENC);
@@ -48,7 +54,9 @@ public class GPKeySetTest extends TestCase {
 
     @Test
     public void testDiversifyEMV_0102030405060708090A() {
-        GPKeySet diversified = GPKeySet.GLOBALPLATFORM.diversify(GPKeyDiversification.EMV,
+        GPKeySet diversified = SCPDiversification.diversify(
+                GPKeySet.GLOBALPLATFORM,
+                GPKeyDiversification.EMV,
                 HexUtil.hexToBytes("0102030405060708090A"));
         Assert.assertEquals(0, diversified.getKeyVersion());
         GPKey encKey = diversified.getKeyByUsage(GPKeyUsage.ENC);
