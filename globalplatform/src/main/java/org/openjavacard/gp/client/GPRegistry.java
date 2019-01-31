@@ -464,25 +464,16 @@ public class GPRegistry {
      * Registry entries
      */
     public static abstract class Entry implements VerboseString {
-        final Type mType;
         AID mAID;
         byte mState;
         byte[] mPrivileges;
-        List<AID> mModules;
+        List<AID> mModules = new ArrayList<>();
         AID mPackage;
         AID mDomain;
         byte[] mVersion;
-        List<Byte> mImplicitSelection;
+        List<Byte> mImplicitSelection = new ArrayList<>();
 
-        Entry(Type type) {
-            mType = type;
-            mModules = new ArrayList<>();
-            mImplicitSelection = new ArrayList<>();
-        }
-
-        public Type getType() {
-            return mType;
-        }
+        public abstract Type getType();
 
         public AID getAID() {
             return mAID;
@@ -559,22 +550,24 @@ public class GPRegistry {
         }
 
         public String toString() {
-            return mType.toString() + " " + mAID.toString();
+            return getType().toString() + " " + mAID.toString();
         }
 
     }
 
     public static class AppEntry extends Entry {
-        AppEntry() {
-            super(Type.APP);
-        }
-
-        AppEntry(Type type) {
-            super(type);
-        }
 
         public boolean isSSD() {
             return (mPrivileges[0] & GPPrivilege.SECURITY_DOMAIN.privilegeBits) != 0;
+        }
+
+        @Override
+        public Type getType() {
+            if(isSSD()) {
+                return Type.SSD;
+            } else {
+                return Type.APP;
+            }
         }
 
         @Override
@@ -606,7 +599,7 @@ public class GPRegistry {
             StringBuilder sb = new StringBuilder();
 
             // header line
-            sb.append(mType.toString());
+            sb.append(getType().toString());
             sb.append(" ");
             sb.append(mAID.toString());
             AIDInfo aidInfo = AIDInfo.get(mAID);
@@ -665,8 +658,10 @@ public class GPRegistry {
     }
 
     public static class ISDEntry extends AppEntry {
-        ISDEntry() {
-            super(Type.ISD);
+
+        @Override
+        public Type getType() {
+            return Type.ISD;
         }
 
         @Override
@@ -681,8 +676,10 @@ public class GPRegistry {
     }
 
     public static class ELFEntry extends Entry {
-        ELFEntry() {
-            super(Type.ELF);
+
+        @Override
+        public Type getType() {
+            return Type.ELF;
         }
 
         @Override
@@ -706,7 +703,7 @@ public class GPRegistry {
             StringBuilder sb = new StringBuilder();
 
             // header line
-            sb.append(mType.toString());
+            sb.append(getType().toString());
             sb.append(" ");
             sb.append(mAID.toString());
             AIDInfo aidInfo = AIDInfo.get(mAID);
