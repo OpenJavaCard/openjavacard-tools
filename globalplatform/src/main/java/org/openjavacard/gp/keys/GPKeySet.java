@@ -35,24 +35,17 @@ import java.util.List;
  */
 public class GPKeySet {
 
-    /**
-     * An empty keyset
-     */
+    /** An empty keyset */
     public static final GPKeySet EMPTY = new GPKeySet("Empty");
 
-    /**
-     * GlobalPlatform default master key
-     */
-    private static final byte[] GLOBALPLATFORM_MASTER_KEY = {
-            0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,
-            0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F
-    };
+    /** GlobalPlatform default keyset */
+    public static final GPKeySet GLOBALPLATFORM = buildGeneric("GlobalPlatform", GPKey.GLOBALPLATFORM_MASTER);
 
-    /**
-     * GlobalPlatform default key set
-     */
-    public static final GPKeySet GLOBALPLATFORM =
-            buildGeneric("GlobalPlatform", GLOBALPLATFORM_MASTER_KEY);
+    private static GPKeySet buildGeneric(String name, GPKey masterKey) {
+        GPKeySet keySet = new GPKeySet(name);
+        keySet.putKey(masterKey);
+        return keySet;
+    }
 
     private String mName;
 
@@ -63,12 +56,6 @@ public class GPKeySet {
     private final ArrayList<GPKey> mKeys = new ArrayList<>();
     private final Hashtable<GPKeyUsage, GPKey> mKeysByUsage = new Hashtable<>();
     private final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
-
-    private static GPKeySet buildGeneric(String name, byte[] masterKey) {
-        GPKeySet keySet = new GPKeySet(name);
-        keySet.putKey(new GPKey(0, GPKeyUsage.MASTER, GPKeyCipher.GENERIC, masterKey));
-        return keySet;
-    }
 
     /**
      * Constructor for empty keysets
