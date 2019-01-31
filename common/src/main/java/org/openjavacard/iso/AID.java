@@ -19,6 +19,8 @@
 
 package org.openjavacard.iso;
 
+import org.openjavacard.tlv.TLV;
+import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 
@@ -28,6 +30,8 @@ import java.util.Arrays;
  * Representation for ISO7816 AIDs and RIDs
  */
 public class AID implements Comparable<AID>, VerboseString {
+
+    private static final int TAG_AID = 0x4F00;
 
     /** Maximum length of an AID (16) */
     private static final int AID_MAX_LENGTH =  16;
@@ -125,6 +129,14 @@ public class AID implements Comparable<AID>, VerboseString {
     /** @return the PIX part of the AID as a hex string */
     public String getPIXString() {
         return HexUtil.bytesToHex(getPIXBytes());
+    }
+
+    public TLVPrimitive getTLV() {
+        return new TLVPrimitive(TAG_AID, mBytes);
+    }
+
+    public byte[] getTLVBytes() {
+        return getTLV().getEncoded();
     }
 
     /** Hash of value */
