@@ -73,116 +73,43 @@ public class GPCard {
 
     /** Library context in use */
     private final GPContext mContext;
-    /**
-     * SmartcardIO terminal handle */
+    /** SmartcardIO terminal handle */
     private final CardTerminal mTerminal;
-    /**
-     * SmartcardIO card handle */
+    /** SmartcardIO card handle */
     private Card mCard;
-    /**
-     * SmartcardIO basic channel */
+    /** SmartcardIO basic channel */
     private CardChannel mBasicChannel;
-    /**
-     * AID of the ISD
-     * <p/>
-     * Provided by user or detected automatically by probing.
-     */
+    /** AID of the ISD */
     private AID mISD;
-    /**
-     * Keys to use for secure channel
-     */
+    /** Keys to use for secure channel */
     private GPKeySet mKeys;
-    /**
-     * Key diversification to apply
-     */
+    /** Key diversification to apply */
     private GPKeyDiversification mDiversification;
-    /**
-     * Protocol policy for secure channel
-     */
+    /** Protocol policy for secure channel */
     private SCPProtocolPolicy mProtocolPolicy;
-    /**
-     * Security policy for secure channel
-     */
+    /** Security policy for secure channel */
     private SCPSecurityPolicy mSecurityPolicy;
-    /**
-     * Card issuer identification number
-     * <p/>
-     * Optional. Retrieved during connection process.
-     * <p/>
-     * May be present when "unique identification" is supported.
-     */
+    /** Card issuer identification number */
     private byte[] mCardIIN;
-    /**
-     * Card image number
-     * <p/>
-     * Optional. Retrieved during connection process.
-     * <p/>
-     * May be present when "unique identification" is supported.
-     */
+    /** Card image number */
     private byte[] mCardCIN;
-    /**
-     * Card life cycle data
-     * <p/>
-     * Optional. Retrieved during connection process.
-     * <p/>
-     * This contains information such as the serial number of the card
-     * as well as ISO-specified identifiers for the manufacturers
-     * involved in making the card.
-     */
+    /** Card life cycle data */
     private CPLC mCPLC;
-    /**
-     * Card data
-     * <p/>
-     * Required. Retrieved during connection process.
-     * <p/>
-     * Used to determine the security protocol.
-     */
+    /** Card data */
     private GPCardData mCardData;
-    /**
-     * Card key info
-     * <p/>
-     * Required. Retrieved during connection process.
-     * <p/>
-     * This indicates what keys the ISD wants to authenticate with.
-     */
+    /** Card key info */
     private GPKeyInfoTemplate mCardKeyInfo;
-    /**
-     * Our GP plain command wrapper
-     */
+    /** Our GP plain command wrapper */
     private GPBasicWrapper mBasicWrapper;
-    /**
-     * Our GP secure command wrapper
-     */
+    /** Our GP secure command wrapper */
     private GPSecureWrapper mSecureWrapper;
-    /**
-     * Our SCP secure channel
-     * <p/>
-     * Created when secure session starts.
-     */
+    /** Our SCP secure channel */
     private GPSecureChannel mSecureChannel;
-    /**
-     * Registry instance
-     * <p/>
-     * Cached representation of ISD-managed on-card
-     * objects such as installed applets and security
-     * domains.
-     */
+    /** Registry instance */
     private GPRegistry mRegistry;
-    /**
-     * Issuer domain access object
-     * <p/>
-     * This is the interface to be used for communicating
-     * with the ISD to perform the various operations
-     * that it enables.
-     */
+    /** Issuer domain access object */
     private GPIssuerDomain mIssuerDomain;
-    /**
-     * True when we are connected to an ISD
-     * <p/>
-     * Being connected is defined as having a connection
-     * to a card with authentication completed as required
-     * by the active security policy.
-     */
+    /** True when we are connected to an ISD */
     private boolean mIsConnected;
 
     /**
@@ -264,7 +191,7 @@ public class GPCard {
         return mCardKeyInfo;
     }
 
-    /** @return secure channel client */
+    /** @return secure channel */
     public GPSecureChannel getSecureChannel() {
         return mSecureChannel;
     }
