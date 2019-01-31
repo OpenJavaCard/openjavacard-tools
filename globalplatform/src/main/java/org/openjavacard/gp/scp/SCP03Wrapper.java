@@ -77,6 +77,10 @@ public class SCP03Wrapper extends SCPWrapper {
         return ctrBuf.array();
     }
 
+    private void incrementEncryptionCounter() {
+        mCTR++;
+    }
+
     @Override
     public byte[] encryptSensitiveData(byte[] data) throws CardException {
         // the DEK is static but contained in session keys
@@ -147,7 +151,7 @@ public class SCP03Wrapper extends SCPWrapper {
 
         // increment encryption counter even if no data
         if(mENC) {
-            mCTR++;
+            incrementEncryptionCounter();
         }
 
         // perform MAC operation
