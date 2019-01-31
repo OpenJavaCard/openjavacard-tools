@@ -29,7 +29,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.ByteArrayOutputStream;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 

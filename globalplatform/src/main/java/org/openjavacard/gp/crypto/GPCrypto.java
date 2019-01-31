@@ -28,7 +28,6 @@ package org.openjavacard.gp.crypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeyCipher;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;

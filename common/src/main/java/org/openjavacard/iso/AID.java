@@ -19,7 +19,6 @@
 
 package org.openjavacard.iso;
 
-import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;

@@ -33,14 +33,12 @@ import org.openjavacard.gp.structure.GPStoreDataRequest;
 import org.openjavacard.gp.wrapper.GPSecureWrapper;
 import org.openjavacard.iso.AID;
 import org.openjavacard.tlv.TLVPrimitive;
-import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;
-import javax.smartcardio.CommandAPDU;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 

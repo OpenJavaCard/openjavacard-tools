@@ -24,7 +24,6 @@ import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
-import org.openjavacard.gp.structure.GPInitUpdateResponse;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
