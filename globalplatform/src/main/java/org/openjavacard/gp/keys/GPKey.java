@@ -111,10 +111,11 @@ public class GPKey {
 
     /**
      * Return the key check value (KCV) for the key
-     *
+     * <p/>
      * The algorithm used depends on the cipher of the key.
-     *
-     * @return the KCV
+     * <p/>
+     * @param cipher to use
+     * @return the key check value
      */
     public byte[] getCheckValue(GPKeyCipher cipher) {
         if(!isCompatible(cipher)) {
@@ -133,10 +134,10 @@ public class GPKey {
     /**
      * Return a SecretKey for a specific cipher
      * <p/>
-     * Will coerce the key if required.
-     *
+     * Will coerce the key if required, such as for GENERIC keys.
+     * <p/>
      * @param cipher for the new key
-     * @return new SecretKey corresponding to this key
+     * @return the secret key
      */
     public SecretKey getSecretKey(GPKeyCipher cipher) {
         if(!isCompatible(cipher)) {
