@@ -40,10 +40,11 @@ import java.util.List;
  * <p/>
  * Once loaded each of these will become an ELF on the card.
  * <p/>
- * These objects can be produced using methods in
- * {@link CapFilePackage}.
+ * These objects can be produced from a CapFilePackage.
  */
 public class GPLoadFile {
+
+    private final static int TAG_LOAD_FILE = 0xC400;
 
     /** AID of the package */
     private final AID mPackageAID;
@@ -134,7 +135,7 @@ public class GPLoadFile {
 
             // emit one tag with all the components
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(TLVTag.tagBytes(0xC400));
+            bos.write(TLVTag.tagBytes(TAG_LOAD_FILE));
             bos.write(TLVLength.lengthBytes(totalSize));
             for(CapFileComponent component : components) {
                 byte[] data = component.getData();
