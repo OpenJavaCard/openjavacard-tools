@@ -193,16 +193,15 @@ public class SCP03Wrapper extends SCPWrapper {
 
     @Override
     public ResponseAPDU unwrap(ResponseAPDU response) throws CardException {
-        ResponseAPDU unwrapped = response;
+        // get fields
+        byte[] data = response.getData();
+        int sw1 = response.getSW1();
+        int sw2 = response.getSW2();
 
+        // perform RMAC
         if (mRMAC) {
             // get the right key
-            GPKey key = mKeys.getKeyByUsage(GPKeyUsage.RMAC);
-
-            // get fields
-            byte[] data = response.getData();
-            int sw1 = response.getSW1();
-            int sw2 = response.getSW2();
+            GPKey rmacKey = mKeys.getKeyByUsage(GPKeyUsage.RMAC);
 
             // check for sufficient length
             if (data.length < 16) {
@@ -220,7 +219,7 @@ public class SCP03Wrapper extends SCPWrapper {
             rmac.write(sw2);
 
             // perform MAC computation
-            byte[] macResult = GPBouncy.scp03_mac(key, rmac.toByteArray(), 128);
+            byte[] macResult = GPBouncy.scp03_mac(rmacKey, rmac.toByteArray(), 128);
             byte[] myMAC = Arrays.copyOfRange(macResult, 0, 8);
 
             // compare MAC values
@@ -228,17 +227,31 @@ public class SCP03Wrapper extends SCPWrapper {
                 throw new CardException("Can not unwrap: bad response MAC");
             }
 
-            // assemble response APDU
-            ByteArrayOutputStream myData = new ByteArrayOutputStream();
-            myData.write(data, 0, data.length - 8);
-            myData.write(sw1);
-            myData.write(sw2);
-
-            // and construct an object wrapping it
-            unwrapped = new ResponseAPDU(myData.toByteArray());
+            data = Arrays.copyOfRange(data, 0, data.length - 8);
         }
 
-        return unwrapped;
+        // perform RENC
+        if(mRENC && data.length > 0) {
+            // RENC uses the ENC key
+            GPKey encKey = mKeys.getKeyByUsage(GPKeyUsage.ENC);
+            // get counter and modify it for RENC
+            byte[] ctr = getEncryptionCounter();
+            ctr[0] = (byte)0x80;
+            // derive the ICV
+            byte[] icv = GPCrypto.enc_aes_ecb(encKey, ctr);
+            // perform decryption
+            byte[] decrypted = GPCrypto.dec_aes_cbc(encKey, data, icv);
+            // remove padding
+            data = GPCrypto.unpad80(decrypted);
+        }
+
+        // assemble response APDU
+        ByteArrayOutputStream myData = new ByteArrayOutputStream();
+        myData.write(data, 0, data.length);
+        myData.write(sw1);
+        myData.write(sw2);
+
+        return new ResponseAPDU(myData.toByteArray());
     }
 
 }

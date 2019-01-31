@@ -28,6 +28,7 @@ package org.openjavacard.gp.crypto;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeyCipher;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
@@ -118,6 +119,11 @@ public class GPCrypto {
         return enc(AES_CBC_NOPAD, secretKey, text, 0, text.length, iv);
     }
 
+    public static byte[] dec_aes_cbc(GPKey key, byte[] text, byte[] iv) {
+        Key secretKey = key.getSecretKey(GPKeyCipher.AES);
+        return dec(AES_CBC_NOPAD, secretKey, text, 0, text.length, iv);
+    }
+
     /**
      * Encrypt using DES-ECB
      *
@@ -178,6 +184,20 @@ public class GPCrypto {
             return cipher.doFinal(text, offset, length);
         } catch (Exception e) {
             throw new RuntimeException("Encryption failed", e);
+        }
+    }
+
+    private static byte[] dec(String cipherSpec, Key key, byte[] text, int offset, int length, byte[] iv) {
+        try {
+            Cipher cipher = Cipher.getInstance(cipherSpec);
+            if (iv == null) {
+                cipher.init(Cipher.DECRYPT_MODE, key);
+            } else {
+                cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+            }
+            return cipher.doFinal(text, offset, length);
+        } catch (Exception e) {
+            throw new RuntimeException("Decryption failed", e);
         }
     }
 
@@ -369,6 +389,19 @@ public class GPCrypto {
             result[length + i] = (byte) 0x00;
         }
         return result;
+    }
+
+    public static byte[] unpad80(byte[] text) {
+        if (text.length < 1)
+            throw new RuntimeException("Invalid ISO 7816-4 padding");
+        int offset = text.length - 1;
+        while (offset > 0 && text[offset] == 0) {
+            offset--;
+        }
+        if (text[offset] != (byte) 0x80) {
+            throw new RuntimeException("Invalid ISO 7816-4 padding");
+        }
+        return Arrays.copyOf(text, offset);
     }
 
     /**
