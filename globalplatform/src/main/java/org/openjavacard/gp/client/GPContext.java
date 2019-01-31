@@ -33,10 +33,14 @@ public class GPContext extends GenericContext {
     public GPContext() {
     }
 
+    /** @return true if key logging has been enabled */
     public boolean isKeyLoggingEnabled() {
         return mKeyLoggingEnabled;
     }
 
+    /**
+     * Enable logging of keys
+     */
     public void enableKeyLogging() {
         LOG.warn("key logging enabled");
         mKeyLoggingEnabled = true;
