@@ -108,8 +108,11 @@ public class GPKey {
      *
      * @return the KCV
      */
-    public byte[] getCheckValue() {
-        switch(mCipher) {
+    public byte[] getCheckValue(GPKeyCipher cipher) {
+        if((mCipher != GPKeyCipher.GENERIC) && (mCipher != cipher)) {
+            throw new UnsupportedOperationException("Cannot generate " + cipher + " KCV for " + mCipher + " key");
+        }
+        switch(cipher) {
             case DES3:
                 return GPCrypto.kcv_3des(this);
             case AES:

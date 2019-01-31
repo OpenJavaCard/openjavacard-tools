@@ -270,7 +270,7 @@ public class GPIssuerDomain {
                 LOG.trace("encrypted secret " + HexUtil.bytesToHex(encrypted));
             }
             // compute the key check value
-            byte[] kcv = key.getCheckValue();
+            byte[] kcv = key.getCheckValue(key.getCipher());
             if (logKeys) {
                 LOG.trace("key check value " + HexUtil.bytesToHex(kcv));
             }
