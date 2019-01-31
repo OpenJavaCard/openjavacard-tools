@@ -199,27 +199,13 @@ public class GPIssuerDomain {
      * This variant allows the deletion of related/dependent objects.
      * <p/>
      * @param aid of the object to be deleted
-     * @param related true if dependent objects should be deleted
+     * @param deleteRelated true if dependent objects should be deleted
      * @throws CardException on error
      */
-    public void deleteObject(AID aid, boolean related) throws CardException {
-        LOG.debug("deleting object " + aid + (related?" and related":""));
-        int aidLen = aid.getLength();
-        // pack up the AID in a TLV
-        byte[] tlv = new byte[2 + aidLen];
-        tlv[0] = 0x4F;
-        tlv[1] = (byte) (aidLen & 0xFF);
-        System.arraycopy(aid.getBytes(), 0, tlv, 2, aidLen);
-        // build the command
-        CommandAPDU command = APDUUtil.buildCommand(
-                GP.CLA_GP,
-                GP.INS_DELETE,
-                (byte) 0,
-                related ? GP.DELETE_P2_DELETE_RELATED
-                        : GP.DELETE_P2_DELETE_INDICATED,
-                tlv);
-        // and execute it
-        mCard.transactSecureAndCheck(command);
+    public void deleteObject(AID aid, boolean deleteRelated) throws CardException {
+        LOG.debug("deleting object " + aid + (deleteRelated?" and related":""));
+        // perform the operation
+        mWrapper.performDelete(aid, deleteRelated);
         // log about it
         LOG.debug("deletion finished");
     }

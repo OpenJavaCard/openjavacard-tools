@@ -234,4 +234,19 @@ public class GPSecureWrapper extends GPBasicWrapper {
         return response;
     }
 
+    public void performDelete(AID aid, boolean deleteRelated) throws CardException {
+        // pack up the AID in a TLV
+        byte[] tlv = aid.getTLVBytes();
+        // build the command
+        CommandAPDU command = APDUUtil.buildCommand(
+                GP.CLA_GP,
+                GP.INS_DELETE,
+                (byte) 0,
+                deleteRelated ? GP.DELETE_P2_DELETE_RELATED
+                              : GP.DELETE_P2_DELETE_INDICATED,
+                tlv);
+        // and execute it
+        transactSecureAndCheck(command);
+    }
+
 }
