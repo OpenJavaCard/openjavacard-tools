@@ -102,6 +102,14 @@ public class GPKey {
     }
 
     /**
+     * @return true if key is compatible with given cipher
+     * @param cipher to check compatibility with
+     */
+    private boolean isCompatible(GPKeyCipher cipher) {
+        return (mCipher == GPKeyCipher.GENERIC) || (mCipher == cipher);
+    }
+
+    /**
      * Return the key check value (KCV) for the key
      *
      * The algorithm used depends on the cipher of the key.
@@ -109,8 +117,8 @@ public class GPKey {
      * @return the KCV
      */
     public byte[] getCheckValue(GPKeyCipher cipher) {
-        if((mCipher != GPKeyCipher.GENERIC) && (mCipher != cipher)) {
-            throw new UnsupportedOperationException("Cannot generate " + cipher + " KCV for " + mCipher + " key");
+        if(!isCompatible(cipher)) {
+            throw new UnsupportedOperationException("Cannot use " + mCipher + " key with cipher " + cipher);
         }
         switch(cipher) {
             case DES3:
@@ -118,7 +126,7 @@ public class GPKey {
             case AES:
                 return GPCrypto.kcv_aes(this);
             default:
-                throw new UnsupportedOperationException("Cannot generate KCV for cipher " + mCipher);
+                throw new UnsupportedOperationException("Cannot generate KCV for cipher " + cipher);
         }
     }
 
@@ -131,6 +139,9 @@ public class GPKey {
      * @return new SecretKey corresponding to this key
      */
     public SecretKey getSecretKey(GPKeyCipher cipher) {
+        if(!isCompatible(cipher)) {
+            throw new UnsupportedOperationException("Cannot use " + mCipher + " key with cipher " + cipher);
+        }
         switch (cipher) {
             case DES:
                 return new SecretKeySpec(enlarge(mSecret, 8), "DES");
@@ -139,7 +150,7 @@ public class GPKey {
             case AES:
                 return new SecretKeySpec(mSecret, "AES");
             default:
-                throw new IllegalArgumentException("Do not know how to handle cipher " + cipher);
+                throw new IllegalArgumentException("Cannot make secret key for cipher " + cipher);
         }
     }
 
