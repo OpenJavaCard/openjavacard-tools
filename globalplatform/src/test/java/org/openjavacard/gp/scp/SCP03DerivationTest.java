@@ -42,17 +42,36 @@ public class SCP03DerivationTest extends TestCase {
         byte[] cardSequence = HexUtil.hexToBytes("000010");
         byte[] hostChallenge = HexUtil.hexToBytes("A7F76C713F0A713D");
         byte[] cardChallenge = HexUtil.hexToBytes("31900058C1C451A2");
+
+        // perform derivation
         GPKeySet derived = SCP03Derivation.deriveSessionKeys(GPKeySet.GLOBALPLATFORM, cardSequence, hostChallenge, cardChallenge);
+
+        // check the key version
         Assert.assertEquals(0, derived.getKeyVersion());
+
+        // check the ENC key
         GPKey encKey = derived.getKeyByUsage(GPKeyUsage.ENC);
+        Assert.assertEquals(GPKeyUsage.ENC, encKey.getUsage());
         Assert.assertEquals(GPKeyCipher.AES, encKey.getCipher());
         Assert.assertArrayEquals(HexUtil.hexToBytes("258a78866f41482bef482dc8ca976ccd"), encKey.getSecret());
+
+        // check the MAC key
         GPKey macKey = derived.getKeyByUsage(GPKeyUsage.MAC);
-        Assert.assertEquals(GPKeyCipher.AES, encKey.getCipher());
+        Assert.assertEquals(GPKeyUsage.MAC, macKey.getUsage());
+        Assert.assertEquals(GPKeyCipher.AES, macKey.getCipher());
         Assert.assertArrayEquals(HexUtil.hexToBytes("053db6abc7fdf3b63a0d965ee16b0255"), macKey.getSecret());
+
+        // check the RMAC key
         GPKey rmacKey = derived.getKeyByUsage(GPKeyUsage.RMAC);
-        Assert.assertEquals(GPKeyCipher.AES, encKey.getCipher());
+        Assert.assertEquals(GPKeyUsage.RMAC, rmacKey.getUsage());
+        Assert.assertEquals(GPKeyCipher.AES, rmacKey.getCipher());
         Assert.assertArrayEquals(HexUtil.hexToBytes("eda0b4f2ec0345bfc50f3bc59cfef936"), rmacKey.getSecret());
+
+        // the KEK is a copy of the master key
+        GPKey kekKey = derived.getKeyByUsage(GPKeyUsage.KEK);
+        Assert.assertEquals(GPKeyUsage.KEK, kekKey.getUsage());
+        Assert.assertEquals(GPKeyCipher.AES, kekKey.getCipher());
+        Assert.assertArrayEquals(HexUtil.hexToBytes("404142434445464748494A4B4C4D4E4F"), kekKey.getSecret());
     }
 
 }
