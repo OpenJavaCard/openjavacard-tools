@@ -70,6 +70,13 @@ public class SCP03Wrapper extends SCPWrapper {
         return res;
     }
 
+    private byte[] getEncryptionCounter() {
+        ByteBuffer ctrBuf = ByteBuffer.allocate(16);
+        ctrBuf.put(new byte[]{0,0,0,0,0,0,0,0});
+        ctrBuf.putLong(mCTR);
+        return ctrBuf.array();
+    }
+
     @Override
     public byte[] encryptSensitiveData(byte[] data) throws CardException {
         // the DEK is static but contained in session keys
@@ -123,13 +130,8 @@ public class SCP03Wrapper extends SCPWrapper {
         if (mENC && wrappedLen > 0) {
             GPKey encKey = mKeys.getKeyByUsage(GPKeyUsage.ENC);
 
-            // build counter
-            ByteBuffer ctrBuf = ByteBuffer.allocate(16);
-            ctrBuf.put(new byte[]{0,0,0,0,0,0,0,0});
-            ctrBuf.putLong(mCTR);
-            byte[] ctr = ctrBuf.array();
-
-            // generate ICV
+            // generate counter-derived IV
+            byte[] ctr = getEncryptionCounter();
             byte[] icv = GPCrypto.enc_aes_ecb(encKey, ctr);
 
             // perform padding
