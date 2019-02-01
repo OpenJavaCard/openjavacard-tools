@@ -222,11 +222,11 @@ public class GPIssuerDomain {
      */
     public void replaceKeys(GPKeySet newKeys) throws CardException {
         boolean logKeys = mCard.getContext().isKeyLoggingEnabled();
-        // determine various bits of information
+        // we always try to replace what the KIT describes
         GPKeyInfoTemplate kit = mCard.getCardKeyInfo();
+        // determine various bits of information
         int keyVersion = newKeys.getKeyVersion();
         byte firstKeyId = (byte)(kit.getKeyInfos().get(0).getKeyId());
-        List<GPKey> keys = newKeys.getKeys();
         int keyCount = kit.getKeyInfos().size();
         boolean multipleKeys = (keyCount > 1);
         // log about it
