@@ -22,16 +22,19 @@ For more information about this overall project, see our [website](https://openj
 
 ### Features
 
- * Clean-room GlobalPlatform host library
- * Partial CAP processing library
- * Verbose command-line tools
- * Provisioning tools
-   * GlobalPlatform commands
+ * Command-line tools
+   * great for developing applets and libraries
+   * compatible with a wide array of cards
+ * GlobalPlatform host library
+   * abstracts most GP features
+   * intended for reuse from the start
+ * CAP processing library
+   * currently used only for loading packages
+   * intended for CAP conversion/verification
  * Development tools
-   * Comfortable APDU command
-   * AID scanner
-   * CAP file info and sizing tool
-   * Klunky scripting
+   * GlobalPlatform commands
+   * Generic smartcard commands
+   * Basic scripting
 
 ### Status
 
@@ -40,21 +43,21 @@ For more information about this overall project, see our [website](https://openj
    * Security considered but unverified
    * May eat your homework and cyberize your cat
  * Completeness
-   * Most GlobalPlatform commands implemented
-   * Key handling commands are incomplete but not missing much
-   * Card state and identity commands did not get much testing yet
+   * Most commands relevant to GP 2.2 implemented
+   * Some features from GP 2.3 implemented
+   * DAP is not supported yet
    * Works quite well for development on compatible cards
  * Security protocols
-   * SCP02 seems to work okay
+   * SCP02 works (C-ENC works, R-MAC experimental)
+   * SCP03 works (C-ENC works, R-MAC and R-ENC experimental)
    * SCP01 is mostly untested
-   * SCP03 is completely untested
-   * Key diversification is not implemented (some cards only)
+   * EMV and VISA2 key diversification
  * Plans
-   * Provide more documentation
-   * Establish testing and finish what is there
+   * Implement more extensive tests
+   * Implement tests against real cards
+   * Support for full use of security domains
+   * Support for more practical key handling
    * Incrementally work on development usecase
-   * Offer a Maven build for more general applicability
-   * Planned: keystore support
    * Planned: use for local provisioning and updates
    * Not sure: offline command-stream generation
    * Distant future: CAP conversion and verification
