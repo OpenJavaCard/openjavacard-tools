@@ -346,7 +346,8 @@ public class GPCard {
             }
 
             // select the ISD
-            mBasicWrapper.selectFileByName(mISD);
+            byte[] fci = mBasicWrapper.selectFileByName(mISD);
+            LOG.debug("select response " + HexUtil.bytesToHex(fci));
 
             // log static keys
             if(mContext.isKeyLoggingEnabled()) {
