@@ -43,17 +43,11 @@ public class GPBasicWrapper {
 
     protected final Logger LOG;
 
-    private GPCard mCard;
     private CardChannel mChannel;
 
-    public GPBasicWrapper(GPCard card, CardChannel channel) {
+    public GPBasicWrapper(CardChannel channel) {
         LOG = LoggerFactory.getLogger(getClass());
-        mCard = card;
         mChannel = channel;
-    }
-
-    public GPCard getCard() {
-        return mCard;
     }
 
     public CardChannel getChannel() {

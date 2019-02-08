@@ -41,8 +41,8 @@ public class GPSecureWrapper extends GPBasicWrapper {
 
     private GPSecureChannel mSecure;
 
-    public GPSecureWrapper(GPCard card, GPSecureChannel channel) {
-        super(card, channel);
+    public GPSecureWrapper(GPSecureChannel channel) {
+        super(channel);
         mSecure = channel;
     }
 

@@ -338,7 +338,7 @@ public class GPCard {
             // connect to the card
             ensureConnectedToCard();
 
-            mBasicWrapper = new GPBasicWrapper(this, mBasicChannel);
+            mBasicWrapper = new GPBasicWrapper(mBasicChannel);
 
             // check for ISD and detect if needed
             if (mISD == null && !detect(true)) {
@@ -423,7 +423,7 @@ public class GPCard {
             // try to open the secure channel
             mSecureChannel.open();
 
-            mSecureWrapper = new GPSecureWrapper(this, mSecureChannel);
+            mSecureWrapper = new GPSecureWrapper(mSecureChannel);
 
             mIssuerDomain = new GPIssuerDomain(this, mSecureWrapper);
             mRegistry = new GPRegistry(this, mSecureWrapper);
