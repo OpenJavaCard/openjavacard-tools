@@ -58,7 +58,8 @@ public class APDUUtil {
         return "CLA=" + HexUtil.hex8(apdu.getCLA())
                 + " INS=" + HexUtil.hex8(apdu.getINS())
                 + " P12=" + p12
-                + dataString;
+                + dataString
+                + " LE=" + apdu.getNe();
     }
 
     /**
@@ -158,23 +159,7 @@ public class APDUUtil {
      * @return
      */
     public static CommandAPDU buildCommand(byte cla, byte ins, byte p1, byte p2, byte[] data) {
-        int length = 5;
-        if (data != null) {
-            length += data.length;
-        }
-        byte[] command = new byte[length];
-        command[ISO7816.OFFSET_CLA] = cla;
-        command[ISO7816.OFFSET_INS] = ins;
-        command[ISO7816.OFFSET_P1] = p1;
-        command[ISO7816.OFFSET_P2] = p2;
-        if (data == null || data.length == 0) {
-            command[ISO7816.OFFSET_LC] = 0;
-        } else {
-            command[ISO7816.OFFSET_LC] = (byte) data.length;
-            System.arraycopy(data, 0, command, ISO7816.OFFSET_CDATA, data.length);
-        }
-        return new CommandAPDU(command);
+        return new CommandAPDU(cla, ins, p1, p2, data, 256);
     }
-
 
 }
