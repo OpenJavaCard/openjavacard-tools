@@ -106,7 +106,7 @@ public class GPKey {
      * @param cipher to check compatibility with
      */
     private boolean isCompatible(GPKeyCipher cipher) {
-        return (mCipher == GPKeyCipher.GENERIC) || (mCipher == cipher);
+        return (mCipher == GPKeyCipher.GENERIC) || (mCipher == cipher) || (mCipher == GPKeyCipher.DES3 && cipher == GPKeyCipher.DES);
     }
 
     /**
