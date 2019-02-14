@@ -15,9 +15,9 @@ dependencies {
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
-    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.4'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.8'
     // https://mvnrepository.com/artifact/org.codehaus.woodstox/woodstox-core-asl
-    compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
+    compile group: 'com.fasterxml.woodstox', name: 'woodstox-core', version: '5.2.0'
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
