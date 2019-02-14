@@ -21,6 +21,7 @@ package org.openjavacard.gp.scp;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.HexUtil;
@@ -52,6 +53,16 @@ public class SCP03WrapperTest extends TestCase {
         Assert.assertArrayEquals(HexUtil.hexToBytes("1020003008010203040506070800"), plain8.getBytes());
         Assert.assertArrayEquals(HexUtil.hexToBytes("102000300c01020304050607080102030400"), plain12.getBytes());
         Assert.assertArrayEquals(HexUtil.hexToBytes("10200030100102030405060708010203040506070800"), plain16.getBytes());
+    }
+
+    public void test_SCP03_70_EncryptSensitive() throws CardException {
+        SCP03Wrapper wrap = new SCP03Wrapper(GPKeySet.GLOBALPLATFORM, SCP03_70);
+        byte [] encNUL = wrap.encryptSensitiveData(new byte[16]);
+        System.out.println("encNUL " + HexUtil.bytesToHex(encNUL));
+        Assert.assertArrayEquals(HexUtil.hexToBytes("101899564a9da8de833d25c71739eaadce"), encNUL);
+        byte [] encGP = wrap.encryptSensitiveData(GPKey.GLOBALPLATFORM_MASTER_SECRET);
+        System.out.println("encGP " + HexUtil.bytesToHex(encGP));
+        Assert.assertArrayEquals(HexUtil.hexToBytes("1080d2a5b08fa0ee51143b459e638106df"), encGP);
     }
 
     public void test_SCP03_70_WrapUnwrap_CMAC() throws CardException {
