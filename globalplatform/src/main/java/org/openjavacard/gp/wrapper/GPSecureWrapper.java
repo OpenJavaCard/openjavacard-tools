@@ -235,6 +235,7 @@ public class GPSecureWrapper extends GPBasicWrapper {
     }
 
     public void performDelete(AID aid, boolean deleteRelated) throws CardException {
+        LOG.trace("performDelete()");
         // pack up the AID in a TLV
         byte[] tlv = aid.getTLVBytes();
         // build the command
