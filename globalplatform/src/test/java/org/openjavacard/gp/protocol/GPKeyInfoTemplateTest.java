@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class GPKeyInfoTemplateTest extends TestCase {
     }
 
     @Test
-    public void testParse() throws IOException {
+    public void testParse() throws TLVException {
         // parse reference bytes
         GPKeyInfoTemplate kit = GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_BYTES);
         // all there is to check is the key infos
@@ -69,13 +70,13 @@ public class GPKeyInfoTemplateTest extends TestCase {
         }
     }
 
-    @Test(expected = IOException.class)
-    public void testParseShort() throws IOException, IllegalArgumentException {
+    @Test(expected = TLVException.class)
+    public void testParseShort() throws TLVException, IllegalArgumentException {
         GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_SHORT);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testParseLong() throws IOException, IllegalArgumentException {
+    public void testParseLong() throws TLVException, IllegalArgumentException {
         GPKeyInfoTemplate.fromBytes(KIT_SCP02_DEFAULT_LONG);
     }
 

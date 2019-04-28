@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class GPKeyInfoTest extends TestCase {
     }
 
     @Test
-    public void testParse() throws IOException {
+    public void testParse() throws TLVException {
         GPKeyInfo ki1 = GPKeyInfo.fromBytes(KI_01_FF_DES_10_BYTES);
         assertKeyInfoEquals(KI_01_FF_DES_10, ki1);
         Assert.assertEquals(1, ki1.getKeyId());
@@ -75,13 +76,13 @@ public class GPKeyInfoTest extends TestCase {
         Assert.assertArrayEquals(new int[]{0x10}, ki3.getKeySizes());
     }
 
-    @Test(expected = IOException.class)
-    public void testParseShort() throws IOException {
+    @Test(expected = TLVException.class)
+    public void testParseShort() throws TLVException {
         GPKeyInfo.fromBytes(KI_01_FF_DES_10_BYTES_SHORT);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testParseLong() throws IOException, IllegalArgumentException {
+    public void testParseLong() throws TLVException, IllegalArgumentException {
         GPKeyInfo.fromBytes(KI_01_FF_DES_10_BYTES_LONG);
     }
 

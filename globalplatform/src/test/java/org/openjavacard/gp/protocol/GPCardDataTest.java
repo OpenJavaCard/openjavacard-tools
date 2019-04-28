@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.util.HexUtil;
 
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class GPCardDataTest extends TestCase {
     }
 
     @Test
-    public void testParse() throws IOException {
+    public void testParse() throws TLVException {
         GPCardData cd = GPCardData.fromBytes(CD_GP211_BYTES);
         Assert.assertTrue(cd.isGlobalPlatform());
         Assert.assertTrue(cd.isUniquelyIdentifiable());
@@ -64,13 +65,13 @@ public class GPCardDataTest extends TestCase {
         Assert.assertEquals(0x15, cd.getSecurityParameters());
     }
 
-    @Test(expected = IOException.class)
-    public void testParseShort() throws IOException {
+    @Test(expected = TLVException.class)
+    public void testParseShort() throws TLVException {
         GPCardData.fromBytes(CD_GP211_SHORT);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testParseLong() throws IOException {
+    public void testParseLong() throws TLVException {
         GPCardData.fromBytes(CD_GP211_LONG);
     }
 
