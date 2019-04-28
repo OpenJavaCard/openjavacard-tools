@@ -21,6 +21,7 @@ package org.openjavacard.gp.protocol;
 
 import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVConstructed;
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.ArrayUtil;
 import org.openjavacard.util.HexUtil;
@@ -138,7 +139,7 @@ public class GPCardData {
     }
 
     /** Parse Card Data object from bytes */
-    public static GPCardData fromBytes(byte[] data) throws IOException {
+    public static GPCardData fromBytes(byte[] data) throws TLVException {
         GPCardData result = new GPCardData();
         // outer layer is the card data
         TLVConstructed cd = TLV.readRecursive(data).asConstructed(TAG_CARD_DATA);
@@ -157,7 +158,7 @@ public class GPCardData {
      * @param tlvs to process
      * @throws IOException on error
      */
-    private static void parseCRD(GPCardData result, List<TLV> tlvs) throws IOException {
+    private static void parseCRD(GPCardData result, List<TLV> tlvs) throws TLVException {
         for (TLV tlv : tlvs) {
             int tag = tlv.getTag();
             //LOG.debug("CRD tag " + HexUtil.hex8(tag) + ": "

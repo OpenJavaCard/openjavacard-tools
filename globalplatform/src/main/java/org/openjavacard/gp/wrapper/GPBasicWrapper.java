@@ -27,6 +27,7 @@ import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.APDUUtil;
 import org.openjavacard.util.HexUtil;
@@ -194,7 +195,7 @@ public class GPBasicWrapper {
         if (data != null) {
             try {
                 res = GPCardData.fromBytes(data);
-            } catch (IOException e) {
+            } catch (TLVException e) {
                 throw new CardException("Error parsing card data", e);
             }
         }
@@ -219,7 +220,7 @@ public class GPBasicWrapper {
                 return TLVPrimitive.readPrimitive(data)
                         .asPrimitive(TAG_ISSUER_ID_NUMBER)
                         .getValueBytes();
-            } catch (IOException e) {
+            } catch (TLVException e) {
                 throw new CardException("Error parsing IIN TLV", e);
             }
         }
@@ -243,7 +244,7 @@ public class GPBasicWrapper {
                 return TLVPrimitive.readPrimitive(data)
                         .asPrimitive(TAG_CARD_IMG_NUMBER)
                         .getValueBytes();
-            } catch (IOException e) {
+            } catch (TLVException e) {
                 throw new CardException("Error parsing CIN TLV", e);
             }
         }
@@ -272,7 +273,7 @@ public class GPBasicWrapper {
         byte[] data = readData(GP.GET_DATA_P12_KEY_INFO_TEMPLATE);
         try {
             res = GPKeyInfoTemplate.fromBytes(data);
-        } catch (IOException e) {
+        } catch (TLVException e) {
             throw new CardException("Error parsing key info", e);
         }
         return res;

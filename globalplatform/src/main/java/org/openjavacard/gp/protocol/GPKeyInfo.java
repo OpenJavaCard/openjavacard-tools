@@ -22,6 +22,7 @@ package org.openjavacard.gp.protocol;
 import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.tlv.TLV;
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.tlv.TLVPrimitive;
 
 import java.io.IOException;
@@ -170,7 +171,7 @@ public class GPKeyInfo {
      * @param data to parse
      * @return a Key Information object
      */
-    public static GPKeyInfo fromBytes(byte[] data) throws IOException {
+    public static GPKeyInfo fromBytes(byte[] data) throws TLVException {
         return fromTLV(TLVPrimitive.readPrimitive(data));
     }
 

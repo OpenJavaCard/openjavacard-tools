@@ -19,6 +19,7 @@
 
 package org.openjavacard.emv;
 
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.HexUtil;
 
@@ -178,7 +179,7 @@ public class CPLC {
             }
             // construct and return instance
             return new CPLC(values);
-        } catch (IOException e) {
+        } catch (TLVException e) {
             throw new IllegalArgumentException("Error parsing CPLC TLV", e);
         }
     }

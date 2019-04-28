@@ -23,6 +23,7 @@ import org.openjavacard.gp.keys.GPKey;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVConstructed;
+import org.openjavacard.tlv.TLVException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +148,7 @@ public class GPKeyInfoTemplate {
      * @return a parsed instance
      * @exception IOException on parse error
      */
-    public static GPKeyInfoTemplate fromBytes(byte[] buf) throws IOException {
+    public static GPKeyInfoTemplate fromBytes(byte[] buf) throws TLVException {
         ArrayList<GPKeyInfo> infos = new ArrayList<>();
         // KIT is a constructed TLV
         TLVConstructed kitTlv = TLVConstructed.readConstructed(buf).asConstructed(TAG_KEY_INFO_TEMPLATE);
