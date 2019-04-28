@@ -26,6 +26,7 @@ import org.openjavacard.iso.AID;
 import org.openjavacard.iso.AIDInfo;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
+import org.openjavacard.tlv.TLVException;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.VerboseString;
 import org.slf4j.Logger;
@@ -323,12 +324,16 @@ public class GPRegistry {
                 elfEntries = readStatusTLV(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, ELFEntry.class);
             } catch (SWException e) {
                 switch(e.getCode()) {
+                    // TLV not supported - try legacy
                     case ISO7816.SW_FUNC_NOT_SUPPORTED:
                     case ISO7816.SW_INCORRECT_P1P2:
                         break;
+                    // other error - rethrow it
                     default:
                         throw e;
                 }
+            } catch (TLVException e) {
+                // parsing failed - retry in legacy mode
             }
             if(elfEntries != null) {
                 return elfEntries;
@@ -344,6 +349,8 @@ public class GPRegistry {
                     default:
                         throw e;
                 }
+            } catch (TLVException e) {
+                throw new CardException("Error parsing registry TLV", e);
             }
             if(elfEntries != null) {
                 return elfEntries;
@@ -375,19 +382,26 @@ public class GPRegistry {
             return readStatusLegacy(p1Subset, clazz);
         }
         // guarded attempt at using TLV
-        List<E> res;
+        List<E> res = null;
         try {
             res = readStatusTLV(p1Subset, clazz);
         } catch (SWException e) {
             if(e.getCode() == ISO7816.SW_INCORRECT_P1P2) {
-                // fall back to legacy format
-                res = readStatusLegacy(p1Subset, clazz);
-                // continue using legacy format
-                mUseLegacy = true;
+                // TLV not supported - continue with legacy format
             } else {
+                // rethrow actual error
                 throw e;
             }
+        } catch (TLVException e) {
+            // parsing failed - retry in legacy mode
         }
+        if(res != null) {
+            return res;
+        }
+        // read in legacy format
+        res = readStatusLegacy(p1Subset, clazz);
+        // continue using legacy format
+        mUseLegacy = true;
         return res;
     }
 
@@ -430,25 +444,21 @@ public class GPRegistry {
      * @throws CardException on error
      */
     private <E extends Entry>
-    List<E> readStatusTLV(byte p1Subset, Class<E> clazz) throws CardException {
+    List<E> readStatusTLV(byte p1Subset, Class<E> clazz) throws CardException, TLVException {
         byte format = GP.GET_STATUS_P2_FORMAT_TLV;
         List<byte[]> chunks = mWrapper.performReadStatus(p1Subset, format);
         List<E> res = new ArrayList<>();
-        try {
-            for (byte[] chunk : chunks) {
-                List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(chunk);
-                for (TLVPrimitive tlv : tlvs) {
-                    try {
-                        E entry = clazz.newInstance();
-                        entry.readTLV(tlv.getValueBytes());
-                        res.add(entry);
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new Error("Error instantiating registry entry", e);
-                    }
+        for (byte[] chunk : chunks) {
+            List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(chunk);
+            for (TLVPrimitive tlv : tlvs) {
+                try {
+                    E entry = clazz.newInstance();
+                    entry.readTLV(tlv.getValueBytes());
+                    res.add(entry);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new Error("Error instantiating registry entry", e);
                 }
             }
-        } catch (IOException e) {
-            throw new Error("Error parsing TLV", e);
         }
         return res;
     }
@@ -491,7 +501,7 @@ public class GPRegistry {
 
         abstract String getStateString();
 
-        void readTLV(byte[] data) throws IOException {
+        void readTLV(byte[] data) throws TLVException {
             List<TLVPrimitive> tlvs = TLVPrimitive.readPrimitives(data);
             List<AID> modules = new ArrayList<>();
             for (TLVPrimitive tlv : tlvs) {
