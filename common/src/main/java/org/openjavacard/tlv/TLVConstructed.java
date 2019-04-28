@@ -44,11 +44,11 @@ public class TLVConstructed extends TLV {
         return mChildren;
     }
 
-    public static TLVConstructed readConstructed(byte[] data) throws IOException {
+    public static TLVConstructed readConstructed(byte[] data) throws TLVException {
         return readConstructed(data, 0, data.length);
     }
 
-    public static TLVConstructed readConstructed(byte[] data, int offset, int length) throws IOException {
+    public static TLVConstructed readConstructed(byte[] data, int offset, int length) throws TLVException {
         TLVReader reader = new TLVReader(data, offset, length);
         TLVConstructed result = reader.readConstructed();
         if(reader.hasMoreData()) {
@@ -57,11 +57,11 @@ public class TLVConstructed extends TLV {
         return result;
     }
 
-    public static List<TLVConstructed> readConstructeds(byte[] data) throws IOException {
+    public static List<TLVConstructed> readConstructeds(byte[] data) throws TLVException {
         return readConstructeds(data, 0, data.length);
     }
 
-    public static List<TLVConstructed> readConstructeds(byte[] data, int offset, int length) throws IOException {
+    public static List<TLVConstructed> readConstructeds(byte[] data, int offset, int length) throws TLVException {
         ArrayList<TLVConstructed> res = new ArrayList<>();
         TLVReader reader = new TLVReader(data, offset, length);
         while(reader.hasMoreData()) {

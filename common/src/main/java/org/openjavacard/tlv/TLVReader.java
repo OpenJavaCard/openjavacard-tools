@@ -48,8 +48,12 @@ public class TLVReader {
     }
 
     /** Return true if there is more data */
-    boolean hasMoreData() throws IOException {
-        return mStream.available() > 0;
+    boolean hasMoreData() throws TLVException {
+        try {
+            return mStream.available() > 0;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     /**
@@ -58,9 +62,9 @@ public class TLVReader {
      * The structure must have consistent CONSTRUCTED flags.
      * <p/>
      * @return a TLV object
-     * @throws IOException
+     * @throws TLVException
      */
-    TLV readRecursive() throws IOException {
+    TLV readRecursive() throws TLVException {
         return readTLV(true);
     }
 
@@ -70,9 +74,9 @@ public class TLVReader {
      * This avoid parsing the contents recursively.
      * <p/>
      * @return a TLVPrimitive
-     * @throws IOException
+     * @throws TLVException
      */
-    TLVPrimitive readPrimitive() throws IOException {
+    TLVPrimitive readPrimitive() throws TLVException {
         return readTLV(false).asPrimitive();
     }
 
@@ -82,13 +86,13 @@ public class TLVReader {
      * Will fail when the structures contents are not valid TLV.
      * <p/>
      * @return a TLVConstructed
-     * @throws IOException
+     * @throws TLVException
      */
-    TLVConstructed readConstructed() throws IOException {
+    TLVConstructed readConstructed() throws TLVException {
         return readTLV(false).asConstructed();
     }
 
-    private TLV readTLV(boolean recurse) throws IOException {
+    private TLV readTLV(boolean recurse) throws TLVException {
         int tag = readTag();
         int length = readLength();
         byte[] value = readBytes(length);
@@ -100,15 +104,19 @@ public class TLVReader {
         }
     }
 
-    private int readByte() throws IOException {
-        int data = mStream.read();
-        if (data == -1) {
-            throw new IOException("TLV parse error: short read");
+    private int readByte() throws TLVException {
+        try {
+            int data = mStream.read();
+            if (data == -1) {
+                throw new TLVException("TLV parse error: short read");
+            }
+            return data;
+        } catch (IOException e) {
+            throw new TLVException(e);
         }
-        return data;
     }
 
-    private byte[] readBytes(int length) throws IOException {
+    private byte[] readBytes(int length) throws TLVException {
         byte[] data = new byte[length];
         if(length > 0) {
             readBytesInto(data);
@@ -116,36 +124,40 @@ public class TLVReader {
         return data;
     }
 
-    private void readBytesInto(byte[] buffer) throws IOException {
+    private void readBytesInto(byte[] buffer) throws TLVException {
         readBytesInto(buffer, 0, buffer.length);
     }
 
-    private void readBytesInto(byte[] buffer, int offset, int length) throws IOException {
-        int read = mStream.read(buffer, offset, length);
-        if (read == -1 || read != length) {
-            throw new IOException("TLV parse error: short read");
+    private void readBytesInto(byte[] buffer, int offset, int length) throws TLVException {
+        try {
+            int read = mStream.read(buffer, offset, length);
+            if (read == -1 || read != length) {
+                throw new TLVException("TLV parse error: short read");
+            }
+        } catch (IOException e) {
+            throw new TLVException(e);
         }
     }
 
-    private int readTag() throws IOException {
+    private int readTag() throws TLVException {
         int first = readByte();
         int second = 0;
         if (TLVTag.byteIsLongForm(first)) {
             second = readByte();
             if(!TLVTag.byteIsLast(second)) {
-                throw new IOException("TLV tag to long");
+                throw new TLVException("TLV tag to long");
             }
         }
         return ((first & 0xFF) << 8) | (second & 0xFF);
     }
 
-    private int readLength() throws IOException {
+    private int readLength() throws TLVException {
         int first = readByte();
         int length = first;
         if (TLVLength.isLongForm(first)) {
             int size = TLVLength.longLength(first);
             if (size > 3) {
-                throw new IOException("TLV parse error: length too large");
+                throw new TLVException("TLV parse error: length too large");
             }
             length = 0;
             for (int i = 0; i < size; i++) {

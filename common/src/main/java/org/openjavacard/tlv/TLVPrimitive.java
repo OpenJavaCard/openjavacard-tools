@@ -44,11 +44,11 @@ public class TLVPrimitive extends TLV {
         return mData;
     }
 
-    public static TLVPrimitive readPrimitive(byte[] data) throws IOException {
+    public static TLVPrimitive readPrimitive(byte[] data) throws TLVException {
         return readPrimitive(data, 0, data.length);
     }
 
-    public static TLVPrimitive readPrimitive(byte[] data, int offset, int length) throws IOException {
+    public static TLVPrimitive readPrimitive(byte[] data, int offset, int length) throws TLVException {
         TLVReader reader = new TLVReader(data, offset, length);
         TLVPrimitive result = reader.readPrimitive();
         if(reader.hasMoreData()) {
@@ -57,11 +57,11 @@ public class TLVPrimitive extends TLV {
         return result;
     }
 
-    public static List<TLVPrimitive> readPrimitives(byte[] data) throws IOException {
+    public static List<TLVPrimitive> readPrimitives(byte[] data) throws TLVException {
         return readPrimitives(data, 0, data.length);
     }
 
-    public static List<TLVPrimitive> readPrimitives(byte[] data, int offset, int length) throws IOException {
+    public static List<TLVPrimitive> readPrimitives(byte[] data, int offset, int length) throws TLVException {
         ArrayList<TLVPrimitive> res = new ArrayList<>();
         TLVReader reader = new TLVReader(data, offset, length);
         while(reader.hasMoreData()) {
