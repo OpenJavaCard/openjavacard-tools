@@ -39,6 +39,19 @@ import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 import java.io.IOException;
 
+/**
+ * GlobalPlatform command wrapper for basic commands
+ *
+ * This wrapper exposes methods representing GP operations
+ * that may be performed without a secure channel.
+ *
+ * There also exists a secure wrapper that is responsible
+ * for sending messages through a secure channel.
+ *
+ * The separation between these classes enforces the rule
+ * that operational GP commands are always sent through
+ * a secure channel.
+ */
 public class GPBasicWrapper {
 
     protected final Logger LOG;

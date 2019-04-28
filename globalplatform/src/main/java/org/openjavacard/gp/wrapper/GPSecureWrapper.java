@@ -37,10 +37,28 @@ import javax.smartcardio.ResponseAPDU;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * GlobalPlatform command wrapper for secure commands
+ *
+ * This wrapper exposes methods representing most GP commands,
+ * ensuring that they are sent through a secure channel.
+ *
+ * The API also includes the commands from the basic wrapper,
+ * however these will also be sent through the secure channel.
+ *
+ * The separation between these classes enforces the rule
+ * that operational GP commands are always sent through
+ * a secure channel.
+ */
 public class GPSecureWrapper extends GPBasicWrapper {
 
+    /** Reference to the secure channel */
     private GPSecureChannel mSecure;
 
+    /**
+     * Main constructor
+     * @param channel to communicate through
+     */
     public GPSecureWrapper(GPSecureChannel channel) {
         super(channel);
         mSecure = channel;
@@ -54,10 +72,25 @@ public class GPSecureWrapper extends GPBasicWrapper {
         return super.transmitRaw(command);
     }
 
+    /**
+     * Internal: exchange a command that requires a secure channel
+     * @param command to send
+     * @return the response
+     * @throws CardException on error
+     */
     private ResponseAPDU transactSecure(CommandAPDU command) throws CardException {
         return transact(command);
     }
 
+    /**
+     * Internal: exchange a command that requires a secure channel
+     * <p/>
+     * Throwing version: any SW other tha 0x9000 is thrown as an SWException
+     * <p/>
+     * @param command to send
+     * @return the response
+     * @throws CardException on error
+     */
     private ResponseAPDU transactSecureAndCheck(CommandAPDU command) throws CardException {
         return transactAndCheck(command);
     }
@@ -131,6 +164,7 @@ public class GPSecureWrapper extends GPBasicWrapper {
 
     public void performStoreData(byte[] block, byte blockNumber, boolean lastBlock) throws CardException {
         LOG.trace("performStoreData()");
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_STORE_DATA,
@@ -138,11 +172,13 @@ public class GPSecureWrapper extends GPBasicWrapper {
                 blockNumber,
                 block
         );
+        // execute it
         transactSecureAndCheck(command);
     }
 
     public void performSetStatusISD(AID aid, byte state) throws CardException {
         LOG.trace("performSetStatusISD()");
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_SET_STATUS,
@@ -150,11 +186,13 @@ public class GPSecureWrapper extends GPBasicWrapper {
                 state,
                 aid.getBytes()
         );
+        // execute it
         transactSecureAndCheck(command);
     }
 
     public void performSetStatusApp(AID aid, byte state) throws CardException {
         LOG.trace("performSetStatusApp()");
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_SET_STATUS,
@@ -162,11 +200,13 @@ public class GPSecureWrapper extends GPBasicWrapper {
                 state,
                 aid.getBytes()
         );
+        // execute it
         transactSecureAndCheck(command);
     }
 
     public void performSetStatusDomain(AID aid, byte state) throws CardException {
         LOG.trace("performSetStatusDomain()");
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_SET_STATUS,
@@ -174,25 +214,31 @@ public class GPSecureWrapper extends GPBasicWrapper {
                 state,
                 aid.getBytes()
         );
+        // execute it
         transactSecureAndCheck(command);
     }
 
     public void performPutKey(int keyId, int keyVersion, byte[] keyData, boolean multipleKeys) throws CardException {
         LOG.trace("performPutKey()");
+        // we only support atomic PUT KEY for now
         boolean moreCommands = false;
+        // build parameters
         byte p1 = (byte)((keyVersion & 0x7F) | (moreCommands?0x80:0x00));
         byte p2 = (byte)((keyId & 0x7F) | (multipleKeys?0x80:0x00));
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_PUT_KEY,
                 p1, p2,
                 keyData
         );
+        // execute it
         transactSecureAndCheck(command);
     }
 
     public void performLoad(byte[] blockData, int blockNumber, boolean lastBlock) throws CardException {
         LOG.trace("performLoad()");
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_LOAD,
@@ -201,19 +247,24 @@ public class GPSecureWrapper extends GPBasicWrapper {
                 (byte)blockNumber,
                 blockData
         );
+        // execute it
         transactSecureAndCheck(command);
     }
 
     public GPInstallForLoadResponse performInstallForLoad(GPInstallForLoadRequest request) throws CardException {
         LOG.trace("performInstallForLoad()");
+        // serialize the request
         byte[] requestBytes = request.toBytes();
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_INSTALL,
                 GP.INSTALL_P1_FOR_LOAD,
                 GP.INSTALL_P2_NO_INFORMATION,
                 requestBytes);
+        // perform the operation
         ResponseAPDU responseAPDU = transactSecureAndCheck(command);
+        // parse and return response
         GPInstallForLoadResponse response = new GPInstallForLoadResponse();
         response.readBytes(responseAPDU.getData());
         return response;
@@ -221,14 +272,18 @@ public class GPSecureWrapper extends GPBasicWrapper {
 
     public GPInstallForInstallResponse performInstallForInstall(GPInstallForInstallRequest request) throws CardException {
         LOG.trace("performInstallForInstall()");
+        // serialize the request
         byte[] requestBytes = request.toBytes();
+        // build the command
         CommandAPDU command = APDUUtil.buildCommand(
                 GP.CLA_GP,
                 GP.INS_INSTALL,
                 (byte)(GP.INSTALL_P1_FOR_INSTALL|GP.INSTALL_P1_FOR_MAKE_SELECTABLE),
                 GP.INSTALL_P2_NO_INFORMATION,
                 requestBytes);
+        // perform the operation
         ResponseAPDU responseAPDU = transactSecureAndCheck(command);
+        // parse and return response
         GPInstallForInstallResponse response = new GPInstallForInstallResponse();
         response.readBytes(responseAPDU.getData());
         return response;
