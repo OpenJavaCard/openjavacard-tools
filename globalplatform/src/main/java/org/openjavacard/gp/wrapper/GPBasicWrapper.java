@@ -142,17 +142,13 @@ public class GPBasicWrapper {
                 GP.INS_GET_DATA,
                 p1p2
         );
-        byte[] response;
+        byte[] response = null;
         try {
             // execute the command
             ResponseAPDU rapdu = transactAndCheck(command);
-            // check for response data
+            // allow for empty response (return null)
             if(rapdu.getNr() > 0) {
-                // return response data
                 response = rapdu.getData();
-            } else {
-                // null for empty response
-                response = null;
             }
         } catch (SWException e) {
             switch (e.getCode()) {
