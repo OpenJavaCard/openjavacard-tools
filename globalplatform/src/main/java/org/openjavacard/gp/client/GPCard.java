@@ -48,8 +48,6 @@ import javax.smartcardio.CardTerminal;
  * This is responsible for identifying cards and their ISD
  * and generally ties the other modules together.
  * <p/>
- * All card communication by the library goes through here.
- * <p/>
  * Information that an ISD provides without authentication
  * can be gotten to via this class. Other information can
  * be obtained through the GPIssuerDomain and GPRegistry
@@ -162,9 +160,11 @@ public class GPCard {
 
     /** @return the active security protocol */
     public SCPParameters getProtocol() {
+        // check status of secure channel first
         if (mSecureChannel == null || !mSecureChannel.isEstablished()) {
             return null;
         }
+        // return the protocol used by the channel
         return mSecureChannel.getActiveProtocol();
     }
 
@@ -312,8 +312,9 @@ public class GPCard {
                 LOG.debug("could not find an ISD");
             }
         } finally {
+            // we might want to stay connected
             if(!stayConnected) {
-                // disconnect everything
+                // if not then disconnect everything
                 disconnect();
             }
         }
@@ -338,6 +339,7 @@ public class GPCard {
             // connect to the card
             ensureConnectedToCard();
 
+            // build a fresh command wrapper
             mBasicWrapper = new GPBasicWrapper(mBasicChannel);
 
             // check for ISD and detect if needed
@@ -424,8 +426,10 @@ public class GPCard {
             // try to open the secure channel
             mSecureChannel.open();
 
+            // construct a new secure wrapper
             mSecureWrapper = new GPSecureWrapper(mSecureChannel);
 
+            // construct new client objects
             mIssuerDomain = new GPIssuerDomain(this, mSecureWrapper);
             mRegistry = new GPRegistry(this, mSecureWrapper);
 
@@ -466,6 +470,10 @@ public class GPCard {
         LOG.debug("disconnected");
     }
 
+    /**
+     * Ensure lower-level connection to the card
+     * @throws CardException if a connection could not be established
+     */
     private void ensureConnectedToCard() throws CardException {
         if(mCard == null) {
             // connect to the card
@@ -490,24 +498,34 @@ public class GPCard {
      * @throws CardException on error
      */
     private AID findISD() throws CardException {
+        // start with whatever is set
         AID isd = mISD;
+        // if we do not know our AID
         if(isd == null) {
+            // try selecting each probable AID
             for (AID name : PROBE_AIDS) {
                 try {
+                    // select the possible ISD
                     mBasicWrapper.selectFileByName(name);
+                    // if it worked then we are done
                     isd = name;
                     break;
                 } catch (SWException e) {
+                    // examine the status code
                     switch (e.getCode()) {
+                        // status codes that indicate clear absence
+                        // are no cause to stop probing.
                         case ISO7816.SW_FILE_NOT_FOUND:
                         case ISO7816.SW_REFERENCED_DATA_NOT_FOUND:
                             continue;
+                        // on any other code we stop to prevent bricking
                         default:
                             throw e;
                     }
                 }
             }
         }
+        // return the result, but do NOT save it yet
         return isd;
     }
 
