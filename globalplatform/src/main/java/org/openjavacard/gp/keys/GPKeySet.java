@@ -146,17 +146,23 @@ public class GPKeySet {
     public void putKey(GPKey key) {
         int keyId = key.getId();
         GPKeyUsage keyType = key.getUsage();
+        // check for duplicate key usage
         if (mKeysByUsage.containsKey(keyType)) {
             throw new IllegalArgumentException("Key set " + mName + " already has a " + keyType + " key");
         }
+        // check for duplicate key id
         if(keyId != 0) {
             if (mKeysById.containsKey(keyId)) {
                 throw new IllegalArgumentException("Key set " + mName + " already has key with id " + keyId);
             }
         }
+        // add key to main list
         mKeys.add(key);
+        // save the key by usage
         mKeysByUsage.put(keyType, key);
+        // if a key id was provided
         if(keyId != 0) {
+            // save the key by id
             mKeysById.put(keyId, key);
         }
     }
