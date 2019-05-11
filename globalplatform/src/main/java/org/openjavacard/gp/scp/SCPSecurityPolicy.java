@@ -31,7 +31,8 @@ import javax.smartcardio.CardException;
  *
  * All existing protocols have a linear tower of
  * options in order of increasing security as follows:
- *  - CMAC (minimum supported level)
+ *  - NONE (for development use)
+ *  - CMAC (minimum required by GP)
  *  - CENC (implies CMAC)
  *  - RMAC (implies CMAC, CENC)
  *  - RENC (implies CMAC, CENC, RMAC)
