@@ -80,17 +80,17 @@ public class GPKeyInfoTemplate {
      */
     public void checkKeysetForUsage(GPKeySet keys) throws CardException {
         LOG.trace("checking keyset " + keys.getName());
+        int ksVersion = keys.getKeyVersion();
         for (GPKeyInfo keyInfo : mKeyInfos) {
-            int keyId = keyInfo.getKeyId();
-            LOG.trace("checking key with id " + keyId);
-            GPKey key = keys.getKeyById(keyId);
-            if (key == null) {
-                throw new CardException("No key found with id " + keyId);
+            int kiId = keyInfo.getKeyId();
+            int kiVersion = keyInfo.getKeyVersion();
+            LOG.trace("checking for key with id " + kiId + " and version " + kiVersion);
+            if(ksVersion != 0 && kiVersion != ksVersion) {
+                LOG.trace("skipping: version is " + kiVersion + ", expected " + ksVersion);
             }
-            int keyVersion = keys.getKeyVersion();
-            if (keyVersion != 0 && keyInfo.getKeyVersion() != keyVersion) {
-                throw new CardException("Wrong key version " + keyInfo.getKeyVersion()
-                        + ", expected " + keyVersion);
+            GPKey key = keys.getKeyById(kiId);
+            if (key == null) {
+                throw new CardException("No key found with id " + kiId);
             }
             if (!keyInfo.matchesKey(key)) {
                 throw new CardException("Key is incompatible");
