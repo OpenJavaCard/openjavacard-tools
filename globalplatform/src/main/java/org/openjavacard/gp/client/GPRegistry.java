@@ -75,8 +75,14 @@ public class GPRegistry {
     /** True if data needs refreshing */
     private boolean mDirty;
 
-    /** Flag to indicate use of the legacy entry format */
-    private boolean mUseLegacy;
+    /** Flag indicating use of legacy entry format for apps and domains */
+    private boolean mUseLegacyGeneric;
+
+    /** Flag indicating use of legacy entry format for ELFs */
+    private boolean mUseLegacyELF;
+
+    /** Flag indicating use for 'terse' ELF entries without module information */
+    private boolean mUseTerseELF;
 
     /** List of all registry entries */
     private ArrayList<Entry> mAllEntries = new ArrayList<>();
@@ -318,27 +324,39 @@ public class GPRegistry {
         LOG.trace("readEntriesELF()");
         List<ELFEntry> elfEntries = null;
 
-        if(!mUseLegacy) {
-            // try TLV with module information
-            try {
-                elfEntries = readStatusTLV(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, ELFEntry.class);
-            } catch (SWException e) {
-                switch(e.getCode()) {
-                    // TLV not supported - try legacy
-                    case ISO7816.SW_FUNC_NOT_SUPPORTED:
-                    case ISO7816.SW_INCORRECT_P1P2:
-                        break;
-                    // other error - rethrow it
-                    default:
-                        throw e;
+        if(!mUseLegacyELF) {
+            if(!mUseTerseELF) {
+                // try TLV with module information
+                LOG.trace("reading ELF TLV with module information");
+                try {
+                    elfEntries = readStatusTLV(GP.GET_STATUS_P1_EXM_AND_ELF_ONLY, ELFEntry.class);
+                } catch (SWException e) {
+                    switch (e.getCode()) {
+                        // TLV not supported - try legacy
+                        case ISO7816.SW_FUNC_NOT_SUPPORTED:
+                        case ISO7816.SW_INCORRECT_P1P2:
+                            break;
+                        // other error - rethrow it
+                        default:
+                            throw e;
+                    }
+                } catch (TLVException e) {
+                    // parsing failed - try next option
+                    LOG.warn("TLV parse error in ELF TLV with module information", e);
                 }
-            } catch (TLVException e) {
-                // parsing failed - retry in legacy mode
+                if (elfEntries != null) {
+                    return elfEntries;
+                }
             }
-            if(elfEntries != null) {
-                return elfEntries;
+
+            // stop trying ELF TLV with ExM
+            if(!mUseTerseELF) {
+                LOG.trace("will not try ELF TLV with module information again");
             }
+            mUseTerseELF = true;
+
             // try TLV without module information
+            LOG.trace("reading ELF TLV without module information");
             try {
                 elfEntries = readStatusTLV(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
             } catch (SWException e) {
@@ -350,7 +368,8 @@ public class GPRegistry {
                         throw e;
                 }
             } catch (TLVException e) {
-                throw new CardException("Error parsing registry TLV", e);
+                // parsing failed - try next option
+                LOG.warn("TLV parse error in ELF TLV without module information", e);
             }
             if(elfEntries != null) {
                 return elfEntries;
@@ -358,12 +377,20 @@ public class GPRegistry {
         }
 
         // TLV did not work - from now on use legacy format
-        mUseLegacy = true;
+        if(!mUseLegacyELF) {
+            LOG.trace("will not try ELF TLV again");
+        }
+        mUseLegacyELF = true;
 
         // try only the variant without module information
+        LOG.trace("reading ELF legacy");
         elfEntries = readStatusLegacy(GP.GET_STATUS_P1_ELF_ONLY, ELFEntry.class);
+        if(elfEntries != null) {
+            return elfEntries;
+        }
 
-        return elfEntries;
+        // nothing to return
+        return null;
     }
 
     /**
@@ -377,31 +404,41 @@ public class GPRegistry {
      */
     private <E extends Entry>
     List<E> readStatusGeneric(byte p1Subset, Class<E> clazz) throws CardException {
-        // use legacy after one failure
-        if(mUseLegacy) {
-            return readStatusLegacy(p1Subset, clazz);
-        }
-        // guarded attempt at using TLV
+        LOG.trace("readStatusGeneric()");
         List<E> res = null;
-        try {
-            res = readStatusTLV(p1Subset, clazz);
-        } catch (SWException e) {
-            if(e.getCode() == ISO7816.SW_INCORRECT_P1P2) {
-                // TLV not supported - continue with legacy format
-            } else {
-                // rethrow actual error
-                throw e;
+        // guarded attempt at using TLV
+        if(!mUseLegacyGeneric) {
+            LOG.trace("reading TLV");
+            try {
+                res = readStatusTLV(p1Subset, clazz);
+            } catch (SWException e) {
+                switch (e.getCode()) {
+                    case ISO7816.SW_INCORRECT_P1P2:
+                        // TLV not supported - continue with legacy format
+                        break;
+                    default:
+                        // rethrow anything else
+                        throw e;
+                }
+            } catch (TLVException e) {
+                // parsing failed - continue with legacy format
+                LOG.warn("TLV parse error in registry record", e);
             }
-        } catch (TLVException e) {
-            // parsing failed - retry in legacy mode
+            if (res != null) {
+                return res;
+            }
         }
-        if(res != null) {
-            return res;
-        }
-        // read in legacy format
-        res = readStatusLegacy(p1Subset, clazz);
+
         // continue using legacy format
-        mUseLegacy = true;
+        if(!mUseLegacyGeneric) {
+            LOG.trace("will not try App/Domain TLV again");
+        }
+        mUseLegacyGeneric = true;
+
+        // read in legacy format
+        LOG.trace("reading legacy");
+        res = readStatusLegacy(p1Subset, clazz);
+        // return result
         return res;
     }
 
