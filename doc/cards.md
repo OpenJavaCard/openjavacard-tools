@@ -1,12 +1,12 @@
 ## Card compatibility
 
-### General
+### Security Protocols
 
-Most cards configured for SCP02 should just work.
+Most cards configured for SCP02 or SCP03 should just work.
 
-Cards using SCP01 are currently not supported. 
+Cards using SCP01 are currently not supported.
 
-SCP03 support is in the works.
+Key diversification of the EMV and VISA2 types is supported.
 
 ### Known Working
 
@@ -26,10 +26,19 @@ The following Feitian cards have been tried at some point:
 
 These cards come without an SSD package, so they have only one security domain.
 
+#### Giesecke &amp; Devrient
+
+The following G&amp;D cards seem to work:
+
+ * SmartCafe Expert 3.2
+ * SmartCafe Expert 7.0 (SCP03 seems to have broken RENC)
+
 #### NXP
 
-The following NXP cards have been used as development targets:
+The following kinds of NXP cards have been used as development targets:
 
+ * JCOP 2.4.? R? (JavaCard 3.0.4)
+   * J3H145 (Dual-interface, 144k)
  * JCOP 2.4.2 R3 (JavaCard 3.0.1, GlobalPlatform 2.2.1, SCP02-55)
    * J2E145 (Contact-only, 144k)
  * JCOP 2.4.2 R2 (JavaCard 3.0.1, GlobalPlatform 2.2, SCP02-55)
@@ -41,7 +50,16 @@ The following NXP cards have been used as development targets:
 
 Recent cards are available from various resellers in small to large quantities.
 
+There are many different configurations on the market, so it can be difficult
+to find out what you are going to get.
+
 Other card variants should also work as long as the card is configured for SCP02.
+
+#### sysmocom
+
+The following USIM card from the open mobile communications company sysmocom works:
+
+ * sysmoUSIM-SJS1
 
 ### Others
 
@@ -49,9 +67,3 @@ Other card variants should also work as long as the card is configured for SCP02
 
 Not yet supported. Cards require key diversification, which is not yet supported.
 
-#### Giesecke &amp; Devrient
-
-The following G&amp;D cards have been tried at some point but are not fully working:
-
- * SmartCafe Expert 3.2 (peculiar about its SCP02)
- * SmartCafe Expert 7.0 (uses SCP03)
