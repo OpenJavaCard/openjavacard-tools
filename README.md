@@ -15,6 +15,8 @@ CAUTION: This is still in its beta stage, even for development use.
 
 For more information about this overall project, see our [website](https://openjavacard.org/).
 
+You can follow us on [Twitter](https://twitter.com/openjavacardorg) and chat with us on [Gitter](https://gitter.com/openjavacard).
+
 ### Documentation
 
  * [Build instructions](doc/building.md)
@@ -74,7 +76,7 @@ Vast majority of the code has been developed for this project:
 
 ```
 openjavacard-tools: OpenJavaCard Development Tools
-Copyright (C) 2015-2018 Ingo Albrecht, prom@berlin.ccc.de
+Copyright (C) 2015-2019 Ingo Albrecht <copyright@promovicz.org>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
