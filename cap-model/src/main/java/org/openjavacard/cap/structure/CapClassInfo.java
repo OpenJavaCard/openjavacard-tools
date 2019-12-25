@@ -44,6 +44,8 @@ public class CapClassInfo extends CapStructure {
     private int mPublicMethodTableCount;
     private int mPackageMethodTableBase;
     private int mPackageMethodTableCount;
+    private int[] mPublicMethods;
+    private int[] mPackageMethods;
 
     public void read(CapStructureReader reader) throws IOException {
         int bitfield = reader.readU1();
@@ -60,8 +62,8 @@ public class CapClassInfo extends CapStructure {
         mPackageMethodTableBase = reader.readU1();
         mPackageMethodTableCount = reader.readU1();
         LOG.trace("class methods public " + mPublicMethodTableCount + " package " + mPackageMethodTableCount);
-        int[] mPublicMethods = reader.readU2Array(mPublicMethodTableCount);
-        int[] mPackageMethods = reader.readU2Array(mPackageMethodTableCount);
+        mPublicMethods = reader.readU2Array(mPublicMethodTableCount);
+        mPackageMethods = reader.readU2Array(mPackageMethodTableCount);
         for(int i = 0; i < interfaceCount; i++) {
             CapImplementedInterfaceInfo impl = new CapImplementedInterfaceInfo();
             impl.read(reader);

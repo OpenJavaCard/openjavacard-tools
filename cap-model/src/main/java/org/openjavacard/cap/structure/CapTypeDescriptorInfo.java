@@ -35,6 +35,8 @@ public class CapTypeDescriptorInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapTypeDescriptorInfo.class);
 
+    private int[] mConstantPoolTypes;
+
     private ArrayList<CapTypeDescriptor> mTypeDescriptors;
 
     public List<CapTypeDescriptor> getTypeDescriptors() {
@@ -44,7 +46,7 @@ public class CapTypeDescriptorInfo extends CapStructure {
     public void read(CapStructureReader reader) throws IOException {
         int constantPoolCount = reader.readU2();
         // XXX process
-        int[] constantPoolTypes = reader.readU2Array(constantPoolCount);
+        mConstantPoolTypes = reader.readU2Array(constantPoolCount);
         LOG.trace("read " + constantPoolCount + " constant pool types");
         ArrayList<CapTypeDescriptor> typeDescriptors = new ArrayList<>();
         while(reader.hasMore()) {
