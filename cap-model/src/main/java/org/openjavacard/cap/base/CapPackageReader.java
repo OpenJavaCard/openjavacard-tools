@@ -34,6 +34,7 @@ import org.openjavacard.cap.file.CapComponentType;
 import org.openjavacard.cap.file.CapFileComponent;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.structure.CapClassRef;
+import org.openjavacard.cap.structure.CapMethodRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +47,27 @@ public class CapPackageReader {
     private static final Logger LOG = LoggerFactory.getLogger(CapPackageReader.class);
 
     private final ArrayList<CapClassRef> mClassRefs;
+    private final ArrayList<CapMethodRef> mMethodRefs;
 
     public CapPackageReader() {
         mClassRefs = new ArrayList<>();
+        mMethodRefs = new ArrayList<>();
+    }
+
+    public void registerClassRef(CapClassRef ref) {
+        mClassRefs.add(ref);
+    }
+
+    public void registerMethodRef(CapMethodRef ref) {
+        mMethodRefs.add(ref);
+    }
+
+    public void resolveClassRefs() {
+        LOG.trace("resolving " + mClassRefs.size() + " class references");
+    }
+
+    public void resolveMethodRefs() {
+        LOG.trace("resolving " + mMethodRefs.size() + " method references");
     }
 
     public CapPackage read(CapFilePackage filePackage) throws IOException {

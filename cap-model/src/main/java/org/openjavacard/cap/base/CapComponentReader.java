@@ -55,14 +55,14 @@ public class CapComponentReader extends CapStructureReader {
     @Override
     public CapClassRef readClassRef() throws IOException {
         CapClassRef ref = super.readClassRef();
-        // XXX register with packageReader
+        mPackageReader.registerClassRef(ref);
         return ref;
     }
 
     @Override
     public CapMethodRef readMethodRef() throws IOException {
         CapMethodRef ref = super.readMethodRef();
-        // XXX register with packageReader
+        mPackageReader.registerMethodRef(ref);
         return ref;
     }
 

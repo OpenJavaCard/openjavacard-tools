@@ -33,10 +33,12 @@ public class CapMethodRef extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapMethodRef.class);
 
+    private int mReference;
+
     @Override
     public void read(CapStructureReader reader) throws IOException {
-        long mthRef = reader.readU2();
-        LOG.trace("method reference " + mthRef);
+        mReference = reader.readU2();
+        LOG.trace("method reference " + mReference);
     }
 
 }
