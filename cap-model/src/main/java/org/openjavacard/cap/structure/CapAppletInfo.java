@@ -27,10 +27,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Applet component: description of an installable applet
+ */
 public class CapAppletInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapAppletInfo.class);
 
+    /** AID of the applet */
     private AID mAID;
 
     private int mInstallMethodOffset;

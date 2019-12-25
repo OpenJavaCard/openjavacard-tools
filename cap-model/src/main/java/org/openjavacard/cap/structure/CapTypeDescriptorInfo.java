@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Descriptor component: type information
+ */
 public class CapTypeDescriptorInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapTypeDescriptorInfo.class);

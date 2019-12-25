@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Class component: description of a class
+ */
 public class CapClassInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapClassInfo.class);

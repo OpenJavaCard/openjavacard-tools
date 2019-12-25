@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Descriptor component: descriptor for a field
+ */
 public class CapFieldDescriptorInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapFieldDescriptorInfo.class);

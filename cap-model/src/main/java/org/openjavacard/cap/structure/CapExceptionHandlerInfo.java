@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Method component: description of an exception handler
+ */
 public class CapExceptionHandlerInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapExceptionHandlerInfo.class);

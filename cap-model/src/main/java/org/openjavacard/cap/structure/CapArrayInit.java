@@ -27,6 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * StaticField component: array initialization info
+ */
 public class CapArrayInit extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapArrayInit.class);

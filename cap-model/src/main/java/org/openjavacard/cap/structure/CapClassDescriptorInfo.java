@@ -27,12 +27,18 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Descriptor component: descriptor for a class
+ */
 public class CapClassDescriptorInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapClassDescriptorInfo.class);
 
+    /** References to implemented interfaces */
     private ArrayList<CapClassRef> mInterfaces;
+    /** Descriptors for fields */
     private ArrayList<CapFieldDescriptorInfo> mFields;
+    /** Descriptors for methods */
     private ArrayList<CapMethodDescriptorInfo> mMethods;
 
     public ArrayList<CapClassRef> getInterfaces() {

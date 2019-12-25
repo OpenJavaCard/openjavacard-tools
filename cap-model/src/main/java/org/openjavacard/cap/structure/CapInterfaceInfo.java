@@ -27,6 +27,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Class component: description of an interface
+ */
 public class CapInterfaceInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapInterfaceInfo.class);

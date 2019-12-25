@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Anywhere: reference to a class
+ */
 public class CapClassRef extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapClassRef.class);

@@ -26,10 +26,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Export component: representation of an exported class
+ */
 public class CapClassExportInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapClassExportInfo.class);
 
+    /** Reference to the exported class */
     private CapClassRef mClassRef;
 
     private int[] mStaticFieldOffsets;

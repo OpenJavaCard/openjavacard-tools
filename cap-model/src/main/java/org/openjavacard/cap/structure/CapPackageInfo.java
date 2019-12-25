@@ -27,13 +27,19 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Header component: description of the package
+ */
 public class CapPackageInfo extends CapStructure {
 
     private static final Logger LOG = LoggerFactory.getLogger(CapPackageInfo.class);
 
+    /** Minor version of the package */
     private int mMinorVersion;
+    /** Major version of the package */
     private int mMajorVersion;
 
+    /** AID of the package */
     private AID mAID;
 
     public int getMinorVersion() {
@@ -49,9 +55,12 @@ public class CapPackageInfo extends CapStructure {
     }
 
     public void read(CapStructureReader reader) throws IOException {
+        // read version (in odd reverse order)
         mMinorVersion = reader.readU1();
         mMajorVersion = reader.readU1();
+        // read AID
         mAID = reader.readAID();
+        // debug
         LOG.trace("package " + mAID + " version " + mMajorVersion + "." + mMinorVersion);
     }
 

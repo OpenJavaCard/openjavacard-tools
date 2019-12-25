@@ -19,14 +19,26 @@
 
 package org.openjavacard.cap.structure;
 
+/**
+ * Anywhere: representation of a CAP version
+ */
 public class CapVersion {
 
+    /** CAP 2.1 */
     public static final CapVersion CAP21 = new CapVersion(2, 1);
+    /** CAP 2.2 */
     public static final CapVersion CAP22 = new CapVersion(2, 2);
 
+    /** Major vesion */
     public final int major;
+    /** Minor version */
     public final int minor;
 
+    /**
+     * Construct a CAP version
+     * @param major of the version
+     * @param minor of the version
+     */
     public CapVersion(int major, int minor) {
         this.major = major;
         this.minor = minor;
