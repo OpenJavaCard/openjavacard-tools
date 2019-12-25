@@ -351,18 +351,13 @@ public class GPCard {
             byte[] fci = mBasicWrapper.selectFileByName(mISD);
             LOG.debug("select response " + HexUtil.bytesToHex(fci));
 
+            // read card identity
+            updateIdentity();
+            updateCPLC();
+
             // log static keys
             if(mContext.isKeyLoggingEnabled()) {
                 LOG.trace("static keys:\n" + mKeys.toString());
-            }
-
-            // get CPLC, can be used for identification if present
-            mCPLC = mBasicWrapper.readCPLC();
-            if (mCPLC == null) {
-                // this is completely normal
-                LOG.debug("card has no lifecycle data");
-            } else {
-                LOG.trace("card lifecycle:\n" + mCPLC.toString());
             }
 
             // get card data, needed to determine SCP parameters
@@ -372,25 +367,6 @@ public class GPCard {
                 LOG.debug("card has no card data");
             } else {
                 LOG.trace("card data:\n" + mCardData.toString());
-            }
-
-            // get IIN and CIN if uniquely identifiable
-            if(mCardData != null && mCardData.isUniquelyIdentifiable()) {
-                mCardIIN = mBasicWrapper.readCardIIN();
-                if (mCardIIN == null) {
-                    LOG.debug("card has no IIN");
-                } else {
-                    LOG.debug("card IIN: " + HexUtil.bytesToHex(mCardIIN));
-                }
-                mCardCIN = mBasicWrapper.readCardCIN();
-                if (mCardCIN == null) {
-                    LOG.debug("card has no CIN");
-                } else {
-                    LOG.debug("card CIN: " + HexUtil.bytesToHex(mCardCIN));
-                }
-            } else {
-                // unique identification is an optional feature
-                LOG.debug("card is not uniquely identifiable");
             }
 
             // get key information, which must be present
@@ -527,6 +503,48 @@ public class GPCard {
         }
         // return the result, but do NOT save it yet
         return isd;
+    }
+
+    private void updateCPLC() throws CardException {
+        LOG.trace("updateCPLC()");
+        CPLC cplc = null;
+        // get CPLC, can be used for identification if present
+        cplc = mBasicWrapper.readCPLC();
+        if (cplc == null) {
+            // this is completely normal
+            LOG.trace("card has no lifecycle data");
+        } else {
+            LOG.trace("card lifecycle:\n" + cplc.toString());
+        }
+        // update members
+        mCPLC = cplc;
+    }
+
+    private void updateIdentity() throws CardException {
+        LOG.trace("updateIdentity()");
+        byte[] iin = null;
+        byte[] cin = null;
+        // get IIN and CIN if uniquely identifiable
+        if(mCardData != null && mCardData.isUniquelyIdentifiable()) {
+            iin = mBasicWrapper.readCardIIN();
+            if (iin == null) {
+                LOG.debug("card has no IIN");
+            } else {
+                LOG.debug("card IIN: " + HexUtil.bytesToHex(iin));
+            }
+            cin = mBasicWrapper.readCardCIN();
+            if (cin == null) {
+                LOG.debug("card has no CIN");
+            } else {
+                LOG.debug("card CIN: " + HexUtil.bytesToHex(cin));
+            }
+        } else {
+            // unique identification is an optional feature
+            LOG.debug("card is not uniquely identifiable");
+        }
+        // update members
+        mCardIIN = iin;
+        mCardCIN = cin;
     }
 
 }
