@@ -49,8 +49,8 @@ public class CapFileImport {
 
     /**
      * Internal: parse a manifest attribute of the import
-     * @param name
-     * @param value
+     * @param name of the attribute
+     * @param value of the attribute
      */
     void readAttribute(String name, String value) {
         if (name.equals(ATTR_VERSION)) {

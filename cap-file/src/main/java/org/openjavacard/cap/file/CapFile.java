@@ -89,10 +89,10 @@ public class CapFile {
             String name = entry.getKey().toString();
             String value = (String) entry.getValue();
             LOG.trace("attribute " + name + " = " + value);
-            if (name == ATTR_MANIFEST_VERSION) {
+            if (name.equals(ATTR_MANIFEST_VERSION)) {
                 mManifestVersion = value;
             }
-            if (name == ATTR_CREATED_BY) {
+            if (name.equals(ATTR_CREATED_BY)) {
                 mCreatedBy = value;
             }
         }

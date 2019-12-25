@@ -43,7 +43,7 @@ public class CapFileReader {
     private static final String FILE_MANIFEST = "META-INF/MANIFEST.MF";
 
     /**
-     * Read a single CAP file
+     * Read a CAP file from a file
      * @param file to read
      * @return CAPFile loaded from the file
      * @throws IOException on error
@@ -53,6 +53,12 @@ public class CapFileReader {
         return reader.read(file);
     }
 
+    /**
+     * Read a CAP file from a stream
+     * @param stream to read
+     * @return CAPFile loaded from the stream
+     * @throws IOException on error
+     */
     public static CapFile readStream(InputStream stream) throws IOException {
         CapFileReader reader = new CapFileReader();
         return reader.read(stream);
