@@ -96,6 +96,7 @@ public class AID implements Comparable<AID>, VerboseString {
         return new AID(getRIDBytes());
     }
 
+    /** @return the length of a RID */
     public int getRIDLength() {
         return RID_LENGTH;
     }

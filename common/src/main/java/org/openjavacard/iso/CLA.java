@@ -21,6 +21,7 @@ package org.openjavacard.iso;
 
 /**
  * Constants and helpers related to ISO7816 command CLA fields
+ * <p/>
  */
 public class CLA {
 
@@ -31,20 +32,79 @@ public class CLA {
     /** Domain value for proprietary commands */
     private static final byte DOMAIN_PROPRIETARY = (byte)0x80;
 
+    /** Mask for the chaining flag */
+    private static final byte CHAINING_MASK      = (byte)0x10;
+    /** Flag indicating command chaining */
+    private static final byte CHAINING_FLAG      = (byte)0x10;
+
+    /** Mask for identifying first encoding */
+    private static final byte FIRST_MASK        = (byte)0x60;
+    /** Match value for identifying first encoding */
+    private static final byte FIRST_MATCH       = (byte)0x00;
+
+    /** Mask for identifying further encoding */
+    private static final byte FURTHER_MASK      = (byte)0x40;
+    /** Mask for identifying further encoding */
+    private static final byte FURTHER_MATCH     = (byte)0x40;
+
     /** Mask for the secure messaging field */
-    private static final byte SM_MASK        = (byte)0x0C;
-    /** Value indicating no secure messaging */
-    private static final byte SM_NONE        = (byte)0x00;
+    private static final byte FIRST_SM_MASK = (byte)0x0C;
+    /** Value indicating no secure messaging indication */
+    private static final byte FIRST_SM_NONE = (byte)0x00;
     /** Value indicating proprietary secure messaging */
-    private static final byte SM_PROPRIETARY = (byte)0x04;
+    private static final byte FIRST_SM_PROPRIETARY = (byte)0x04;
     /** Value indicating ISO secure messaging for data only */
-    private static final byte SM_ISO_DATA    = (byte)0x08;
+    private static final byte FIRST_SM_ISO_DATA = (byte)0x08;
     /** Value indicating ISO secure messaging for everything */
-    private static final byte SM_ISO_FULL    = (byte)0x0C;
+    private static final byte FIRST_SM_ISO_FULL = (byte)0x0C;
+
+    /** Mask for the channel number field */
+    private static final byte FIRST_CHANNEL_MASK = (byte)0x03;
+
+    /** Mask for secure messaging field */
+    private static final byte FURTHER_SM_MASK     = (byte)0x20;
+    /** Value indicating no secure messaging indication */
+    private static final byte FURTHER_SM_NONE     = (byte)0x00;
+    /** Value indicating ISO secure messaging */
+    private static final byte FURTHER_SM_ISO      = (byte)0x20;
+
+    /** Mask for the channel number field */
+    private static final byte FURTHER_CHANNEL_MASK = (byte)0x0F;
+    /** Base channel for the channel number field */
+    private static final byte FURTHER_CHANNEL_BASE = 4;
+
+    /**
+     * Check if a CLA byte is of the first form
+     * @param cla to check
+     * @return true if the CLA is of the first form
+     */
+    public static boolean isFirstForm(byte cla) {
+        return (cla & FIRST_MASK) == FIRST_MATCH;
+    }
+
+    /**
+     * Check if a CLA byte is of the further form
+     * @param cla to check
+     * @return true if the CLA is of the further form
+     */
+    public static boolean isFurtherForm(byte cla) {
+        return (cla & FURTHER_MASK) == FURTHER_MATCH;
+    }
+
+    /**
+     * Check if a CLA byte is valid
+     * @param cla to check
+     * @return true if the CLA is valid
+     */
+    public static boolean isValid(byte cla) {
+        return isProprietary(cla)
+                || isFirstForm(cla)
+                || isFurtherForm(cla);
+    }
 
     /**
      * @param cla to check
-     * @return true if the CLA is for an ISO-defined command
+     * @return true if the CLA indicates an interindustry command
      */
     public static boolean isInterindustry(byte cla) {
         return (cla & DOMAIN_MASK) == DOMAIN_ISO;
@@ -52,7 +112,7 @@ public class CLA {
 
     /**
      * @param cla to check
-     * @return true if the CLA is for a proprietary command
+     * @return true if the CLA indicates a proprietary command
      */
     public static boolean isProprietary(byte cla) {
         return (cla & DOMAIN_MASK) == DOMAIN_PROPRIETARY;
@@ -60,10 +120,39 @@ public class CLA {
 
     /**
      * @param cla to check
+     * @return true if the CLA indicates chaining
+     */
+    public static boolean isChaining(byte cla) {
+        return (cla & CHAINING_MASK) == CHAINING_FLAG;
+    }
+
+    /**
+     * @param cla to check
      * @return true if the CLA indicates secure messaging
      */
     public static boolean isSecureMessaging(byte cla) {
-        return (cla & SM_MASK) != SM_NONE;
+        if(isFirstForm(cla)) {
+            return (cla & FIRST_SM_MASK) != FIRST_SM_NONE;
+        } else if(isFurtherForm(cla)) {
+            return (cla & FURTHER_SM_MASK) != FURTHER_SM_NONE;
+        } else {
+            throw new IllegalArgumentException("Invalid CLA");
+        }
+    }
+
+    /**
+     * Determine logical channel indicated by a CLA byte
+     * @param cla to check
+     * @return logical channel number
+     */
+    public static int getLogicalChannel(byte cla) {
+        if(isFirstForm(cla)) {
+            return cla & FIRST_CHANNEL_MASK;
+        } else if(isFurtherForm(cla)) {
+            return (cla & FURTHER_CHANNEL_MASK) + FURTHER_CHANNEL_BASE;
+        } else {
+            throw new IllegalArgumentException("Invalid CLA");
+        }
     }
 
 }
