@@ -308,6 +308,7 @@ public class SCP0102Wrapper extends SCPWrapper {
             unwrapped = new ResponseAPDU(myData.toByteArray());
         }
 
+        // return the unwrapped response
         return unwrapped;
     }
 

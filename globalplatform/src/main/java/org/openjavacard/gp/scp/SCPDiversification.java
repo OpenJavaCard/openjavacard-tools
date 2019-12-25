@@ -28,10 +28,19 @@ import org.openjavacard.util.HexUtil;
 
 public class SCPDiversification {
 
+    /** List of key types that will be diversified */
     private static final GPKeyUsage[] DIVERSIFICATION_KEYS = {
             GPKeyUsage.ENC, GPKeyUsage.MAC, GPKeyUsage.KEK, GPKeyUsage.RMAC
     };
 
+    /**
+     * Diversify a GlobalPlatform key set
+     *
+     * @param keys to be diversified
+     * @param diversification to be applied
+     * @param diversificationData to be used
+     * @return diversified set of keys
+     */
     public static GPKeySet diversify(GPKeySet keys, GPKeyDiversification diversification, byte[] diversificationData) {
         if (keys.getDiversification() != GPKeyDiversification.NONE) {
             throw new IllegalArgumentException("Cannot diversify a diversified keyset");
@@ -61,6 +70,14 @@ public class SCPDiversification {
         return diversifiedKeys;
     }
 
+    /**
+     * Diversify a single key using EMV diversification
+     *
+     * @param usage usage type of the key
+     * @param key to be diversified
+     * @param diversificationData to be applied
+     * @return diversified key
+     */
     private static GPKey diversifyKeyEMV(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 4, data, 0, 6);
@@ -73,6 +90,14 @@ public class SCPDiversification {
         return new GPKey(key.getId(), usage, key.getCipher(), dKey);
     }
 
+    /**
+     * Diversify a single key using VISA2 diversification
+     *
+     * @param usage usage type of the key
+     * @param key to be diversified
+     * @param diversificationData to be applied
+     * @return diversified key
+     */
     private static GPKey diversifyKeyVisa2(GPKeyUsage usage, GPKey key, byte[] diversificationData) {
         byte[] data = new byte[16];
         System.arraycopy(diversificationData, 0, data, 0, 2);

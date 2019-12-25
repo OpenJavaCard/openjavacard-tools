@@ -23,12 +23,12 @@ import javax.smartcardio.CardException;
 
 /**
  * SCP security policies
- *
+ * <p/>
  * These describe what part of card exchanges has to be
  * authenticated and/or encrypted.
- *
+ * <p/>
  * All defined protocols require CMAC to be enabled.
- *
+ * <p/>
  * All existing protocols have a linear tower of
  * options in order of increasing security as follows:
  *  - NONE (for development use)

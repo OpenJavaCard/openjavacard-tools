@@ -42,13 +42,13 @@ import java.io.IOException;
 
 /**
  * GlobalPlatform command wrapper for basic commands
- *
+ * <p/>
  * This wrapper exposes methods representing GP operations
  * that may be performed without a secure channel.
- *
+ * <p/>
  * There also exists a secure wrapper that is responsible
- * for sending messages through a secure channel.
- *
+ * for sending commands through a secure channel.
+ * <p/>
  * The separation between these classes enforces the rule
  * that operational GP commands are always sent through
  * a secure channel.
@@ -59,11 +59,19 @@ public class GPBasicWrapper {
 
     private CardChannel mChannel;
 
+    /**
+     * Construct a basic wrapper
+     * @param channel to use
+     */
     public GPBasicWrapper(CardChannel channel) {
         LOG = LoggerFactory.getLogger(getClass());
         mChannel = channel;
     }
 
+    /**
+     * Get the card channel used by this wrapper
+     * @return the card channel
+     */
     public CardChannel getChannel() {
         return mChannel;
     }

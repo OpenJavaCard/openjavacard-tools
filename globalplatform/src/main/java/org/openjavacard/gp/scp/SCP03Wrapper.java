@@ -254,6 +254,7 @@ public class SCP03Wrapper extends SCPWrapper {
         myData.write(sw1);
         myData.write(sw2);
 
+        // return response object
         return new ResponseAPDU(myData.toByteArray());
     }
 

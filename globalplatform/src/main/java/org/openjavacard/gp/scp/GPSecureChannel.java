@@ -148,7 +148,9 @@ public class GPSecureChannel extends CardChannel {
      * @throws CardException when the protocol fails policy check
      */
     public void expectProtocol(int protocol, int parameters) throws CardException {
+        // check the protocol against our policy
         mProtocolPolicy.checkProtocol(protocol, parameters);
+        // okay, remember it
         mExpectedProtocol = protocol;
         mExpectedParameters = parameters;
     }
