@@ -33,6 +33,12 @@ The following G&amp;D cards seem to work:
  * SmartCafe Expert 3.2
  * SmartCafe Expert 7.0 (SCP03 seems to have broken RENC)
 
+#### Infineon
+
+The following Infineon cards work:
+
+ * Infineon SLJ52GCA150
+
 #### NXP
 
 The following kinds of NXP cards have been used as development targets:
