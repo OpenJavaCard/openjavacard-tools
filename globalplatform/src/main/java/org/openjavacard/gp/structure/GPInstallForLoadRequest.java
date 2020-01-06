@@ -67,7 +67,7 @@ public class GPInstallForLoadRequest implements ToBytes {
                 bos.write(loadToken);
             }
         } catch (IOException e) {
-            throw new Error("Error serializing INSTALL [for  LOAD] request", e);
+            throw new Error("Error serializing INSTALL [for LOAD] request", e);
         }
         return bos.toByteArray();
     }

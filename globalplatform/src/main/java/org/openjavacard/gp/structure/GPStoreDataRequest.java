@@ -48,7 +48,7 @@ public class GPStoreDataRequest implements ToBytes {
                 bos.write(new TLVPrimitive(TAG_ISD_AID, cardISD).getEncoded());
             }
         } catch (IOException e) {
-            throw new Error("Error serializing INSTALL [for  LOAD] request", e);
+            throw new Error("Error serializing STORE DATA request", e);
         }
         return bos.toByteArray();
     }
