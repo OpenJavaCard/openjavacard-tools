@@ -38,12 +38,16 @@ public class GPKey {
             0, GPKeyUsage.MASTER, GPKeyCipher.GENERIC,
             GLOBALPLATFORM_MASTER_SECRET);
 
+    /** Key id of this key */
     private final int mId;
 
+    /** Usage type of this key */
     private final GPKeyUsage mUsage;
 
+    /** Cipher that this key is intended for */
     private final GPKeyCipher mCipher;
 
+    /** Secret corresponding to this key */
     private final byte[] mSecret;
 
     /**

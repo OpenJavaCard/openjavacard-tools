@@ -148,9 +148,11 @@ public class GPIssuerDomain {
         if(appletAID == null) {
             appletAID = moduleAID;
         }
+        // default to no privileges
         if(appletPrivs == null) {
             appletPrivs = new byte[1];
         }
+        // default to empty applet params
         if(appletParams == null) {
             appletParams = new byte[0];
         }

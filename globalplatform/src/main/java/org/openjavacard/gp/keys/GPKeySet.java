@@ -47,14 +47,20 @@ public class GPKeySet {
         return keySet;
     }
 
+    /** Human-readable name of the keyset */
     private String mName;
 
+    /** Key version common to all keys in the set */
     private int mKeyVersion;
 
+    /** Diversification common to all keys in the set */
     private GPKeyDiversification mDiversification;
 
+    /** Primary list of keys */
     private final ArrayList<GPKey> mKeys = new ArrayList<>();
+    /** Secondary table by key usage */
     private final Hashtable<GPKeyUsage, GPKey> mKeysByUsage = new Hashtable<>();
+    /** Secondary table by key id */
     private final Hashtable<Integer, GPKey> mKeysById = new Hashtable<>();
 
     /**
