@@ -37,14 +37,11 @@ public class SCP0102Wrapper extends SCPWrapper {
 
     /** SCP parameters in use */
     private final SCP0102Parameters mParameters;
+    /** IV for C-MAC */
     private byte[] mICV;
-    /**
-     * IV for R-MAC
-     */
+    /** IV for R-MAC */
     private byte[] mRICV;
-    /**
-     * Buffer for R-MAC data
-     */
+    /** Buffer for R-MAC data */
     private ByteArrayOutputStream mRMACBuffer;
 
     /**
