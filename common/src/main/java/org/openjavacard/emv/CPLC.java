@@ -41,6 +41,12 @@ import java.util.Map;
  */
 public class CPLC {
 
+    public static final byte[] IC_FABRICATOR_NXP = HexUtil.hexToBytes("4790");
+    public static final byte[] IC_FABRICATOR_INFINEON = HexUtil.hexToBytes("4090");
+    public static final byte[] IC_FABRICATOR_SAMSUNG = HexUtil.hexToBytes("4250");
+    public static final byte[] IC_FABRICATOR_RENESAS = HexUtil.hexToBytes("3060");
+    public static final byte[] IC_FABRICATOR_ATMEL = HexUtil.hexToBytes("4180");
+
     /**
      * Definition of fields in a CPLC
      */
