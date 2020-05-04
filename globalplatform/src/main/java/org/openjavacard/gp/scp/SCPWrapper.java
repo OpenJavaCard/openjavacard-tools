@@ -87,6 +87,11 @@ public abstract class SCPWrapper {
     }
 
     /**
+     * Get the protocol parameters
+     */
+    protected abstract SCPParameters getParameters();
+
+    /**
      * Get the maximum command APDU size for the current mode
      *
      * This must be dynamic since it depends on the specific

@@ -37,7 +37,7 @@ import java.util.Arrays;
  */
 public class SCP03Wrapper extends SCPWrapper {
 
-    private SCP03Parameters mSCP;
+    private SCP03Parameters mParameters;
 
     /**
      * ICV for MAC operations
@@ -56,7 +56,12 @@ public class SCP03Wrapper extends SCPWrapper {
     SCP03Wrapper(GPKeySet keys, SCP03Parameters parameters) {
         super(keys);
         // remember protocol parameters
-        mSCP = parameters;
+        mParameters = parameters;
+    }
+
+    @Override
+    protected SCPParameters getParameters() {
+        return mParameters;
     }
 
     @Override

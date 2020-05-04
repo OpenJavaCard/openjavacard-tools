@@ -35,13 +35,8 @@ import java.util.Arrays;
  */
 public class SCP0102Wrapper extends SCPWrapper {
 
-    /**
-     * SCP parameters in use
-     */
-    private final SCP0102Parameters mSCP;
-    /**
-     * IV for C-MAC
-     */
+    /** SCP parameters in use */
+    private final SCP0102Parameters mParameters;
     private byte[] mICV;
     /**
      * IV for R-MAC
@@ -72,7 +67,12 @@ public class SCP0102Wrapper extends SCPWrapper {
         }
 
         // remember protocol parameters
-        mSCP = parameters;
+        mParameters = parameters;
+    }
+
+    @Override
+    protected SCPParameters getParameters() {
+        return mParameters;
     }
 
     @Override
@@ -94,10 +94,10 @@ public class SCP0102Wrapper extends SCPWrapper {
             throw new CardException("SCP01/02 does not allow sensitive data that needs padding");
         }
 
-        if(mSCP.scpVersion == 1) {
+        if(mParameters.scpVersion == 1) {
             result = GPCrypto.enc_des_ecb(sessionKEK, data);
         } else {
-            if(mSCP.initExplicit) {
+            if(mParameters.initExplicit) {
                 result = GPCrypto.enc_3des_ecb(sessionKEK, data);
             } else {
                 result = GPCrypto.enc_3des_cbc_nulliv(sessionKEK, data);
@@ -109,8 +109,8 @@ public class SCP0102Wrapper extends SCPWrapper {
 
     @Override
     protected void startRMAC() {
-        if (!mSCP.rmacSupport) {
-            throw new UnsupportedOperationException(mSCP + " does not support RMAC");
+        if (!mParameters.rmacSupport) {
+            throw new UnsupportedOperationException(mParameters + " does not support RMAC");
         }
         super.startRMAC();
         mRICV = mICV.clone();
@@ -172,9 +172,9 @@ public class SCP0102Wrapper extends SCPWrapper {
             if (mICV == null) {
                 // initially we use a null IV
                 mICV = new byte[8];
-            } else if (mSCP.icvEncrypt) {
+            } else if (mParameters.icvEncrypt) {
                 // encrypt the ICV if enabled
-                if (mSCP.scpVersion == 1) {
+                if (mParameters.scpVersion == 1) {
                     mICV = GPCrypto.enc_3des_ecb(macKey, mICV);
                 } else {
                     mICV = GPCrypto.enc_des_ecb(macKey, mICV);
@@ -182,7 +182,7 @@ public class SCP0102Wrapper extends SCPWrapper {
             }
 
             // wrap now in case of CMAC-modified
-            if (!mSCP.cmacUnmodified) {
+            if (!mParameters.cmacUnmodified) {
                 wrappedCla = setBits((byte) cla, (byte) 0x04);
                 wrappedLen += 8;
             }
@@ -198,14 +198,14 @@ public class SCP0102Wrapper extends SCPWrapper {
             byte[] macData = macBuffer.toByteArray();
 
             // perform the MAC computation
-            if (mSCP.scpVersion == 1) {
+            if (mParameters.scpVersion == 1) {
                 mICV = GPCrypto.mac_3des(macKey, macData, mICV);
             } else {
                 mICV = GPCrypto.mac_des_3des(macKey, macData, mICV);
             }
 
             // wrap now in case of CMAC-unmodified
-            if (mSCP.cmacUnmodified) {
+            if (mParameters.cmacUnmodified) {
                 wrappedCla = setBits((byte) cla, (byte) 0x04);
                 wrappedLen += 8;
             }
@@ -222,7 +222,7 @@ public class SCP0102Wrapper extends SCPWrapper {
 
             // perform version-dependent padding
             byte[] plainBuf;
-            if (mSCP.scpVersion == 1) {
+            if (mParameters.scpVersion == 1) {
                 // SCP01 has its own magic padding scheme
                 plainBuf = GPCrypto.pad80_scp01(data, 8);
             } else {

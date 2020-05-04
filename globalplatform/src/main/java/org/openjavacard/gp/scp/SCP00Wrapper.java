@@ -30,11 +30,21 @@ import javax.smartcardio.ResponseAPDU;
  */
 public class SCP00Wrapper extends SCPWrapper {
 
+    private SCP00Parameters mParameters;
+
     public SCP00Wrapper(GPKeySet keys, SCP00Parameters parameters) {
         super(keys);
+        // remember protocol parameters
+        mParameters = parameters;
+        // check that we have an empty keyset
         if(!keys.getKeys().isEmpty()) {
             throw new UnsupportedOperationException("SCP00 should be used with an empty keyset");
         }
+    }
+
+    @Override
+    protected SCPParameters getParameters() {
+        return mParameters;
     }
 
     @Override
