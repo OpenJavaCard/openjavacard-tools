@@ -31,15 +31,7 @@ import org.openjavacard.tool.command.generic.GenericAPDU;
 import org.openjavacard.tool.command.generic.GenericReaders;
 import org.openjavacard.tool.command.generic.ScanFID;
 import org.openjavacard.tool.command.generic.ScanName;
-import org.openjavacard.tool.command.gp.GPDelete;
-import org.openjavacard.tool.command.gp.GPExtradite;
-import org.openjavacard.tool.command.gp.GPIdentity;
-import org.openjavacard.tool.command.gp.GPInfo;
-import org.openjavacard.tool.command.gp.GPInstall;
-import org.openjavacard.tool.command.gp.GPKeys;
-import org.openjavacard.tool.command.gp.GPList;
-import org.openjavacard.tool.command.gp.GPLoad;
-import org.openjavacard.tool.command.gp.GPState;
+import org.openjavacard.tool.command.gp.*;
 import org.openjavacard.tool.command.pkg.PkgAvailable;
 import org.openjavacard.tool.command.pkg.PkgInfo;
 import org.openjavacard.tool.command.pkg.PkgInit;
@@ -135,7 +127,7 @@ public class Tool {
         jc.addCommand(new GPExtradite(mContext));
         jc.addCommand(new GPState(mContext));
         jc.addCommand(new GPIdentity(mContext));
-        jc.addCommand(new GPKeys(mContext));
+        jc.addCommand(new GPKeyReplace(mContext));
 
         jc.addCommand(new PkgAvailable(mContext));
         jc.addCommand(new PkgInfo(mContext));

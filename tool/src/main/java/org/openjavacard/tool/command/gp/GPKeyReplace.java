@@ -25,45 +25,52 @@ import com.beust.jcommander.validators.PositiveInteger;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.keys.GPKeyCipher;
+import org.openjavacard.gp.keys.GPKeyId;
 import org.openjavacard.gp.keys.GPKeySet;
+import org.openjavacard.gp.keys.GPKeyVersion;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
 
 @Parameters(
-        commandNames = "gp-keys",
-        commandDescription = "GlobalPlatform: show or change security keys"
+        commandNames = "gp-key-replace",
+        commandDescription = "GlobalPlatform: replace card security keys"
 )
-public class GPKeys extends GPCommand {
+public class GPKeyReplace extends GPCommand {
 
     @Parameter(
             names = "--new-version",
             validateWith = PositiveInteger.class
     )
-    private int newKeyVersion = 1;
+    private int newKeyVersion = GPKeyVersion.ANY;
 
     @Parameter(
             names = "--new-id",
             validateWith = PositiveInteger.class
     )
-    private int newKeyId = 1;
+    private int newKeyId = GPKeyId.ANY;
 
     @Parameter(
             names = "--new-cipher"
     )
-    private GPKeyCipher newKeyCipher = GPKeyCipher.GENERIC;
+    private GPKeyCipher newKeyCipher = null;
 
     @Parameter(
             names = "--new-types"
     )
-    private String newKeyTypes = "MASTER";
+    private String newKeyTypes = null;
 
     @Parameter(
             names = "--new-secrets"
     )
     private String newKeySecrets = null;
 
-    public GPKeys(GPContext context) {
+    @Parameter(
+            names = "--confirm-replace"
+    )
+    private boolean confirmReplace = false;
+
+    public GPKeyReplace(GPContext context) {
         super(context);
     }
 
@@ -80,19 +87,27 @@ public class GPKeys extends GPCommand {
             os.println();
         }
 
-        if(newKeySecrets != null) {
-            GPKeySet newKeys = buildKeysFromParameters(newKeyId, newKeyVersion, newKeyCipher, newKeyTypes, newKeySecrets);
+        if(newKeyId == GPKeyId.ANY
+                || newKeyVersion == GPKeyVersion.ANY
+                || newKeyCipher == null
+                || newKeyTypes == null
+                || newKeySecrets == null) {
+            throw new Error("Must provides all of: --new-id, --new-version, --new-cipher, --new-key-types, --new-key-secrets");
+        }
 
-            if (context.isKeyLoggingEnabled()) {
-                os.println("New keys: " + newKeys);
-                os.println();
-            }
+        GPKeySet newKeys = buildKeysFromParameters(newKeyId, newKeyVersion, newKeyCipher, newKeyTypes, newKeySecrets);
 
-            os.println("Checking key compatibility...");
-            card.getCardKeyInfo().checkKeySetForReplacement(newKeys);
-            os.println("Check complete.");
+        if (context.isKeyLoggingEnabled()) {
+            os.println("New keys: " + newKeys);
             os.println();
+        }
 
+        os.println("Checking key compatibility...");
+        card.getCardKeyInfo().checkKeySetForReplacement(newKeys);
+        os.println("Check complete.");
+        os.println();
+
+        if(confirmReplace) {
             os.println("Uploading keys...");
             card.getIssuerDomain().replaceKeys(newKeys);
             os.println("Upload complete.");
