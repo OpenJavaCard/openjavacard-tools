@@ -351,10 +351,6 @@ public class GPCard {
             byte[] fci = mBasicWrapper.selectFileByName(mISD);
             LOG.debug("select response " + HexUtil.bytesToHex(fci));
 
-            // read card identity
-            updateIdentity();
-            updateCPLC();
-
             // log static keys
             if(mContext.isKeyLoggingEnabled()) {
                 LOG.trace("static keys:\n" + mKeys.toString());
@@ -368,6 +364,9 @@ public class GPCard {
             } else {
                 LOG.trace("card data:\n" + mCardData.toString());
             }
+
+            // read card identity records for use in key selection
+            updateIdentity();
 
             // get key information, which must be present
             mCardKeyInfo = mBasicWrapper.readKeyInfo();
@@ -505,25 +504,26 @@ public class GPCard {
         return isd;
     }
 
-    private void updateCPLC() throws CardException {
-        LOG.trace("updateCPLC()");
+    /**
+     * Update records pertaining to card identity
+     * <p/>
+     * This must be called after card data has been retrieved.
+     * <p/>
+     * @throws CardException on error
+     */
+    private void updateIdentity() throws CardException {
+        LOG.trace("updateIdentity()");
         CPLC cplc = null;
-        // get CPLC, can be used for identification if present
+        byte[] iin = null;
+        byte[] cin = null;
+        // get CPLC, used for identification if present
         cplc = mBasicWrapper.readCPLC();
         if (cplc == null) {
             // this is completely normal
-            LOG.trace("card has no lifecycle data");
+            LOG.debug("card has no CPLC");
         } else {
-            LOG.trace("card lifecycle:\n" + cplc.toString());
+            LOG.trace("card CPLC:\n" + cplc.toString());
         }
-        // update members
-        mCPLC = cplc;
-    }
-
-    private void updateIdentity() throws CardException {
-        LOG.trace("updateIdentity()");
-        byte[] iin = null;
-        byte[] cin = null;
         // get IIN and CIN if uniquely identifiable
         if(mCardData != null && mCardData.isUniquelyIdentifiable()) {
             iin = mBasicWrapper.readCardIIN();
@@ -543,6 +543,7 @@ public class GPCard {
             LOG.debug("card is not uniquely identifiable");
         }
         // update members
+        mCPLC = cplc;
         mCardIIN = iin;
         mCardCIN = cin;
     }
