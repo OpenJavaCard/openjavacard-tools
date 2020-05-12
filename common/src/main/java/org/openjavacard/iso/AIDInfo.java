@@ -73,7 +73,7 @@ public class AIDInfo {
 
         // Yubico
         addDescription("A000000527",       "Yubico", AIDUsage.PREFIX);
-        addDescription("A000000527210101", "Yubikey OATH", AIDUsage.APPLET);
+        addDescription("A0000005272101",   "Yubikey OATH", AIDUsage.PREFIX);
 
         // NXP Germany
         addDescription("D276000085",       "NXP Germany", AIDUsage.PREFIX);
