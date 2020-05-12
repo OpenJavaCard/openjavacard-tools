@@ -59,9 +59,7 @@ public class GPKey {
      * @param secret the key itself
      */
     public GPKey(int keyId, GPKeyUsage usage, GPKeyCipher cipher, byte[] secret) {
-        if(keyId > 255) {
-            throw new IllegalArgumentException("Invalid key id " + keyId);
-        }
+        GPKeyId.checkKeyId(keyId);
         mId = keyId;
         mUsage = usage;
         mCipher = cipher;

@@ -88,9 +88,7 @@ public class GPKeySet {
      * @param diversification of the keyset
      */
     public GPKeySet(String name, int keyVersion, GPKeyDiversification diversification) {
-        if(keyVersion > 255) {
-            throw new IllegalArgumentException("Invalid key version " + keyVersion);
-        }
+        GPKeyVersion.checkKeyVersion(keyVersion);
         mName = name;
         mKeyVersion = keyVersion;
         mDiversification = diversification;
