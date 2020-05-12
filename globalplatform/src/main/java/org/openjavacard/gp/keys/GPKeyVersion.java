@@ -1,5 +1,8 @@
 package org.openjavacard.gp.keys;
 
+/**
+ * Helper class for GlobalPlatform key versions
+ */
 public class GPKeyVersion {
 
     public static final int ANY = -1;

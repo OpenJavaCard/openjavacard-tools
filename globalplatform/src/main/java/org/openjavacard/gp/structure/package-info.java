@@ -1,6 +1,6 @@
 /*
  * openjavacard-tools: Development tools for JavaCard
- * Copyright (C) 2019 Ingo Albrecht <copyright@promovicz.org>
+ * Copyright (C) 2018 Ingo Albrecht <copyright@promovicz.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,11 +18,6 @@
  */
 
 /**
- * Command wrappers for GlobalPlatform commands
- * <p/>
- * All card commands issues by the GlobalPlatform library are dispatched
- * through these wrappers. This ensures that we can differentiate between
- * calling on a secure channel and without.
- * <p/>
+ * Data structures for GlobalPlatform commands
  */
-package org.openjavacard.gp.wrapper;
+package org.openjavacard.gp.structure;

@@ -47,6 +47,12 @@ import java.util.List;
  * <li>Executable modules (ExM) - equivalent to a loaded JavaCard applet</li>
  * <li>Applications (App) - equivalent to an installed JavaCard applet</li>
  * </ul>
+ * <p/>
+ * This class handles various compatibility and version options
+ * such as several data encodings and access commands. A simple
+ * dirty flag is used to keep information updated. Your mileage
+ * may vary with regards to information provided by the card.
+ * <p/>
  */
 public class GPRegistry {
 
@@ -68,7 +74,6 @@ public class GPRegistry {
 
     /** Card being operated on */
     private final GPCard mCard;
-
     /** Secure command wrapper */
     private final GPSecureWrapper mWrapper;
 
@@ -77,19 +82,15 @@ public class GPRegistry {
 
     /** Flag indicating use of legacy entry format for apps and domains */
     private boolean mUseLegacyGeneric;
-
     /** Flag indicating use of legacy entry format for ELFs */
     private boolean mUseLegacyELF;
-
     /** Flag indicating use for 'terse' ELF entries without module information */
     private boolean mUseTerseELF;
 
     /** List of all registry entries */
     private ArrayList<Entry> mAllEntries = new ArrayList<>();
-
     /** Entry for the ISD */
     private ISDEntry mISD = null;
-
     /** List of all applet entries */
     private ArrayList<AppEntry> mAllApps = new ArrayList<>();
     /** List of all SSD entries */
@@ -100,6 +101,7 @@ public class GPRegistry {
     /**
      * Main constructor
      * @param card to operate on
+     * @param wrapper for commands
      */
     GPRegistry(GPCard card, GPSecureWrapper wrapper) {
         mCard = card;

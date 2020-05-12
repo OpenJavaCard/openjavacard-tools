@@ -25,12 +25,13 @@ package org.openjavacard.gp.keys;
  * Diversification uses some card-specific value to enrich a set of keys.
  * <p/>
  * Various historic card systems use it and so we want to support it.
+ * <p/>
  */
 public enum GPKeyDiversification {
     /** No diversification */
     NONE,
-    /** VISA2 type diversification */
+    /** VISA2 diversification */
     VISA2,
-    /** EMV type diversification */
+    /** EMV diversification */
     EMV
 }

@@ -247,6 +247,13 @@ public class GPIssuerDomain {
         mWrapper.performPutKey(firstKeyId, keyVersion, data, multipleKeys);
     }
 
+    /**
+     * Build a GlobalPlatform key block for the given key set
+     * @param keyInfoTemplate to build against
+     * @param newKeys to be encoded
+     * @return encrypted key block
+     * @throws CardException on error
+     */
     private byte[] buildKeyBlock(GPKeyInfoTemplate keyInfoTemplate, GPKeySet newKeys)
             throws CardException {
         int keyVersion = newKeys.getKeyVersion();
@@ -293,8 +300,7 @@ public class GPIssuerDomain {
     }
 
     /**
-     * Change the card state to INITIALIZED
-     *
+     * Change card state to INITIALIZED
      * @throws CardException on error
      */
     public void cardInitialized() throws CardException {
@@ -303,8 +309,7 @@ public class GPIssuerDomain {
     }
 
     /**
-     * Change the card state to SECURED
-     *
+     * Change card state to SECURED
      * @throws CardException on error
      */
     public void cardSecured() throws CardException {
@@ -314,7 +319,6 @@ public class GPIssuerDomain {
 
     /**
      * Lock the card
-     *
      * @throws CardException on error
      */
     public void lockCard() throws CardException {
@@ -324,7 +328,6 @@ public class GPIssuerDomain {
 
     /**
      * Unlock locked card
-     *
      * @throws CardException on error
      */
     public void unlockCard() throws CardException {
@@ -334,7 +337,6 @@ public class GPIssuerDomain {
 
     /**
      * Terminate the card
-     *
      * @throws CardException on error
      */
     public void terminateCard() throws CardException {

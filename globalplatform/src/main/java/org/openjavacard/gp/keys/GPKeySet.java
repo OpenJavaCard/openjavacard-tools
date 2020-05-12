@@ -116,7 +116,6 @@ public class GPKeySet {
 
     /**
      * Retrieves the key of the given usage type from the keyset
-     *
      * @param usage of the key
      * @return the key or null
      */
@@ -130,7 +129,6 @@ public class GPKeySet {
 
     /**
      * Retrieves a key with the given id from the keyset
-     *
      * @param keyId of the key
      * @return the key or null
      */

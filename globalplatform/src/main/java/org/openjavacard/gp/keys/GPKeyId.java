@@ -1,5 +1,8 @@
 package org.openjavacard.gp.keys;
 
+/**
+ * Helper class for GlobalPlatform key identifiers
+ */
 public class GPKeyId {
 
     public static final int ANY = -1;

@@ -41,15 +41,17 @@ public class SCP03Wrapper extends SCPWrapper {
 
     /**
      * ICV for MAC operations
-     *
+     * <p/>
      * The first half of this is used as the C-MAC.
+     * <p/>
      */
     private byte[] mICV = new byte[16];
 
     /**
      * Counter for ENC operations
-     *
+     * <p/>
      * Used to generate the ENC key.
+     * <p/>
      */
     private long mCTR = 1;
 
