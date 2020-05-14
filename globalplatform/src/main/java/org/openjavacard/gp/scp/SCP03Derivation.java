@@ -36,7 +36,7 @@ public class SCP03Derivation {
 
     /** All key types in SCP03 */
     private static final GPKeyUsage[] KEYS = {
-            GPKeyUsage.ENC, GPKeyUsage.MAC, GPKeyUsage.KEK, GPKeyUsage.RMAC
+            GPKeyUsage.MAC, GPKeyUsage.ENC, GPKeyUsage.KEK, GPKeyUsage.RMAC
     };
 
     /** Key derivation constants */
