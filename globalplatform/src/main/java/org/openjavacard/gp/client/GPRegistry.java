@@ -146,6 +146,7 @@ public class GPRegistry {
      * @param aid to search for
      */
     public Entry findAppletOrPackage(AID aid) {
+        ensureUpdated();
         Entry res;
         res = findApplet(aid);
         if(res != null) {
