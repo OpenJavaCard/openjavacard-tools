@@ -78,7 +78,7 @@ public class GPRegistry {
     private final GPSecureWrapper mWrapper;
 
     /** True if data needs refreshing */
-    private boolean mDirty;
+    private boolean mDirty = true;
 
     /** Flag indicating use of legacy entry format for apps and domains */
     private boolean mUseLegacyGeneric;
@@ -106,7 +106,6 @@ public class GPRegistry {
     GPRegistry(GPCard card, GPSecureWrapper wrapper) {
         mCard = card;
         mWrapper = wrapper;
-        mDirty = true;
     }
 
     /** @return registry entry for the ISD */
