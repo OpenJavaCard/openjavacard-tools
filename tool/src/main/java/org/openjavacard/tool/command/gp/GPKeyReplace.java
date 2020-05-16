@@ -39,16 +39,16 @@ import java.io.PrintStream;
 public class GPKeyReplace extends GPCommand {
 
     @Parameter(
-            names = "--new-version",
-            validateWith = PositiveInteger.class
-    )
-    private int newKeyVersion = GPKeyVersion.ANY;
-
-    @Parameter(
             names = "--new-id",
             validateWith = PositiveInteger.class
     )
     private int newKeyId = GPKeyId.ANY;
+
+    @Parameter(
+            names = "--new-version",
+            validateWith = PositiveInteger.class
+    )
+    private int newKeyVersion = GPKeyVersion.ANY;
 
     @Parameter(
             names = "--new-cipher"
