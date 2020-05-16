@@ -291,12 +291,8 @@ public abstract class GPCommand implements Runnable {
 
     protected GPKeySet buildKeysFromParameters(int keyId, int keyVersion, GPKeyCipher cipher, String types, String secrets) {
         // XXX this is not comprehensive because of the loop and protocol variations
-        if(keyId > 255) {
-            throw new Error("Bad key id");
-        }
-        if(keyVersion > 255) {
-            throw new Error("Bad key version");
-        }
+        GPKeyId.checkKeyId(keyId);
+        GPKeyVersion.checkKeyVersion(keyVersion);
         GPKeySet keys = new GPKeySet("commandline", keyVersion);
         String[] typeStrings = types.split(":");
         String[] secretStrings = secrets.split(":");
