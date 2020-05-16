@@ -73,7 +73,7 @@ public enum SCPSecurityPolicy {
      */
     public void checkProtocol(SCPParameters protocol) throws CardException {
         if(!protocol.isSecuritySupported(this)) {
-            throw new CardException("Security protocol " + protocol + " is insufficient for this security policy");
+            throw new CardException("Security protocol " + protocol + " does not support security policy " + this);
         }
     }
 
