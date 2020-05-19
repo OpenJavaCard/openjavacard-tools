@@ -143,8 +143,8 @@ public class GPIssuerDomain {
      * @param appletParams parameters for the new applet (optional)
      * @throws CardException on error
      */
-    public void installApplet(AID packageAID, AID moduleAID,
-                              AID appletAID, byte[] appletPrivs, byte[] appletParams)
+    public void installApplet(AID packageAID, AID moduleAID, AID appletAID,
+                              byte[] appletPrivs, byte[] appletParams)
             throws CardException {
         // use module AID as default for applet AID
         if(appletAID == null) {
