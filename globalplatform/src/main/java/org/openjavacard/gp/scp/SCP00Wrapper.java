@@ -34,6 +34,8 @@ public class SCP00Wrapper extends SCPWrapper {
 
     public SCP00Wrapper(GPKeySet keys, SCP00Parameters parameters) {
         super(keys);
+        // override defaults
+        mMAC = false;
         // remember protocol parameters
         mParameters = parameters;
         // check that we have an empty keyset
