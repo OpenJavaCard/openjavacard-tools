@@ -90,10 +90,13 @@ public class GPIssuerDomain {
         req.cardISD = isd;
         // split the request
         byte[][] blocks = ArrayUtil.splitBlocks(req.toBytes(), 128); // TODO arbitrary
+        int count = blocks.length;
         // transmit the request as a chain of STORE DATA commands
         for(byte i = 0; i < blocks.length; i++) {
             boolean lastBlock = i == (blocks.length - 1);
-            mWrapper.performStoreData(blocks[i], i, lastBlock);
+            byte[] data = blocks[i];
+            LOG.debug("sending block " + (i+1) + "/" + count + ", " + data.length + " bytes");
+            mWrapper.performStoreData(data, i, lastBlock);
         }
         // finish up
         LOG.debug("change complete");
