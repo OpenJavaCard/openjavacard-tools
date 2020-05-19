@@ -19,13 +19,9 @@
 
 package org.openjavacard.gp.wrapper;
 
-import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.scp.GPSecureChannel;
-import org.openjavacard.gp.structure.GPInstallForInstallRequest;
-import org.openjavacard.gp.structure.GPInstallForInstallResponse;
-import org.openjavacard.gp.structure.GPInstallForLoadRequest;
-import org.openjavacard.gp.structure.GPInstallForLoadResponse;
+import org.openjavacard.gp.structure.*;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;
@@ -285,6 +281,63 @@ public class GPSecureWrapper extends GPBasicWrapper {
         ResponseAPDU responseAPDU = transactSecureAndCheck(command);
         // parse and return response
         GPInstallForInstallResponse response = new GPInstallForInstallResponse();
+        response.readBytes(responseAPDU.getData());
+        return response;
+    }
+
+    public GPInstallForExtraditeResponse performInstallForExtradite(GPInstallForExtraditeRequest request) throws CardException {
+        LOG.trace("performInstallForExtradite()");
+        // serialize the request
+        byte[] requestBytes = request.toBytes();
+        // build the command
+        CommandAPDU command = APDUUtil.buildCommand(
+                GP.CLA_GP,
+                GP.INS_INSTALL,
+                GP.INSTALL_P1_FOR_EXTRADITION,
+                GP.INSTALL_P2_NO_INFORMATION,
+                requestBytes);
+        // perform the operation
+        ResponseAPDU responseAPDU = transactSecureAndCheck(command);
+        // parse and return response
+        GPInstallForExtraditeResponse response = new GPInstallForExtraditeResponse();
+        response.readBytes(responseAPDU.getData());
+        return response;
+    }
+
+    public GPInstallForPersonalizeResponse performInstallForPersonalize(GPInstallForPersonalizeRequest request) throws CardException {
+        LOG.trace("performInstallForPersonalize()");
+        // serialize the request
+        byte[] requestBytes = request.toBytes();
+        // build the command
+        CommandAPDU command = APDUUtil.buildCommand(
+                GP.CLA_GP,
+                GP.INS_INSTALL,
+                GP.INSTALL_P1_FOR_PERSONALIZATION,
+                GP.INSTALL_P2_NO_INFORMATION,
+                requestBytes);
+        // perform the operation
+        ResponseAPDU responseAPDU = transactSecureAndCheck(command);
+        // parse and return response
+        GPInstallForPersonalizeResponse response = new GPInstallForPersonalizeResponse();
+        response.readBytes(responseAPDU.getData());
+        return response;
+    }
+
+    public GPInstallForRegistryUpdateResponse performInstallForPersonalize(GPInstallForRegistryUpdateRequest request) throws CardException {
+        LOG.trace("performInstallForRegistryUpdate()");
+        // serialize the request
+        byte[] requestBytes = request.toBytes();
+        // build the command
+        CommandAPDU command = APDUUtil.buildCommand(
+                GP.CLA_GP,
+                GP.INS_INSTALL,
+                GP.INSTALL_P1_FOR_REGISTRY_UPDATE,
+                GP.INSTALL_P2_NO_INFORMATION,
+                requestBytes);
+        // perform the operation
+        ResponseAPDU responseAPDU = transactSecureAndCheck(command);
+        // parse and return response
+        GPInstallForRegistryUpdateResponse response = new GPInstallForRegistryUpdateResponse();
         response.readBytes(responseAPDU.getData());
         return response;
     }
