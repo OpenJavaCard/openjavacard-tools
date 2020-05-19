@@ -281,6 +281,9 @@ public class GPRegistry {
         }
     }
 
+    /**
+     * Internal: update registry immediately if dirty
+     */
     private void ensureUpdated() {
         LOG.trace("ensureUpdated()");
         if(mDirty) {
