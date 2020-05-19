@@ -361,11 +361,11 @@ public class GPSecureChannel extends CardChannel {
         byte[] cardContext = ArrayUtil.concatenate(hostChallenge, cardChallenge);
         switch(mActiveProtocol.scpVersion) {
             case 2:
-                LOG.trace("computing cryptogram for SCP02");
+                LOG.trace("computing card cryptogram for SCP02");
                 GPKey encKey = mSessionKeys.getKeyByUsage(GPKeyUsage.ENC);
                 return GPCrypto.mac_3des_nulliv(encKey, cardContext);
             case 3:
-                LOG.trace("computing cryptogram for SCP03");
+                LOG.trace("computing card cryptogram for SCP03");
                 GPKey macKey = mSessionKeys.getKeyByUsage(GPKeyUsage.MAC);
                 return GPBouncy.scp03_kdf(macKey, (byte)0x00, cardContext, 64);
             default:
