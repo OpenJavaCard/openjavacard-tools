@@ -25,6 +25,8 @@ import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPKeyInfo;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.scp.GPSecureChannel;
+import org.openjavacard.gp.structure.GPInstallForExtraditeRequest;
+import org.openjavacard.gp.structure.GPInstallForExtraditeResponse;
 import org.openjavacard.gp.structure.GPInstallForInstallRequest;
 import org.openjavacard.gp.structure.GPInstallForInstallResponse;
 import org.openjavacard.gp.structure.GPInstallForLoadRequest;
@@ -179,6 +181,18 @@ public class GPIssuerDomain {
         GPInstallForInstallResponse response = mWrapper.performInstallForInstall(request);
         // finish up
         LOG.debug("install complete");
+    }
+
+    public void extraditeObject(AID objectAID, AID domainAID) throws CardException {
+        LOG.debug("extraditing object " + objectAID + " to domain " + domainAID);
+        // prepare parameters
+        GPInstallForExtraditeRequest request = new GPInstallForExtraditeRequest();
+        request.objectAID = objectAID;
+        request.domainAID = domainAID;
+        // perform the request
+        GPInstallForExtraditeResponse response = mWrapper.performInstallForExtradite(request);
+        // finish up
+        LOG.debug("extradition complete");
     }
 
     /**
