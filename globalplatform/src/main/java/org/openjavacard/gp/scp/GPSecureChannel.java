@@ -360,6 +360,8 @@ public class GPSecureChannel extends CardChannel {
     private byte[] computeCardCryptogram(byte[] hostChallenge, byte[] cardChallenge) {
         byte[] cardContext = ArrayUtil.concatenate(hostChallenge, cardChallenge);
         switch(mActiveProtocol.scpVersion) {
+            case 0:
+                return new byte[8];
             case 2:
                 LOG.trace("computing card cryptogram for SCP02");
                 GPKey encKey = mSessionKeys.getKeyByUsage(GPKeyUsage.ENC);
@@ -395,6 +397,8 @@ public class GPSecureChannel extends CardChannel {
      */
     private byte[] computeHostCryptogram(byte[] hostChallenge, byte[] cardChallenge) {
         switch(mActiveProtocol.scpVersion) {
+            case 0:
+                return new byte[8];
             case 2:
                 byte[] hostContext02 = ArrayUtil.concatenate(cardChallenge, hostChallenge);
                 GPKey encKey = mSessionKeys.getKeyByUsage(GPKeyUsage.ENC);
