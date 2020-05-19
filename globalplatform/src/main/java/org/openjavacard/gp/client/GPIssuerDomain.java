@@ -51,8 +51,8 @@ public class GPIssuerDomain {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPIssuerDomain.class);
 
-    private GPCard mCard;
-    private GPSecureWrapper mWrapper;
+    private final GPCard mCard;
+    private final GPSecureWrapper mWrapper;
 
     public GPIssuerDomain(GPCard card, GPSecureWrapper wrapper) {
         mCard = card;
