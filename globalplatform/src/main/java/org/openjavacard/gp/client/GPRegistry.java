@@ -536,6 +536,10 @@ public class GPRegistry {
             return mModules;
         }
 
+        public boolean hasModule(AID moduleAID) {
+            return mModules.contains(moduleAID);
+        }
+
         abstract boolean isLocked();
 
         abstract String getStateString();
