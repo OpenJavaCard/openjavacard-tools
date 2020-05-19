@@ -23,7 +23,6 @@ import org.openjavacard.tlv.TLVException;
 import org.openjavacard.tlv.TLVPrimitive;
 import org.openjavacard.util.HexUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;

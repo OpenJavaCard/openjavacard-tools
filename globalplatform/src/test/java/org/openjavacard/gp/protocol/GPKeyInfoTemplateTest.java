@@ -27,7 +27,6 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.openjavacard.tlv.TLVException;
 import org.openjavacard.util.HexUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

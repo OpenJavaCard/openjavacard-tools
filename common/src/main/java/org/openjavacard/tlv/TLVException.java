@@ -1,7 +1,5 @@
 package org.openjavacard.tlv;
 
-import java.io.IOException;
-
 public class TLVException extends Exception {
 
     public TLVException(String message) {

@@ -19,7 +19,6 @@
 
 package org.openjavacard.util;
 
-import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWInfo;
 
 import javax.smartcardio.CommandAPDU;

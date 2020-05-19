@@ -19,9 +19,6 @@
 
 package org.openjavacard.gp.keys;
 
-import org.openjavacard.gp.scp.SCPDiversification;
-import org.openjavacard.util.HexUtil;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;

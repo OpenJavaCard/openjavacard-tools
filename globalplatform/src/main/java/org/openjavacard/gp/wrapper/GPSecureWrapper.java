@@ -21,7 +21,16 @@ package org.openjavacard.gp.wrapper;
 
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.scp.GPSecureChannel;
-import org.openjavacard.gp.structure.*;
+import org.openjavacard.gp.structure.GPInstallForExtraditeRequest;
+import org.openjavacard.gp.structure.GPInstallForExtraditeResponse;
+import org.openjavacard.gp.structure.GPInstallForInstallRequest;
+import org.openjavacard.gp.structure.GPInstallForInstallResponse;
+import org.openjavacard.gp.structure.GPInstallForLoadRequest;
+import org.openjavacard.gp.structure.GPInstallForLoadResponse;
+import org.openjavacard.gp.structure.GPInstallForPersonalizeRequest;
+import org.openjavacard.gp.structure.GPInstallForPersonalizeResponse;
+import org.openjavacard.gp.structure.GPInstallForRegistryUpdateRequest;
+import org.openjavacard.gp.structure.GPInstallForRegistryUpdateResponse;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SWException;

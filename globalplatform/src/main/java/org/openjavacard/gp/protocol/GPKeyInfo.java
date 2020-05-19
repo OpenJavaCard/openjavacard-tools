@@ -25,8 +25,6 @@ import org.openjavacard.tlv.TLV;
 import org.openjavacard.tlv.TLVException;
 import org.openjavacard.tlv.TLVPrimitive;
 
-import java.io.IOException;
-
 /**
  * GlobalPlatform Key Information
  * <p/>

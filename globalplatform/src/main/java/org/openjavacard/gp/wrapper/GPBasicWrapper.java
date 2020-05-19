@@ -20,7 +20,6 @@
 package org.openjavacard.gp.wrapper;
 
 import org.openjavacard.emv.CPLC;
-import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
@@ -38,7 +37,6 @@ import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
-import java.io.IOException;
 
 /**
  * GlobalPlatform command wrapper for basic commands

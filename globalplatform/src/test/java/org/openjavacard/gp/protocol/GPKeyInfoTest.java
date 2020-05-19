@@ -27,8 +27,6 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.openjavacard.tlv.TLVException;
 import org.openjavacard.util.HexUtil;
 
-import java.io.IOException;
-
 @RunWith(BlockJUnit4ClassRunner.class)
 public class GPKeyInfoTest extends TestCase {
 
