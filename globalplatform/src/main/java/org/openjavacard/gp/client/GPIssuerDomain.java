@@ -75,13 +75,13 @@ public class GPIssuerDomain {
         LOG.debug("setting card identity");
         // log new values
         if(iin != null) {
-            LOG.trace("new IIN " + HexUtil.bytesToHex(iin));
+            LOG.debug("new IIN " + HexUtil.bytesToHex(iin));
         }
         if(cin != null) {
-            LOG.trace("new CIN " + HexUtil.bytesToHex(cin));
+            LOG.debug("new CIN " + HexUtil.bytesToHex(cin));
         }
         if(isd != null) {
-            LOG.trace("new ISD " + HexUtil.bytesToHex(isd));
+            LOG.debug("new ISD " + HexUtil.bytesToHex(isd));
         }
         // build the request
         GPStoreDataRequest req = new GPStoreDataRequest();
@@ -95,6 +95,8 @@ public class GPIssuerDomain {
             boolean lastBlock = i == (blocks.length - 1);
             mWrapper.performStoreData(blocks[i], i, lastBlock);
         }
+        // finish up
+        LOG.debug("change complete");
     }
 
     /**
@@ -245,6 +247,8 @@ public class GPIssuerDomain {
         }
         // upload the key block
         mWrapper.performPutKey(firstKeyId, keyVersion, data, multipleKeys);
+        // finish up
+        LOG.debug("key replace complete");
     }
 
     /**
@@ -322,7 +326,7 @@ public class GPIssuerDomain {
      * @throws CardException on error
      */
     public void lockCard() throws CardException {
-        LOG.debug("cardInitialized()");
+        LOG.debug("lockCard()");
         mWrapper.performSetStatusISD(mCard.getISD(), GP.CARD_STATE_LOCKED);
     }
 
