@@ -36,10 +36,10 @@ public abstract class SCPWrapper {
     /** Session keys in use */
     protected final GPKeySet mKeys;
 
-    /** Command encryption currently enabled? */
-    protected boolean mENC;
     /** Command authentication currently enabled? */
     protected boolean mMAC;
+    /** Command encryption currently enabled? */
+    protected boolean mENC;
     /** Response authentication currently enabled? */
     protected boolean mRMAC;
     /** Response encryption currently enabled? */
@@ -51,12 +51,21 @@ public abstract class SCPWrapper {
      */
     SCPWrapper(GPKeySet keys) {
         mKeys = keys;
-        // SCP0102 and SCP03 all start with MAC enabled
+        // most protocols start with MAC enabled
         mMAC = true;
         // other options must be enabled by client
         mENC = false;
         mRMAC = false;
         mRENC = false;
+    }
+
+    /**
+     * Used to start command authentication when it is expected
+     *
+     * Subclasses may want to set up state.
+     */
+    protected void startMAC() {
+        mMAC = true;
     }
 
     /**

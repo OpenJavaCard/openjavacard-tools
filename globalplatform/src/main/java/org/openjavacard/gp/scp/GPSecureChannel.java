@@ -336,6 +336,9 @@ public class GPSecureChannel extends CardChannel {
         // create CardAPDU wrapper
         mWrapper = buildWrapper();
 
+        // this is where we start using MAC
+        mWrapper.startMAC();
+
         // perform EXTERNAL AUTHENTICATE to authenticate to card
         LOG.debug("performing authentication");
         performExternalAuthenticate(hostCryptogram);
