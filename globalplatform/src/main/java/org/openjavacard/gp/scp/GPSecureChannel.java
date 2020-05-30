@@ -19,7 +19,6 @@
 
 package org.openjavacard.gp.scp;
 
-import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.crypto.GPBouncy;
 import org.openjavacard.gp.crypto.GPCrypto;
@@ -59,8 +58,6 @@ public class GPSecureChannel extends CardChannel {
     private final SecureRandom mRandom;
     /** Context for checks */
     private final GPContext mContext;
-    /** Reference to the card for communication */
-    private final GPCard mCard;
     /** Underlying channel wrapper for communication */
     private final GPBasicWrapper mBasicWrapper;
     /** Underlying card channel */
@@ -92,18 +89,17 @@ public class GPSecureChannel extends CardChannel {
      * <p/>
      * Objects are not intended to be reconfigured.
      * <p/>
-     * @param card this channel is for
+     * @param context for this secure channel
      * @param basicWrapper to communicate through
      * @param keys to use
      * @param protocolPolicy to conform to
      * @param securityPolicy to conform to
      */
-    public GPSecureChannel(GPCard card, GPBasicWrapper basicWrapper,
+    public GPSecureChannel(GPContext context, GPBasicWrapper basicWrapper,
                            GPKeySet keys, GPKeyDiversification diversification,
                            SCPProtocolPolicy protocolPolicy, SCPSecurityPolicy securityPolicy) {
         mRandom = new SecureRandom();
-        mContext = card.getContext();
-        mCard = card;
+        mContext = context;
         mBasicWrapper = basicWrapper;
         mChannel = mBasicWrapper.getChannel();
         mStaticKeys = keys;
