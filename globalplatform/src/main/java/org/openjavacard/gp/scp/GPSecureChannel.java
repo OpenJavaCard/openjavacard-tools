@@ -239,7 +239,6 @@ public class GPSecureChannel extends CardChannel {
      * @throws CardException
      */
     private ResponseAPDU transmitInternal(CommandAPDU command) throws CardException {
-        boolean traceEnabled = LOG.isTraceEnabled();
         // bug out if the channel is not open
         if (mWrapper == null) {
             throw new CardException("Secure channel is not connected");
