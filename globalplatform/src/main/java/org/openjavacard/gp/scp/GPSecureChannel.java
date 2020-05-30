@@ -100,8 +100,7 @@ public class GPSecureChannel extends CardChannel {
      */
     public GPSecureChannel(GPCard card, GPBasicWrapper basicWrapper,
                            GPKeySet keys, GPKeyDiversification diversification,
-                           SCPProtocolPolicy protocolPolicy,
-                           SCPSecurityPolicy securityPolicy) {
+                           SCPProtocolPolicy protocolPolicy, SCPSecurityPolicy securityPolicy) {
         mRandom = new SecureRandom();
         mContext = card.getContext();
         mCard = card;
