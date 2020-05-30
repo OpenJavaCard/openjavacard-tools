@@ -28,7 +28,6 @@ import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyUsage;
 import org.openjavacard.gp.protocol.GP;
 import org.openjavacard.gp.structure.GPInitUpdateResponse;
-import org.openjavacard.gp.wrapper.GPBasicWrapper;
 import org.openjavacard.iso.ISO7816;
 import org.openjavacard.iso.SW;
 import org.openjavacard.iso.SWException;
@@ -58,8 +57,6 @@ public class GPSecureChannel extends CardChannel {
     private final SecureRandom mRandom;
     /** Context for checks */
     private final GPContext mContext;
-    /** Underlying channel wrapper for communication */
-    private final GPBasicWrapper mBasicWrapper;
     /** Underlying card channel */
     private final CardChannel mChannel;
     /** Initial static keys */
@@ -90,18 +87,17 @@ public class GPSecureChannel extends CardChannel {
      * Objects are not intended to be reconfigured.
      * <p/>
      * @param context for this secure channel
-     * @param basicWrapper to communicate through
+     * @param channel to communicate through
      * @param keys to use
      * @param protocolPolicy to conform to
      * @param securityPolicy to conform to
      */
-    public GPSecureChannel(GPContext context, GPBasicWrapper basicWrapper,
+    public GPSecureChannel(GPContext context, CardChannel channel,
                            GPKeySet keys, GPKeyDiversification diversification,
                            SCPProtocolPolicy protocolPolicy, SCPSecurityPolicy securityPolicy) {
         mRandom = new SecureRandom();
         mContext = context;
-        mBasicWrapper = basicWrapper;
-        mChannel = mBasicWrapper.getChannel();
+        mChannel = channel;
         mStaticKeys = keys;
         mDiversification = diversification;
         mProtocolPolicy = protocolPolicy;
@@ -242,7 +238,7 @@ public class GPSecureChannel extends CardChannel {
         // wrap the command (sign, encrypt)
         CommandAPDU wrappedCommand = mWrapper.wrap(command);
         // send the wrapped command
-        ResponseAPDU wrappedResponse = mBasicWrapper.transmitRaw(wrappedCommand);
+        ResponseAPDU wrappedResponse = mChannel.transmit(wrappedCommand);
         // unwrap the response, but not if it is an error
         int sw = wrappedResponse.getSW();
         ResponseAPDU response = wrappedResponse;
@@ -547,7 +543,7 @@ public class GPSecureChannel extends CardChannel {
                 hostChallenge
         );
         // and transmit it on the underlying channel
-        ResponseAPDU initResponse = mBasicWrapper.transmitRaw(initCommand);
+        ResponseAPDU initResponse = mChannel.transmit(initCommand);
         // check the response
         checkResponse(initResponse);
         // parse the response
