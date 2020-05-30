@@ -291,16 +291,20 @@ public abstract class GPCommand implements Runnable {
         return ks;
     }
 
-    protected GPKeySet buildKeysFromParameters(int keyId, int keyVersion, GPKeyCipher cipher, String types, String secrets) {
+    public static GPKeySet buildKeysFromParameters(int keyId, int keyVersion, GPKeyCipher cipher, String types, String secrets) {
         // XXX this is not comprehensive because of the loop and protocol variations
         GPKeyId.checkKeyId(keyId);
         GPKeyVersion.checkKeyVersion(keyVersion);
+        // build a key set
         GPKeySet keys = new GPKeySet("commandline", keyVersion);
+        // split arguments
         String[] typeStrings = types.split(":");
         String[] secretStrings = secrets.split(":");
+        // check lengths of provided arrays
         if(typeStrings.length != secretStrings.length) {
             throw new Error("Must provide an equal number of key types and secrets");
         }
+        // assume number of keys from number of types
         int numKeys = typeStrings.length;
         for(int i = 0; i < numKeys; i++) {
             GPKeyUsage usage = GPKeyUsage.valueOf(typeStrings[i]);
