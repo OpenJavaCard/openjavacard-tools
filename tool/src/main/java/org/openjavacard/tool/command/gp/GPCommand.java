@@ -36,17 +36,7 @@ import org.openjavacard.iso.AID;
 import org.openjavacard.util.HexUtil;
 
 import javax.smartcardio.CardException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.util.Enumeration;
 
 public abstract class GPCommand implements Runnable {
 
@@ -119,24 +109,6 @@ public abstract class GPCommand implements Runnable {
     private String scpKeySecrets = null;
 
     @Parameter(
-            names = "--keystore-file", order = 500,
-            description = "Keystore: file containing keystore"
-    )
-    private String keystoreFile = null;
-
-    @Parameter(
-            names = "--keystore-type", order = 500,
-            description = "Keystore: type of keystore"
-    )
-    private String keystoreType = null;
-
-    @Parameter(
-            names = "--keystore-password", order = 500,
-            description = "Keystore: password for keystore"
-    )
-    private String keystorePassword = null;
-
-    @Parameter(
             names = "--force-protected", order = 800,
             description = "Force operation on protected object"
     )
@@ -185,20 +157,6 @@ public abstract class GPCommand implements Runnable {
 
         if(scpKeySecrets != null) {
             keys = buildKeysFromParameters(scpKeyId, scpKeyVersion, scpKeyCipher, scpKeyTypes, scpKeySecrets);
-        } else {
-            if (keystoreFile != null) {
-                os.println("Opening keystore " + keystoreFile);
-                KeyStore ks = openKeyStore();
-                try {
-                    Enumeration<String> aliases = ks.aliases();
-                    while (aliases.hasMoreElements()) {
-                        String alias = aliases.nextElement();
-                        os.println("Keystore contains " + alias);
-                    }
-                } catch (KeyStoreException e) {
-                    throw new Error("Could not load keystore aliases", e);
-                }
-            }
         }
 
         return mContext.findSingleGPCard(reader, isd, keys);
@@ -250,45 +208,6 @@ public abstract class GPCommand implements Runnable {
         os.println("DISCONNECTING");
         card.disconnect();
         os.println();
-    }
-
-    private KeyStore openKeyStore() {
-        KeyStore ks;
-
-        String ksType = keystoreType;
-        if(ksType == null) {
-            ksType = KeyStore.getDefaultType();
-        }
-        String ksPath = keystoreFile;
-        if(ksPath == null) {
-            throw new Error("No keystore file specified");
-        }
-        File ksFile = new File(ksPath);
-        if(!(ksFile.exists() && ksFile.isFile())) {
-            throw new Error("Not a file: " + ksFile);
-        }
-        String ksPass = keystorePassword;
-        char[] ksPassRaw = null;
-        if(ksPass != null) {
-            ksPassRaw = ksPass.toCharArray();
-        }
-        try {
-            InputStream kis = new FileInputStream(ksFile);
-            ks = KeyStore.getInstance(ksType);
-            ks.load(kis, ksPassRaw);
-        } catch (FileNotFoundException e) {
-            throw new Error("Could not open keystore", e);
-        } catch (KeyStoreException e) {
-            throw new Error("Could not open keystore", e);
-        } catch (CertificateException e) {
-            throw new Error("Could not open keystore", e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new Error("Could not open keystore", e);
-        } catch (IOException e) {
-            throw new Error("Could not open keystore", e);
-        }
-
-        return ks;
     }
 
     public static GPKeySet buildKeysFromParameters(int keyId, int keyVersion, GPKeyCipher cipher, String types, String secrets) {
