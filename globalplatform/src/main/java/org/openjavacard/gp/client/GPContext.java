@@ -19,6 +19,8 @@
 
 package org.openjavacard.gp.client;
 
+import org.openjavacard.gp.scp.SCPProtocolPolicy;
+import org.openjavacard.gp.scp.SCPSecurityPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +30,36 @@ public class GPContext {
 
     private boolean mKeyLoggingEnabled = false;
 
+    private SCPProtocolPolicy mProtocolPolicy = SCPProtocolPolicy.PERMISSIVE;
+    private SCPSecurityPolicy mSecurityPolicy = SCPSecurityPolicy.CMAC;
+
+    /**
+     * Main constructor
+     */
     public GPContext() {
     }
 
     /** @return true if key logging has been enabled */
     public boolean isKeyLoggingEnabled() {
         return mKeyLoggingEnabled;
+    }
+
+    public SCPProtocolPolicy getProtocolPolicy() {
+        return mProtocolPolicy;
+    }
+
+    public SCPSecurityPolicy getSecurityPolicy() {
+        return mSecurityPolicy;
+    }
+
+    public void setProtocolPolicy(SCPProtocolPolicy protocolPolicy) {
+        LOG.info("new protocol policy " + protocolPolicy);
+        mProtocolPolicy = protocolPolicy;
+    }
+
+    public void setSecurityPolicy(SCPSecurityPolicy securityPolicy) {
+        LOG.info("new protocol policy " + securityPolicy);
+        mSecurityPolicy = securityPolicy;
     }
 
     /**

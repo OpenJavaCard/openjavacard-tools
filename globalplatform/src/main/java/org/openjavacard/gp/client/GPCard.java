@@ -381,7 +381,9 @@ public class GPCard {
             mCardKeyInfo.checkKeysetForUsage(mKeys);
 
             // create a secure channel object
-            mSecureChannel = new GPSecureChannel(mContext, mBasicChannel, mKeys, mDiversification, mProtocolPolicy, mSecurityPolicy);
+            mSecureChannel = new GPSecureChannel(mContext, mBasicChannel, mKeys, mDiversification);
+            mSecureChannel.setProtocolPolicy(mProtocolPolicy);
+            mSecureChannel.setSecurityPolicy(mSecurityPolicy);
 
             // set protocol expectation of secure channel
             if (mCardData != null) {

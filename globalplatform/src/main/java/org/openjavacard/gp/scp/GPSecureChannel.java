@@ -63,10 +63,11 @@ public class GPSecureChannel extends CardChannel {
     private final GPKeySet mStaticKeys;
     /** Key diversification to apply */
     private final GPKeyDiversification mDiversification;
+
     /** Protocol policy in effect */
-    private final SCPProtocolPolicy mProtocolPolicy;
+    private SCPProtocolPolicy mProtocolPolicy;
     /** Security policy in effect */
-    private final SCPSecurityPolicy mSecurityPolicy;
+    private SCPSecurityPolicy mSecurityPolicy;
 
     /** Expected SCP protocol - 0 means ANY */
     private int mExpectedProtocol = 0;
@@ -89,19 +90,19 @@ public class GPSecureChannel extends CardChannel {
      * @param context for this secure channel
      * @param channel to communicate through
      * @param keys to use
-     * @param protocolPolicy to conform to
-     * @param securityPolicy to conform to
      */
     public GPSecureChannel(GPContext context, CardChannel channel,
-                           GPKeySet keys, GPKeyDiversification diversification,
-                           SCPProtocolPolicy protocolPolicy, SCPSecurityPolicy securityPolicy) {
+                           GPKeySet keys, GPKeyDiversification diversification) {
+        // final fields
         mRandom = new SecureRandom();
         mContext = context;
         mChannel = channel;
         mStaticKeys = keys;
         mDiversification = diversification;
-        mProtocolPolicy = protocolPolicy;
-        mSecurityPolicy = securityPolicy;
+        // config fields
+        mProtocolPolicy = context.getProtocolPolicy();
+        mSecurityPolicy = context.getSecurityPolicy();
+        // state fields
         reset();
     }
 
@@ -122,9 +123,35 @@ public class GPSecureChannel extends CardChannel {
         return mActiveProtocol;
     }
 
+    /** @return the protocol policy in effect on this channel */
+    public SCPProtocolPolicy getProtocolPolicy() {
+        return mProtocolPolicy;
+    }
+
+    /** @return the security policy in effect on this channel */
+    public SCPSecurityPolicy getSecurityPolicy() {
+        return mSecurityPolicy;
+    }
+
     /** @return true if the channel is established */
     public boolean isEstablished() {
         return mIsEstablished;
+    }
+
+    /**
+     * Set the protocol policy to be used for this channel
+     * @param protocolPolicy
+     */
+    public void setProtocolPolicy(SCPProtocolPolicy protocolPolicy) {
+        mProtocolPolicy = protocolPolicy;
+    }
+
+    /**
+     * Set the security policy to be used for this channel
+     * @param securityPolicy
+     */
+    public void setSecurityPolicy(SCPSecurityPolicy securityPolicy) {
+        mSecurityPolicy = securityPolicy;
     }
 
     /**
@@ -265,6 +292,10 @@ public class GPSecureChannel extends CardChannel {
      */
     public void open() throws CardException {
         LOG.debug("opening secure channel");
+
+        // log policies
+        LOG.debug("using protocol policy " + mProtocolPolicy);
+        LOG.debug("using security policy " + mSecurityPolicy);
 
         // generate the host challenge
         byte[] hostChallenge = generateChallenge();
