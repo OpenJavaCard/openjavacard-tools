@@ -22,8 +22,6 @@ package org.openjavacard.gp.scp;
 import org.openjavacard.util.HexUtil;
 import org.openjavacard.util.VerboseString;
 
-import javax.smartcardio.CardException;
-
 /**
  * Represents a parameterized SCP protocol
  * <p/>
@@ -104,7 +102,7 @@ public abstract class SCPParameters implements VerboseString {
      * <p/>
      * @param securityPolicy to check
      */
-    public abstract boolean isSecuritySupported(SCPSecurityPolicy securityPolicy) throws CardException;
+    public abstract boolean isSecuritySupported(SCPSecurityPolicy securityPolicy);
 
     /**
      * Stringify the parameters
