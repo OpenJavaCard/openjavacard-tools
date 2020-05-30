@@ -19,6 +19,7 @@
 
 package org.openjavacard.testbench.main;
 
+import org.openjavacard.generic.GenericContext;
 import org.openjavacard.gp.client.GPContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class Bench {
     private BenchConfiguration mConfig;
 
     private GPContext mContext;
+    private GenericContext mGeneric;
 
     private List<BenchReader> mReaders;
 
@@ -57,12 +59,12 @@ public class Bench {
         List<CardTerminal> terminals;
         if(mConfig.allReaders) {
             // all means all
-            terminals = mContext.findTerminals();
+            terminals = mGeneric.findTerminals();
         } else {
             // else filter for given names/prefixes
             terminals = new ArrayList<>();
             for(String readerName: mConfig.reader) {
-                terminals.add(mContext.findSingleTerminal(readerName));
+                terminals.add(mGeneric.findSingleTerminal(readerName));
             }
         }
         // complain if no readers at all

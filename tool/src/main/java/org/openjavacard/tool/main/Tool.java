@@ -21,6 +21,7 @@ package org.openjavacard.tool.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import org.openjavacard.generic.GenericContext;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.tool.command.aid.AIDInfo;
 import org.openjavacard.tool.command.aid.AIDNow;
@@ -63,9 +64,11 @@ public class Tool {
     )
     boolean help = false;
 
+    private final GenericContext mGeneric;
     private final GPContext mContext;
 
     Tool() {
+        mGeneric = new GenericContext();
         mContext = new GPContext();
     }
 
@@ -117,8 +120,8 @@ public class Tool {
         JCommander jc = new JCommander();
         jc.addConverterFactory(new ConverterFactory());
 
-        jc.addCommand(new GenericAPDU(mContext));
-        jc.addCommand(new GenericReaders(mContext));
+        jc.addCommand(new GenericAPDU(mGeneric));
+        jc.addCommand(new GenericReaders(mGeneric));
 
         jc.addCommand(new AIDInfo());
         jc.addCommand(new AIDNow());
@@ -144,8 +147,8 @@ public class Tool {
         jc.addCommand(new PkgList(mContext));
         jc.addCommand(new PkgSearch(mContext));
 
-        jc.addCommand(new ScanName(mContext));
-        jc.addCommand(new ScanFID(mContext));
+        jc.addCommand(new ScanName(mGeneric));
+        jc.addCommand(new ScanFID(mGeneric));
 
         return jc;
     }

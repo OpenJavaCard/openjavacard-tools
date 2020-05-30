@@ -21,6 +21,7 @@ package org.openjavacard.tool.command.gp;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.validators.PositiveInteger;
+import org.openjavacard.generic.GenericContext;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.keys.GPKey;
@@ -36,6 +37,7 @@ import org.openjavacard.iso.AID;
 import org.openjavacard.util.HexUtil;
 
 import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
 import java.io.PrintStream;
 
 public abstract class GPCommand implements Runnable {
@@ -121,9 +123,11 @@ public abstract class GPCommand implements Runnable {
     private boolean logKeys = false;
 
     private GPContext mContext;
+    private GenericContext mGeneric;
 
     public GPCommand(GPContext context) {
         mContext = context;
+        mGeneric = new GenericContext();
     }
 
     public GPContext getContext() {
@@ -159,7 +163,35 @@ public abstract class GPCommand implements Runnable {
             keys = buildKeysFromParameters(scpKeyId, scpKeyVersion, scpKeyCipher, scpKeyTypes, scpKeySecrets);
         }
 
-        return mContext.findSingleGPCard(reader, isd, keys);
+        return findSingleGPCard(reader, isd, keys);
+    }
+
+    public GPCard findSingleGPCard(String prefix, AID sd, GPKeySet keys) {
+        GPCard card;
+        CardTerminal terminal = mGeneric.findSingleTerminal(prefix);
+        try {
+            // check card presence
+            if (!terminal.isCardPresent()) {
+                throw new Error("No card present in terminal");
+            }
+            // create GP client
+            card = new GPCard(mContext, terminal);
+            // tell the client if we know the SD AID
+            if(sd != null) {
+                card.setISD(sd);
+            }
+            if(keys != null) {
+                card.setKeys(keys);
+            }
+            // detect GP applet
+            //boolean detected = card.detect();
+            //if (!detected) {
+            //    throw new Error("Could not find a GlobalPlatform applet on the card");
+            //}
+        } catch (CardException e) {
+            throw new Error("Error detecting card", e);
+        }
+        return card;
     }
 
     /**
