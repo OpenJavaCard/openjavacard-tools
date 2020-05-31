@@ -130,22 +130,22 @@ public class Tool {
         jc.addCommand(new CapSize());
         jc.addCommand(new CapDump());
 
-        jc.addCommand(new GPInfo(mContext));
-        jc.addCommand(new GPList(mContext));
-        jc.addCommand(new GPLoad(mContext));
-        jc.addCommand(new GPInstall(mContext));
-        jc.addCommand(new GPDelete(mContext));
-        jc.addCommand(new GPExtradite(mContext));
-        jc.addCommand(new GPState(mContext));
-        jc.addCommand(new GPIdentity(mContext));
-        jc.addCommand(new GPKeyReplace(mContext));
+        jc.addCommand(new GPInfo());
+        jc.addCommand(new GPList());
+        jc.addCommand(new GPLoad());
+        jc.addCommand(new GPInstall());
+        jc.addCommand(new GPDelete());
+        jc.addCommand(new GPExtradite());
+        jc.addCommand(new GPState());
+        jc.addCommand(new GPIdentity());
+        jc.addCommand(new GPKeyReplace());
 
-        jc.addCommand(new PkgAvailable(mContext));
-        jc.addCommand(new PkgInfo(mContext));
-        jc.addCommand(new PkgInit(mContext));
-        jc.addCommand(new PkgInstall(mContext));
-        jc.addCommand(new PkgList(mContext));
-        jc.addCommand(new PkgSearch(mContext));
+        jc.addCommand(new PkgAvailable());
+        jc.addCommand(new PkgInfo());
+        jc.addCommand(new PkgInit());
+        jc.addCommand(new PkgInstall());
+        jc.addCommand(new PkgList());
+        jc.addCommand(new PkgSearch());
 
         jc.addCommand(new ScanName(mGeneric));
         jc.addCommand(new ScanFID(mGeneric));

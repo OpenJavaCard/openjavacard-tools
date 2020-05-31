@@ -31,6 +31,7 @@ import org.openjavacard.cap.file.CapFile;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;
 import org.openjavacard.jackson.OJCJacksonModule;
+import org.openjavacard.tool.command.base.BasicCommand;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +42,7 @@ import java.util.List;
         commandNames = "cap-dump",
         commandDescription = "CAP: EXPERIMENTAL - Dump a CAP file"
 )
-public class CapDump implements Runnable {
+public class CapDump extends BasicCommand {
 
     @Parameter(
             description = "CAP files to show information about",
@@ -50,7 +51,7 @@ public class CapDump implements Runnable {
     private List<File> capFiles;
 
     @Override
-    public void run() {
+    public void execute() {
         PrintStream os = System.out;
 
         JacksonXmlModule xmlModule = new JacksonXmlModule();

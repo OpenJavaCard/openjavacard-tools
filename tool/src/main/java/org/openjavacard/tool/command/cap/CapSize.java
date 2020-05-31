@@ -26,6 +26,7 @@ import org.openjavacard.cap.file.CapFileComponent;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;
 import org.openjavacard.gp.client.GPLoadFile;
+import org.openjavacard.tool.command.base.BasicCommand;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -35,7 +36,7 @@ import java.util.List;
         commandNames = "cap-size",
         commandDescription = "CAP: Show size of a cap file, including load size"
 )
-public class CapSize implements Runnable {
+public class CapSize extends BasicCommand {
 
     @Parameter(
             description = "CAP files to show information about",
@@ -44,7 +45,7 @@ public class CapSize implements Runnable {
     private List<File> capFiles;
 
     @Override
-    public void run() {
+    public void execute() {
         PrintStream os = System.out;
 
         for (File file : capFiles) {

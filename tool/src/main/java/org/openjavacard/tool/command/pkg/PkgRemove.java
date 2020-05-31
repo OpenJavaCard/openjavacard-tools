@@ -21,7 +21,6 @@ package org.openjavacard.tool.command.pkg;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.packaging.manager.OJCPackage;
 import org.openjavacard.packaging.manager.OJCPackageManager;
 
@@ -37,10 +36,6 @@ public class PkgRemove extends PkgCommand {
             required = true
     )
     String packageName;
-
-    public PkgRemove(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(OJCPackageManager manager) throws CardException {

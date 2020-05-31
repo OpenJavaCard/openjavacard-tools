@@ -20,7 +20,6 @@
 package org.openjavacard.tool.command.pkg;
 
 import com.beust.jcommander.Parameters;
-import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.packaging.manager.OJCPackageManager;
 
 import javax.smartcardio.CardException;
@@ -30,10 +29,6 @@ import javax.smartcardio.CardException;
         commandDescription = "Packages: Initialize a card with a packaging system"
 )
 public class PkgInit extends PkgCommand {
-
-    public PkgInit(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(OJCPackageManager manager) throws CardException {

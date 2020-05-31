@@ -23,6 +23,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 import org.openjavacard.util.HexUtil;
 
 import javax.smartcardio.CardException;
@@ -32,7 +33,7 @@ import java.io.PrintStream;
         commandNames = "gp-identity",
         commandDescription = "GlobalPlatform: show or change card identity"
 )
-public class GPIdentity extends GPCommand {
+public class GPIdentity extends BasicGPCommand {
 
     @Parameter(
             names = "--new-iin",
@@ -51,10 +52,6 @@ public class GPIdentity extends GPCommand {
             description = "New AID for the ISD of the card"
     )
     private byte[] isd;
-
-    public GPIdentity(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {

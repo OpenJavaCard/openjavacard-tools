@@ -20,7 +20,6 @@
 package org.openjavacard.tool.command.pkg;
 
 import com.beust.jcommander.Parameters;
-import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.packaging.manager.OJCPackage;
 import org.openjavacard.packaging.manager.OJCPackageManager;
 
@@ -32,10 +31,6 @@ import java.util.List;
         commandDescription = "Packages: List available packages"
 )
 public class PkgAvailable extends PkgCommand {
-
-    public PkgAvailable(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(OJCPackageManager manager) throws CardException {

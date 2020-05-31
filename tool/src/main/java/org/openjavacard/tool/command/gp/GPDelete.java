@@ -27,6 +27,7 @@ import org.openjavacard.gp.client.GPIssuerDomain;
 import org.openjavacard.gp.client.GPRegistry;
 import org.openjavacard.iso.AID;
 import org.openjavacard.iso.AIDInfo;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -37,7 +38,7 @@ import java.util.List;
         commandNames = "gp-delete",
         commandDescription = "GlobalPlatform: delete applets or packages from the card"
 )
-public class GPDelete extends GPCommand {
+public class GPDelete extends BasicGPCommand {
 
     @Parameter(
             names = "--related",
@@ -56,10 +57,6 @@ public class GPDelete extends GPCommand {
             required = true
     )
     private List<AID> objectAIDs = null;
-
-    public GPDelete(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {

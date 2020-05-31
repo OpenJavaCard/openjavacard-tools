@@ -28,6 +28,7 @@ import org.openjavacard.cap.file.CapFileComponent;
 import org.openjavacard.cap.file.CapFileImport;
 import org.openjavacard.cap.file.CapFilePackage;
 import org.openjavacard.cap.file.CapFileReader;
+import org.openjavacard.tool.command.base.BasicCommand;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,7 @@ import java.util.List;
         commandNames = "cap-info",
         commandDescription = "CAP: Show information about a cap file"
 )
-public class CapInfo implements Runnable {
+public class CapInfo extends BasicCommand {
 
     @Parameter(
             description = "CAP files to show information about",
@@ -59,7 +60,7 @@ public class CapInfo implements Runnable {
     private boolean showComponents = false;
 
     @Override
-    public void run() {
+    public void execute() {
         PrintStream os = System.out;
 
         if(showAll) {

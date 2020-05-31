@@ -26,6 +26,7 @@ import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.protocol.GPCardData;
 import org.openjavacard.gp.protocol.GPKeyInfoTemplate;
 import org.openjavacard.gp.scp.SCPParameters;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 import org.openjavacard.util.ATRUtil;
 import org.openjavacard.util.HexUtil;
 
@@ -37,11 +38,7 @@ import java.io.PrintStream;
         commandNames = "gp-info",
         commandDescription = "GlobalPlatform: show information about card"
 )
-public class GPInfo extends GPCommand {
-
-    public GPInfo(GPContext context) {
-        super(context);
-    }
+public class GPInfo extends BasicGPCommand {
 
     @Override
     protected void performOperation(GPContext context, GPCard card) {

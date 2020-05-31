@@ -23,18 +23,14 @@ import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.packaging.manager.OJCPackageContext;
 import org.openjavacard.packaging.manager.OJCPackageManager;
-import org.openjavacard.tool.command.gp.GPCommand;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
 
-public abstract class PkgCommand extends GPCommand {
+public abstract class PkgCommand extends BasicGPCommand {
 
     OJCPackageContext mPkgContext;
-
-    public PkgCommand(GPContext context) {
-        super(context);
-    }
 
     @Override
     public void run() {

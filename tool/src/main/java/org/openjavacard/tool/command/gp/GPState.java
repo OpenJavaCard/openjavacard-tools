@@ -25,6 +25,7 @@ import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.client.GPIssuerDomain;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -34,7 +35,7 @@ import java.util.List;
         commandNames = "gp-state",
         commandDescription = "GlobalPlatform: set state of the card or applets"
 )
-public class GPState extends GPCommand {
+public class GPState extends BasicGPCommand {
 
     @Parameter(
             names = "--confirm-irreversible",
@@ -83,10 +84,6 @@ public class GPState extends GPCommand {
             description = "Unlock the indicated applet"
     )
     private List<AID> appUnlock;
-
-    public GPState(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {

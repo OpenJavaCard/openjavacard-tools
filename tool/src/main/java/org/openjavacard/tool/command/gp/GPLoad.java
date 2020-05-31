@@ -30,6 +30,7 @@ import org.openjavacard.gp.client.GPIssuerDomain;
 import org.openjavacard.gp.client.GPLoadFile;
 import org.openjavacard.gp.client.GPRegistry;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 
 import javax.smartcardio.CardException;
 import java.io.File;
@@ -42,7 +43,7 @@ import java.util.List;
         commandNames = "gp-load",
         commandDescription = "GlobalPlatform: load objects onto the card"
 )
-public class GPLoad extends GPCommand {
+public class GPLoad extends BasicGPCommand {
 
     @Parameter(
             description = "CAP files to load",
@@ -61,10 +62,6 @@ public class GPLoad extends GPCommand {
             description = "Only load if not present"
     )
     private boolean lazy = false;
-
-    public GPLoad(GPContext context) {
-        super(context);
-    }
 
     public List<File> getFiles() {
         return files;

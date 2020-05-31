@@ -28,6 +28,7 @@ import org.openjavacard.gp.keys.GPKeyCipher;
 import org.openjavacard.gp.keys.GPKeyId;
 import org.openjavacard.gp.keys.GPKeySet;
 import org.openjavacard.gp.keys.GPKeyVersion;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -36,7 +37,7 @@ import java.io.PrintStream;
         commandNames = "gp-key-replace",
         commandDescription = "GlobalPlatform: replace card security keys"
 )
-public class GPKeyReplace extends GPCommand {
+public class GPKeyReplace extends BasicGPCommand {
 
     @Parameter(
             names = "--new-id",
@@ -69,10 +70,6 @@ public class GPKeyReplace extends GPCommand {
             names = "--confirm-replace"
     )
     private boolean confirmReplace = false;
-
-    public GPKeyReplace(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {

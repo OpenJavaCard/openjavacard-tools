@@ -24,6 +24,7 @@ import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.gp.client.GPRegistry;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 
 import javax.smartcardio.CardException;
 import java.io.PrintStream;
@@ -33,7 +34,7 @@ import java.util.List;
         commandNames = "gp-list",
         commandDescription = "GlobalPlatform: list objects on card"
 )
-public class GPList extends GPCommand {
+public class GPList extends BasicGPCommand {
 
     @Parameter(
             names = {"-a", "--all"},
@@ -58,10 +59,6 @@ public class GPList extends GPCommand {
             description = "Show applets (APP)"
     )
     private boolean showAPP;
-
-    public GPList(GPContext context) {
-        super(context);
-    }
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {

@@ -24,14 +24,16 @@ import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 
+import javax.smartcardio.CardException;
 import java.io.PrintStream;
 
 @Parameters(
         commandNames = "gp-extradite",
         commandDescription = "GlobalPlatform: extradite an application to an SD"
 )
-public class GPExtradite extends GPCommand {
+public class GPExtradite extends BasicGPCommand {
 
     @Parameter(
             names = "--domain",
@@ -41,21 +43,17 @@ public class GPExtradite extends GPCommand {
     private AID domainAID;
 
     @Parameter(
-            names = "--applet",
-            description = "Applet to extradite",
+            names = "--object",
+            description = "Object to extradite",
             required = true
     )
-    private AID appletAID;
-
-    public GPExtradite(GPContext context) {
-        super(context);
-    }
+    private AID objectAID;
 
     @Override
-    protected void performOperation(GPContext context, GPCard card) {
+    protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
 
-        os.println("Extraditing applet " + appletAID + " to domain " + domainAID);
+        os.println("Extraditing applet " + objectAID + " to domain " + domainAID);
     }
 
 }

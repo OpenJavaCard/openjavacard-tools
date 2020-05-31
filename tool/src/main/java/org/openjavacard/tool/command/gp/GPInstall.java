@@ -27,6 +27,7 @@ import org.openjavacard.gp.client.GPIssuerDomain;
 import org.openjavacard.gp.client.GPRegistry;
 import org.openjavacard.gp.protocol.GPPrivilege;
 import org.openjavacard.iso.AID;
+import org.openjavacard.tool.command.base.BasicGPCommand;
 import org.openjavacard.util.HexUtil;
 
 import javax.smartcardio.CardException;
@@ -39,7 +40,7 @@ import java.util.List;
         commandNames = "gp-install",
         commandDescription = "GlobalPlatform: install an applet"
 )
-public class GPInstall extends GPCommand {
+public class GPInstall extends BasicGPCommand {
 
     @Parameter(
             names = "--module",
@@ -90,10 +91,6 @@ public class GPInstall extends GPCommand {
     )
     private boolean reinstall;
 
-    public GPInstall(GPContext context) {
-        super(context);
-    }
-
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
@@ -138,7 +135,7 @@ public class GPInstall extends GPCommand {
         // load packages
         if(mustLoad) {
             os.println("Loading provided packages");
-            GPLoad load = new GPLoad(context);
+            GPLoad load = new GPLoad();
             load.setFiles(capFiles);
             load.setReload(reload);
             load.performOperation(context, card);
