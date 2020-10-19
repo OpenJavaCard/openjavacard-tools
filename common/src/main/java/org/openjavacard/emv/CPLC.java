@@ -37,6 +37,7 @@ import java.util.Map;
  * Many cards intended for EMV use provide this data structure, and it is considered well-known.
  * <p/>
  * Supposedly defined in the proprietary "Visa Integrated Circuit Card Specification".
+ * <p/>
  */
 public class CPLC {
 
