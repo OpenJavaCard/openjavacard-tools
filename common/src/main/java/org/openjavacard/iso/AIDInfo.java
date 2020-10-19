@@ -66,14 +66,41 @@ public class AIDInfo {
         addProtected(  "A000000003000000", "OpenPlatform ISD", AIDUsage.DOMAIN);
         addProtected(  "A0000000035350",   "OpenPlatform SSD Package", AIDUsage.PACKAGE);
 
+        // ETSI
+        addDescription("A000000003",       "ETSI", AIDUsage.PREFIX);
+        addDescription("A0000000030001",   "ETSI GSM", AIDUsage.PREFIX);
+        addDescription("A0000000030002",   "ETSI GSM SIM toolkit", AIDUsage.PREFIX);
+        addDescription("A0000000030003",   "ETSI GSM SIM API", AIDUsage.PREFIX);
+        addDescription("A0000000030004",   "ETSI TETRA", AIDUsage.PREFIX);
+        addDescription("A0000000030005",   "ETSI UICC API", AIDUsage.PREFIX);
+        addDescription("A0000000030101",   "ETSI DVB CBMS KMS", AIDUsage.PREFIX);
+        addDescription("A0000000030201",   "ETSI M2MSM", AIDUsage.PREFIX);
+
+        // 3GPP
+        addDescription("A000000087",       "3GPP", AIDUsage.PREFIX);
+
         // GlobalPlatform
-        addDescription("A000000151",       "GlobalPlatform", AIDUsage.PREFIX);
-        addProtected(  "A000000151000000", "GlobalPlatform ISD", AIDUsage.DOMAIN);
-        addProtected(  "A0000001515350",   "GlobalPlatform SSD Package", AIDUsage.PACKAGE);
+        addDescription("A000000151",         "GlobalPlatform", AIDUsage.PREFIX);
+        addProtected(  "A000000151000000",   "GlobalPlatform ISD", AIDUsage.DOMAIN);
+        addProtected(  "A000000151000158",   "GlobalPlatform EUSD Package", AIDUsage.PACKAGE);
+        addProtected(  "A00000015100015800", "GlobalPlatform EUSD", AIDUsage.DOMAIN);
+        addProtected(  "A0000001515350",     "GlobalPlatform SSD Package", AIDUsage.PACKAGE);
+
+        // 3GPP2
+        addDescription("A000000343",       "3GPP2", AIDUsage.PREFIX);
+
+        // OMA
+        addDescription("A000000419",       "OMA", AIDUsage.PREFIX);
+
+        // WiMAX Forum
+        addDescription("A000000424",       "WiMAX Forum", AIDUsage.PREFIX);
 
         // Yubico
         addDescription("A000000527",       "Yubico", AIDUsage.PREFIX);
         addDescription("A0000005272101",   "Yubikey OATH", AIDUsage.PREFIX);
+
+        // oneM2M
+        addDescription("A000000645",       "oneM2M", AIDUsage.PREFIX);
 
         // NXP Germany
         addDescription("D276000085",       "NXP Germany", AIDUsage.PREFIX);
@@ -87,6 +114,9 @@ public class AIDInfo {
         addDescription("D2760001240102",   "fsfEurope OpenPGP V2", AIDUsage.APPLET);
         addDescription("D2760001240103",   "fsfEurope OpenPGP V3", AIDUsage.APPLET);
         addDescription("D27600012402",     "fsfEurope SmartChess", AIDUsage.PREFIX);
+
+        // signal interrupt
+        addDescription("D276000177",   "signal interrupt", AIDUsage.PREFIX);
 
         // OpenJavaCard project (under RID provided by signal interrupt)
         addDescription("D27600017710",   "OpenJavaCard", AIDUsage.PREFIX);
@@ -124,8 +154,7 @@ public class AIDInfo {
 
         addDescription("D2760001771004", "OpenJavaCard Security Domains", AIDUsage.PREFIX, AIDUsage.DOMAIN);
 
-        // signal interrupt
-        addDescription("D276000177",   "signal interrupt", AIDUsage.PREFIX);
+        // OpenJavaCard self-assignment space (under RID provided by signal interrupt)
         addDescription("D276000177E0", "Self-Assigned Experimental Applications", AIDUsage.PREFIX, AIDUsage.APPLET);
         addDescription("D276000177E1", "Self-Assigned Experimental Packages", AIDUsage.PREFIX, AIDUsage.PACKAGE);
         addDescription("D276000177E2", "Self-Assigned Experimental Libraries", AIDUsage.PREFIX, AIDUsage.PACKAGE);
