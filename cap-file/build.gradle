@@ -4,13 +4,13 @@ archivesBaseName = 'openjavacard-cap-file'
 sourceCompatibility = 1.8
 
 dependencies {
-    compile project(':common')
+    api project(':common')
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
-    testCompile project(':cap-testing')
+    testImplementation project(':cap-testing')
 
     // https://mvnrepository.com/artifact/junit/junit
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
