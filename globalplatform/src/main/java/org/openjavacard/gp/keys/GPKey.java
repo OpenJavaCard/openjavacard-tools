@@ -222,6 +222,8 @@ public class GPKey {
                     throw new IllegalArgumentException("AES keys must be 16 bytes long");
                 }
                 break;
+            default:
+                throw new UnsupportedOperationException("Do not know how to check key length for cipher " + mCipher);
         }
     }
 
