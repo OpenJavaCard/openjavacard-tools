@@ -45,6 +45,7 @@ public class Bench {
     public Bench(BenchConfiguration config) {
         mConfig = config;
         mContext = new GPContext();
+        mGeneric = new GenericContext();
         mReaders = new ArrayList<>();
         mReaderPollThreads = new ArrayList<>();
     }
@@ -64,7 +65,13 @@ public class Bench {
             // else filter for given names/prefixes
             terminals = new ArrayList<>();
             for(String readerName: mConfig.reader) {
-                terminals.add(mGeneric.findSingleTerminal(readerName));
+                List<CardTerminal> found = mGeneric.findTerminals(readerName);
+                if(found.isEmpty()) {
+                    throw new Error("Could find any readers matching \"" + readerName + "\"");
+                }
+                for(CardTerminal terminal: found) {
+                    terminals.add(terminal);
+                }
             }
         }
         // complain if no readers at all
