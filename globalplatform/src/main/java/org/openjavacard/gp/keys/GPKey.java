@@ -148,9 +148,9 @@ public class GPKey {
         }
         switch (cipher) {
             case DES:
-                return new SecretKeySpec(enlarge(mSecret, 8), "DES");
+                return new SecretKeySpec(coerceKeyForDES(mSecret, 8), "DES");
             case DES3:
-                return new SecretKeySpec(enlarge(mSecret, 24), "DESede");
+                return new SecretKeySpec(coerceKeyForDES(mSecret, 24), "DESede");
             case AES:
                 return new SecretKeySpec(mSecret, "AES");
             default:
@@ -158,7 +158,7 @@ public class GPKey {
         }
     }
 
-    private byte[] enlarge(byte[] key, int length) {
+    private byte[] coerceKeyForDES(byte[] key, int length) {
         int secretLen = key.length;
         if(length == secretLen) {
             return key;
@@ -190,6 +190,7 @@ public class GPKey {
                     return key24;
             }
         }
+
         throw new Error("Do not know how to coerce DES key from length " + secretLen + " to length " + length);
     }
 
