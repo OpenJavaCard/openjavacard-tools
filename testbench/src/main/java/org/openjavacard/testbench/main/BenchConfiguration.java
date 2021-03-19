@@ -21,6 +21,7 @@ package org.openjavacard.testbench.main;
 
 import com.beust.jcommander.Parameter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BenchConfiguration {
@@ -35,7 +36,7 @@ public class BenchConfiguration {
             names = "--reader",
             description = "Use the specified reader"
     )
-    List<String> reader;
+    List<String> reader = new ArrayList<>();
 
     @Parameter(
             names = "--mode",
