@@ -24,6 +24,7 @@ import com.beust.jcommander.Parameters;
 import org.openjavacard.gp.client.GPCard;
 import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.tool.command.base.BasicGPCommand;
+import org.openjavacard.iso.AID;
 import org.openjavacard.util.HexUtil;
 
 import javax.smartcardio.CardException;
@@ -39,41 +40,45 @@ public class GPIdentity extends BasicGPCommand {
             names = "--new-iin",
             description = "New Issuer Identification Number (IIN)"
     )
-    private byte[] iin;
+    private byte[] newIIN;
 
     @Parameter(
             names = "--new-cin",
             description = "New Card Identification Number (CIN)"
     )
-    private byte[] cin;
+    private byte[] newCIN;
 
     @Parameter(
             names = "--new-isd",
             description = "New AID for the ISD of the card"
     )
-    private byte[] isd;
+    private byte[] newISD;
 
     @Override
     protected void performOperation(GPContext context, GPCard card) throws CardException {
         PrintStream os = System.out;
-        if(iin == null && cin == null && isd == null) {
-            os.println("Card identity:");
-            String identifier = card.getLifetimeIdentifier();
-            if(identifier != null) {
-                os.println("  LID " + identifier);
-            }
+        if(newIIN == null && newCIN == null && newISD == null) {
+            String lid = card.getLifetimeIdentifier();
             byte[] iin = card.getCardIIN();
+            byte[] cin = card.getCardCIN();
+            AID isd = card.getISD();
+
+            os.println("Card identity:");
+            if(isd != null) {
+                os.println("  ISD " + isd);
+            }
             if(iin != null) {
                 os.println("  IIN " + HexUtil.bytesToHex(iin));
             }
-            byte[] cin = card.getCardCIN();
             if(cin != null) {
                 os.println("  CIN " + HexUtil.bytesToHex(cin));
             }
-            os.println("  ISD " + card.getISD());
+            if(lid != null) {
+                os.println("  LID " + lid);
+            }
             os.println();
         } else {
-            card.getIssuerDomain().changeIdentity(iin, cin, isd);
+            card.getIssuerDomain().changeIdentity(newIIN, newCIN, newISD);
         }
     }
 
