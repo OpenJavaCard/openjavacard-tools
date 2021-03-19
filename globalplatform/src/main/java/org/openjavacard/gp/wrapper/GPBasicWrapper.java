@@ -105,10 +105,24 @@ public class GPBasicWrapper {
         }
     }
 
+    /**
+     * Exchange APDUs through the channel
+     *
+     * @param command to execute
+     * @return response to command
+     * @throws CardException for terminal and card errors
+     */
     protected ResponseAPDU transact(CommandAPDU command) throws CardException {
         return transmitRaw(command);
     }
 
+    /**
+     * Exchange APDUs through the channel, check result
+     *
+     * @param command to execute
+     * @return response to command
+     * @throws CardException for terminal and card errors
+     */
     protected ResponseAPDU transactAndCheck(CommandAPDU command) throws CardException {
         ResponseAPDU response = transmitRaw(command);
         checkResponse(response);
