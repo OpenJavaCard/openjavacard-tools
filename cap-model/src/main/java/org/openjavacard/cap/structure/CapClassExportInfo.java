@@ -53,7 +53,7 @@ public class CapClassExportInfo extends CapStructure {
     }
 
     public void read(CapStructureReader reader) throws IOException {
-        mClassRef = reader.readStructure(CapClassRef.class);
+        mClassRef = reader.readClassRef();
         int staticFieldCount = reader.readU1();
         int staticMethodCount = reader.readU1();
         LOG.trace("staticFields " + staticFieldCount + " staticMethods " + staticMethodCount);

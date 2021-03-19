@@ -135,9 +135,13 @@ public class CapPackageReader {
                     LOG.warn("ignoring component " + type);
                     break;
             }
+
             if(reader.hasMore()) {
                 throw new IOException("Trailing data in component " + type);
             }
+
+            resolveClassRefs();
+            resolveMethodRefs();
         }
         return pkg;
     }

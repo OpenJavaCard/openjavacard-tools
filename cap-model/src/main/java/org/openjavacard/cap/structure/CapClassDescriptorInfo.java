@@ -56,7 +56,7 @@ public class CapClassDescriptorInfo extends CapStructure {
     public void read(CapStructureReader reader) throws IOException {
         int token = reader.readU1();
         int accessFlags = reader.readU1();
-        long classRef = reader.readU2();
+        CapClassRef classRef = reader.readClassRef();
         LOG.trace("class token " + token + " accessFlags " + accessFlags + " ref " + classRef);
         int interfaceCount = reader.readU1();
         int fieldCount = reader.readU2();
