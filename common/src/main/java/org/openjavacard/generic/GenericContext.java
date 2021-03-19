@@ -46,6 +46,9 @@ public class GenericContext {
         LOG.debug("findSingleCard()");
         GenericCard card;
         CardTerminal terminal = findSingleTerminal(prefix);
+        if(terminal == null) {
+            throw new Error("Could not find any readers matching \"" + prefix + "\"");
+        }
         try {
             // check card presence
             if (!terminal.isCardPresent()) {
@@ -63,13 +66,9 @@ public class GenericContext {
         LOG.debug("findSingleTerminal()");
         List<CardTerminal> terminals = findTerminals(prefix);
         if (terminals.isEmpty()) {
-            throw new Error("No terminals found");
+            return null;
         } else if (terminals.size() > 1) {
-            if (prefix == null) {
-                throw new Error("More than one terminal found");
-            } else {
-                throw new Error("More than one terminal found matching \"" + prefix + "\"");
-            }
+            LOG.warn("More than one terminal matching prefix \"" + prefix + "\", using the first one");
         }
         return terminals.get(0);
     }
