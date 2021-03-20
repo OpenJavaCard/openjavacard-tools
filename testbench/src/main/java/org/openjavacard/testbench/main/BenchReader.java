@@ -20,6 +20,7 @@
 package org.openjavacard.testbench.main;
 
 import org.openjavacard.gp.client.GPCard;
+import org.openjavacard.gp.client.GPContext;
 import org.openjavacard.util.ATRUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +32,14 @@ public class BenchReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(BenchReader.class.getName());
 
-    private Bench mBench;
-    private CardTerminal mTerminal;
+    private final Bench mBench;
+    private final CardTerminal mTerminal;
 
-    private ReaderThread mThread;
+    private PollingThread mThread;
 
     public BenchReader(Bench bench, CardTerminal terminal) {
         mBench = bench;
         mTerminal = terminal;
-        mThread = null;
     }
 
     public String getName() {
@@ -50,63 +50,87 @@ public class BenchReader {
         return mTerminal;
     }
 
-    public boolean isCardPresent() {
-        try {
-            return mTerminal.isCardPresent();
-        } catch (CardException e) {
-            LOG.error("Error checking for card presence", e);
-            return false;
-        }
-    }
-
-    public void onCardInserted() {
-        LOG.info("onCardInserted()");
-        start();
-    }
-
-    public void onCardRemoved() {
-        LOG.info("onCardRemoved()");
-        stop();
-    }
-
-    private synchronized void start() {
-        mThread = new ReaderThread();
-        mThread.start();
-    }
-
-    private synchronized void stop() {
-        if(mThread != null) {
-            mThread.interrupt();
-            try {
-                mThread.join();
-            } catch (InterruptedException e) {
-                LOG.info("Join interrupted", e);
-            }
-            mThread = null;
-        }
-    }
-
-    private void runSession() {
+    public void runSession() {
         LOG.info("runSession()");
-        GPCard card = new GPCard(mBench.getContext(), mTerminal);
         try {
-            card.connect();
-            LOG.info("Protocol " + card.getCard().getProtocol());
-            LOG.info("ATR " + ATRUtil.toString(card.getCard().getATR()));
-            LOG.info("ISD " + card.getISD().toString());
-            card.getRegistry().update();
+            if(!mTerminal.isCardPresent()) {
+                LOG.info("no card present");
+            } else {
+                GPContext context = mBench.getContext();
+                GPCard card = new GPCard(context, mTerminal);
+                LOG.info("connecting to card");
+                card.connect();
+                LOG.info("Protocol " + card.getCard().getProtocol());
+                LOG.info("ATR " + ATRUtil.toString(card.getCard().getATR()));
+                LOG.info("ISD " + card.getISD().toString());
+                card.getRegistry().update();
+                card.disconnect();
+            }
         } catch (CardException e) {
             LOG.error("Error connecting to card", e);
         }
     }
 
-    private class ReaderThread extends Thread {
-        ReaderThread() {
-            setName(BenchReader.class.getSimpleName() + "(" + mTerminal.getName() + ")");
+    public synchronized void startPolling() {
+        LOG.info("startPolling()");
+        if(mThread == null) {
+            mThread = new PollingThread(this);
+            mThread.start();
+        }
+    }
+
+    public synchronized void stopPolling() {
+        LOG.info("stopPolling()");
+        if(mThread != null) {
+            mThread.interrupt();
+        }
+    }
+
+    private class PollingThread extends Thread {
+        BenchReader mReader;
+        PollingThread(BenchReader reader) {
+            setName(BenchReader.class.getSimpleName()
+                    + "(" + reader.getName() + ")");
+            mReader = reader;
         }
         @Override
         public void run() {
-            runSession();
+            LOG.debug("polling \"" + mTerminal.getName() + "\"");
+            try {
+                boolean present;
+                while(true) {
+                    // handle interruptions
+                    if(Thread.interrupted()) {
+                        return;
+                    }
+                    // check presence
+                    present = mTerminal.isCardPresent();
+                    if (present) {
+                        // run session
+                        LOG.debug("running test session");
+                        runSession();
+                        // wait for removal
+                        do {
+                            if(Thread.interrupted()) {
+                                return;
+                            }
+                            //LOG.trace("waiting for removal");
+                        } while(!mTerminal.waitForCardAbsent(100));
+                        LOG.debug("card removed");
+                    } else {
+                        // wait for insertion
+                        do {
+                            if(Thread.interrupted()) {
+                                return;
+                            }
+                            //LOG.trace("waiting for insertion");
+                        } while(!mTerminal.waitForCardPresent(100));
+                        LOG.debug("card inserted");
+                    }
+                }
+            } catch (CardException e) {
+                LOG.error("error polling for \"" + mTerminal.getName() + "\"", e);
+            }
         }
     }
 

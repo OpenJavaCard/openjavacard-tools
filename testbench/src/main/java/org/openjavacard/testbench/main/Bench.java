@@ -40,14 +40,11 @@ public class Bench {
 
     private List<BenchReader> mReaders;
 
-    private List<DetectThread> mReaderPollThreads;
-
     public Bench(BenchConfiguration config) {
         mConfig = config;
         mContext = new GPContext();
         mGeneric = new GenericContext();
         mReaders = new ArrayList<>();
-        mReaderPollThreads = new ArrayList<>();
     }
 
     public GPContext getContext() {
@@ -104,79 +101,13 @@ public class Bench {
 
     private void executeOnce() {
         for(BenchReader reader: mReaders) {
-            if (!reader.isCardPresent()) {
-                throw new Error("No card in reader \"" + reader.getName() + "\"");
-            }
-            reader.onCardInserted();
+            reader.runSession();
         }
     }
 
     private void executePoll() {
         for(BenchReader reader: mReaders) {
-            DetectThread thread = new DetectThread(reader);
-            thread.start();
-            mReaderPollThreads.add(thread);
-        }
-    }
-
-    private class DetectThread extends Thread {
-        BenchReader mReader;
-        CardTerminal mTerminal;
-        boolean mPresent;
-        DetectThread(BenchReader reader) {
-            setName(Bench.class.getSimpleName()
-                    + "(" + reader.getName() + ")");
-            mReader = reader;
-            mTerminal = reader.getTerminal();
-            mPresent = false;
-        }
-        @Override
-        public void run() {
-            LOG.debug("polling \"" + mTerminal.getName() + "\"");
-            try {
-                // initialize state
-                mPresent = mTerminal.isCardPresent();
-                // initial presence treated as insertion
-                if(mPresent) {
-                    mReader.onCardInserted();
-                }
-                // need to track previous state to detect changes
-                boolean previouslyPresent = mPresent;
-                while(true) {
-                    // wait for event
-                    boolean event;
-                    if(mPresent) {
-                        event = mTerminal.waitForCardAbsent(30000);
-                    } else {
-                        event = mTerminal.waitForCardPresent(30000);
-                    }
-                    // handle interruptions
-                    if(Thread.interrupted()) {
-                        LOG.debug("interrupted");
-                        if(previouslyPresent) {
-                            mReader.onCardRemoved();
-                        }
-                        return;
-                    }
-                    // wait again if no event
-                    if(!event) {
-                        continue;
-                    }
-                    // update state
-                    mPresent = mTerminal.isCardPresent();
-                    // handle state changes
-                    if(previouslyPresent && !mPresent) {
-                        mReader.onCardRemoved();
-                    }
-                    if(mPresent && !previouslyPresent) {
-                        mReader.onCardInserted();
-                    }
-                    // remember state
-                    previouslyPresent = mPresent;
-                }
-            } catch (CardException e) {
-                LOG.error("error polling for \"" + mTerminal.getName() + "\"", e);
-            }
+            reader.startPolling();
         }
     }
 
