@@ -453,6 +453,8 @@ public class GPCard {
      */
     private void ensureConnectedToCard() throws CardException {
         if(mCard == null) {
+            LOG.debug("connecting to card");
+
             // connect to the card
             mCard = mTerminal.connect("*");
 
